@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#FAFAFA">
+<link rel="icon" type="image/png" href="__PAUSE_FAVICON__">
+<link rel="apple-touch-icon" href="__PAUSE_APPICON__">
+<link rel="manifest" href="/site.webmanifest">
+<meta property="og:title" content="Pause by Pákó">
+<meta property="og:description" content="Ride out a craving instead of fighting it. Private, and it stays on your device.">
+<meta property="og:image" content="/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://pause.pako.health">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pause by Pákó">
+<meta name="twitter:description" content="Ride out a craving instead of fighting it. Private, and it stays on your device.">
+<meta name="twitter:image" content="/og-image.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="description" content="Pause by Pákó. A craving is a wave. Watch it rise, crest, and pass instead of acting on it. Everything stays on your device.">
+<title>Pause by Pákó</title>
+<style>/*__FONT__*/</style>
+<style>
+  :root{
+    --red:#c0392b; --ink:#0D0D0B; --white:#FAFAFA; --grey:#F2F2F0;
+    --purple:#3c3158; --faint:rgba(13,13,11,0.08); --faint2:rgba(13,13,11,0.12);
+    --redtint:#f6e6e4; --page:#E9E9E6; --accent-lt:rgba(60,49,88,.06);
+    --act:#c0392b; --actx:#c0392b;
+    --mute:rgba(13,13,11,.6); --mute2:rgba(13,13,11,.42); --mute3:rgba(13,13,11,.28);
+    --font:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --maxw:480px;
+  }
+  .dark{
+    --red:#d84b31; --ink:#F3EFE8; --white:#1b1813; --grey:#282320;
+    --purple:#9c93b8; --faint:rgba(243,239,232,0.10); --faint2:rgba(243,239,232,0.17);
+    --redtint:#241f33; --page:#0f0d0a; --accent-lt:rgba(156,147,184,.14);
+    --act:#6d6299; --actx:#a79dc6;
+    --mute:rgba(243,239,232,.62); --mute2:rgba(243,239,232,.42); --mute3:rgba(243,239,232,.3);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{font-family:var(--font);background:var(--page);color:var(--ink);
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    display:flex;justify-content:center}
+  #frame{width:100%;max-width:var(--maxw);background:var(--white);position:relative;
+    min-height:100dvh;overflow:hidden;display:flex;flex-direction:column}
+  @media(min-width:520px){
+    body{align-items:center;padding:22px 0}
+    #frame{min-height:min(880px,calc(100dvh - 44px));height:min(880px,calc(100dvh - 44px));
+      border-radius:20px;box-shadow:0 1px 0 var(--faint)}
+  }
+  #app{flex:1;position:relative;z-index:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:transparent}
+  .screen{min-height:100%;padding:0 22px;display:flex;flex-direction:column}
+  .safe{height:env(safe-area-inset-top,0)}
+
+  h1,h2,h3{letter-spacing:-0.02em;line-height:1.12;color:var(--purple)}
+  h1{font-size:32px;font-weight:800}
+  h2{font-size:24px;font-weight:800}
+  h3{font-size:18px;font-weight:700}
+  .lede{font-size:16px;font-weight:400;line-height:1.6;color:var(--ink)}
+  p{line-height:1.6}
+  .body{font-size:15px;line-height:1.65}
+  .grey{color:var(--mute)}
+  .label{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--actx);display:block}
+  .label.ink{color:var(--mute2)}
+  .tnum{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+    height:52px;border-radius:10px;font-size:15px;font-weight:700;letter-spacing:.01em;transition:background .15s,opacity .15s}
+  .btn-red{background:var(--act);color:var(--white)}
+  .btn-red:active{opacity:.85}
+  .btn-ink{background:var(--ink);color:var(--white)}
+  .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--faint2)}
+  .btn[disabled]{opacity:.3;pointer-events:none}
+  .btn-sm{height:46px;font-size:14px}
+  .tlink{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);
+    background:none;padding:12px;width:100%;text-align:center}
+  .tlink.grey{color:var(--mute)}
+  .btn-text{display:inline-block;font-weight:700;text-transform:uppercase;color:var(--ink);
+    background:none;border:none;border-bottom:2px solid var(--ink);padding:0 0 2px}
+  .arrow{width:15px;height:15px}
+
+  .card{background:var(--white);border:1px solid var(--faint);border-radius:14px;padding:18px}
+  .pane-purple{background:var(--purple);border-radius:14px;padding:20px;color:var(--white)}
+  .pane-purple .label{color:var(--white);opacity:.7}
+  /* subtle stat line: purple labels, values beneath, fine dividers, no fill */
+  .statline{display:flex}
+  .statline>div{flex:1;padding:0 14px}
+  .statline>div:first-child{padding-left:0}
+  .statline>div:last-child{padding-right:0}
+  .statline>div+div{border-left:1px solid var(--faint)}
+  .statline .sk{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--purple)}
+  .statline .sv{font-size:30px;font-weight:800;color:var(--ink);margin-top:6px;line-height:1;font-variant-numeric:tabular-nums}
+  .statline .sv small{font-size:13px;font-weight:600;color:var(--mute2);margin-left:2px}
+  .divider{height:1px;background:var(--faint)}
+
+  .chip{padding:9px 14px;border-radius:10px;font-size:14px;font-weight:500;color:var(--ink);
+    background:var(--grey);white-space:nowrap;transition:all .12s;border:1px solid transparent}
+  .chip.on{background:var(--purple);color:var(--white)}
+  .chiprow{display:flex;flex-wrap:wrap;gap:8px}
+
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .tile{display:flex;align-items:center;gap:11px;padding:14px;border-radius:12px;background:var(--grey);
+    border:1px solid transparent;text-align:left;width:100%;transition:all .12s}
+  .tile.on{background:var(--purple);border-color:var(--purple)}
+  .tile.on .tile-l{color:var(--white)}
+  .tile .ic{width:24px;height:24px;color:var(--purple);flex-shrink:0;display:flex}
+  .tile.on .ic{color:#fff}
+  .tile-l{font-size:14px;font-weight:600;color:var(--ink);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ms{width:22px;height:22px;display:inline-block;vertical-align:middle;flex-shrink:0}
+  .ms.arrow{width:16px;height:16px}
+  .ms.nav24{width:24px;height:24px}
+  .ms.ic16{width:15px;height:15px}
+  .ms.big{width:26px;height:26px}
+  .tile.dashed{background:transparent;border:1px dashed var(--faint2)}
+
+  input[type=text]{font-family:inherit;width:100%;border:none;border-bottom:2px solid var(--faint2);
+    background:transparent;padding:10px 0;font-size:24px;font-weight:700;color:var(--purple);letter-spacing:-.01em}
+  input[type=text]:focus{outline:none;border-bottom-color:var(--actx)}
+  input::placeholder{color:var(--mute3);font-weight:400}
+
+  /* intensity */
+  .scale{display:flex;gap:4px}
+  .scale>button{flex:1;height:34px;border-radius:6px;background:var(--grey);font-size:11px;font-weight:600;
+    color:var(--mute2);transition:all .1s;display:flex;align-items:center;justify-content:center}
+  .scale>button.on{background:var(--act);color:var(--white)}
+  .scale.calm>button.on{background:var(--purple)}
+
+  /* intensity slider */
+  .range{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:5px;background:var(--grey);outline:none;margin:2px 0}
+  .range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--act);border:3px solid var(--white);box-shadow:0 0 0 1px var(--faint);cursor:pointer}
+  .range::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--act);border:3px solid var(--white);cursor:pointer}
+  .range.calm::-webkit-slider-thumb{background:var(--purple)}
+  .range.calm::-moz-range-thumb{background:var(--purple)}
+  #strengthbox{opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .6s ease,transform .6s ease}
+  #strengthbox.show{opacity:1;transform:none;pointer-events:auto}
+  /* clock-style duration picker */
+  .clockrow{display:flex;justify-content:space-between;gap:10px}
+  .clockopt{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--mute2);padding:10px 0;border-radius:12px;transition:color .15s,background .15s}
+  .clockopt.on{color:var(--purple);background:var(--accent-lt,rgba(60,49,88,.06))}
+  .clockopt .cl-track{stroke:var(--faint2)}
+  .clockopt .cl-arc{stroke:currentColor}
+  .clockopt .cl-num{font-size:15px;font-weight:800;color:var(--ink)}
+  .clockopt.on .cl-num{color:var(--purple)}
+  .clockopt .cl-min{font-size:10px;font-weight:600;color:var(--mute2);margin-left:3px}
+  /* radial time dial */
+  .dialwrap{position:relative;width:220px;height:220px;margin:16px auto 0;touch-action:none;user-select:none;-webkit-user-select:none}
+  #dial{width:220px;height:220px;display:block;cursor:pointer}
+  .d-track{fill:none;stroke:var(--faint2);stroke-width:10}
+  .d-arc{fill:none;stroke:var(--purple);stroke-width:10;stroke-linecap:round}
+  .d-handle{fill:#fff;stroke:var(--purple);stroke-width:3}
+  .dialval{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+  #dMin{font-size:46px;font-weight:800;color:var(--purple);line-height:1;font-variant-numeric:tabular-nums}
+  .dialunit{font-size:12px;font-weight:700;color:var(--mute2);letter-spacing:.14em;text-transform:uppercase;margin-top:6px}
+  /* dropdown */
+  .selectwrap{position:relative;margin-top:12px}
+  .selectwrap .chev{position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--mute2);pointer-events:none;display:flex}
+  .selectwrap .chev svg{width:20px;height:20px}
+  .select{width:100%;font-family:inherit;font-size:15px;font-weight:500;color:var(--ink);background:var(--white);
+    border:1px solid var(--faint2);border-radius:10px;padding:13px 40px 13px 14px;-webkit-appearance:none;appearance:none;outline:none}
+  .select:focus{border-color:var(--purple)}
+  .select.placeholder{color:var(--mute2)}
+
+  /* duration segmented */
+  .seg{display:flex;gap:8px}
+  .seg>button{flex:1;padding:14px 0;border-radius:10px;background:var(--grey);font-weight:700;font-size:15px;color:var(--ink)}
+  .seg>button .u{font-size:11px;font-weight:500;opacity:.5}
+  .seg>button.on{background:var(--purple);color:var(--white)}
+
+  /* progress */
+  .prog{height:3px;background:var(--faint2);border-radius:2px;overflow:hidden}
+  .prog>div{height:100%;background:var(--act);transition:width .4s ease}
+
+  /* steps */
+  .steps{display:flex;gap:5px}
+  .steps>div{flex:1;height:3px;border-radius:2px;background:var(--faint)}
+  .steps>div.on{background:var(--act)}
+
+  /* wave */
+  #wave{width:100%;height:150px;display:block;overflow:visible}
+  .breathe-dot{transition:none}
+  @keyframes breathe{0%,100%{r:9}50%{r:15}}
+
+  /* rows */
+  .row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--faint)}
+  .dotmark{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+  .dot-pass{background:var(--actx)} .dot-act{background:var(--mute3)}
+  .state{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+  .state.pass{color:var(--actx)} .state.act{color:var(--mute2)}
+
+  /* stats mini */
+  .statrow{display:flex}
+  .statrow>div{flex:1}
+  .statrow .v{font-size:26px;font-weight:800;color:var(--white);line-height:1;margin-top:6px}
+  .statrow .v small{font-size:13px;font-weight:600;opacity:.7}
+
+  .pod{display:flex;flex-direction:column;gap:10px}
+  .podrow{display:flex;align-items:center;gap:10px}
+  .podrow .pl{width:74px;font-size:12px;color:var(--mute)}
+  .podbar{flex:1;height:10px;background:var(--grey);border-radius:5px;overflow:hidden}
+  .podbar>div{height:100%;background:var(--purple);border-radius:5px}
+  .podrow .pc{width:24px;text-align:right;font-size:12px;font-weight:600;color:var(--mute)}
+
+  .trig{margin-bottom:12px}
+  .trig .tt{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px}
+  .trigbar{height:4px;background:var(--grey);border-radius:2px}
+  .trigbar>div{height:100%;background:var(--act);border-radius:2px}
+
+  /* nav */
+  .nav{display:flex;justify-content:space-around;padding:11px 16px calc(12px + env(safe-area-inset-bottom,0));
+    border-top:1px solid var(--faint);background:var(--white)}
+  .nav button{display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.35;padding:2px 12px;transition:opacity .15s}
+  .nav button.on{opacity:1;color:var(--actx)}
+  .nav svg{width:21px;height:21px}
+  .nav span{font-size:10px;font-weight:600;letter-spacing:.02em}
+
+  .scrim{position:absolute;inset:0;background:var(--mute2);opacity:0;transition:opacity .28s;z-index:40}
+  .scrim.on{opacity:1}
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--white);z-index:41;
+    border-radius:18px 18px 0 0;padding:8px 22px max(22px,env(safe-area-inset-bottom));
+    transform:translateY(100%);transition:transform .3s cubic-bezier(.22,1,.36,1)}
+  .sheet.on{transform:translateY(0)}
+  .grab{width:36px;height:4px;border-radius:2px;background:var(--faint2);margin:8px auto 16px}
+
+  #splash{position:absolute;inset:0;z-index:100;background:#3c3158;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease}
+  #splash.gone{opacity:0;pointer-events:none}
+  #splash img{width:240px;height:auto;animation:sp-in .7s cubic-bezier(.22,1,.36,1) both}
+  @keyframes sp-in{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
+  .fade{animation:fade .3s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .hidden{display:none!important}
+  .wordmark{font-weight:800;letter-spacing:-.02em}
+  ::-webkit-scrollbar{display:none}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="frame">
+  <div id="splash"><img src="__PAUSE_LOCKUP_DARK__" alt="Pause by Pákó"></div>
+  <div id="app"></div>
+</div>
+<script>
+"use strict";
+
+/* ============ config ============ */
+const APP = { name:"Pause", by:"Pákó", lockup:"Pause by Pákó", brand:"Pákó Habit Lab" };
+const TYPES_SEED = [
+  { id:'smoke',  label:'Cigarettes', icon:'smoking_rooms' },
+  { id:'drink',  label:'Alcohol',    icon:'sports_bar' },
+  { id:'sugar',  label:'Sugar',      icon:'cake' },
+  { id:'phone',  label:'The phone',  icon:'devices' },
+  { id:'bet',    label:'Betting',    icon:'casino' },
+  { id:'porn',   label:'Porn',       icon:'18_up_rating' },
+  { id:'junk',   label:'Junk food',  icon:'fastfood' },
+  { id:'caf',    label:'Caffeine',   icon:'local_cafe' },
+  { id:'spend',  label:'Spending',   icon:'shopping_bag' },
+];
+const CAUSES = ['Stress','Boredom','Tired','Hungry','After a meal','Around people','Low mood','Just habit'];
+const LENGTHS = [180, 300, 600];
+const TIPS = [
+  "Tap the speaker during a pause to hear calming sounds.",
+  "Drag the dial to set any pause length you like.",
+  "You can add a custom craving in Settings.",
+  "Rate your craving again near the end to see how far it dropped.",
+  "Craving the dark? Switch the theme in Settings.",
+  "A short pause is still a good pause.",
+  "You can export your history to share with a coach, in Settings.",
+];
+const PZ_MSGS = [
+  "This wave is already changing.<br>Let it.",
+  "A big wave is still only a wave.<br>It will settle.",
+  "You do not have to act on this.<br>You can watch it pass.",
+  "Notice where you feel it in your body,<br>and let it be.",
+  "Unlike you, this wave<br>cannot keep rising forever.",
+  "You're not your craving.<br>You're the one watching it pass.",
+];
+const PICK_ICONS = ['bolt','local_fire_department','eco','menu_book','sports_esports','headphones','local_drink','cookie','laptop_mac','directions_run','bedtime','chat_bubble','shopping_cart','fitness_center','local_pizza','savings','mood','favorite'];
+
+/* ============ storage ============ */
+const KEY = 'pako-pause/v1';
+const PERSIST = ['name','types','sessions','onboarded','pause','sound','theme','tipIdx'];
+let storageOK = true;
+function loadRaw(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ storageOK=false; return null; } }
+function save(){ if(!storageOK)return; try{ const o={}; PERSIST.forEach(k=>o[k]=S[k]); localStorage.setItem(KEY,JSON.stringify(o)); }catch(e){ storageOK=false; } }
+
+/* ============ state ============ */
+function fresh(){
+  return {
+    view:'onboard', onboarded:false,
+    name:'', types:TYPES_SEED.slice(), sessions:[],
+    pause:null,            // active pause: {typeId,cause,s0,s1,len,endTime}
+    draft:null,            // in-progress "begin" form
+    sound:false,           // ambient sound, off by default
+    theme:null,            // 'light' | 'dark' (null = follow system)
+    tipIdx:-1,             // rotating dashboard tip, advances each open
+  };
+}
+let S = fresh();
+(function boot(){
+  const saved = loadRaw();
+  if(saved){
+    S = Object.assign(fresh(), saved);
+    if(!S.types||!S.types.length) S.types = TYPES_SEED.slice();
+    if(S.pause && S.pause.endTime){
+      S.view = leftOf(S.pause.endTime) > 0 ? 'pause' : 'passed';
+      if(leftOf(S.pause.endTime) <= 0){ recordPause('passed'); }
+    } else {
+      S.view = S.onboarded ? 'home' : 'onboard';
+    }
+  }
+  if(!S.theme) S.theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  S.tipIdx = (Number.isInteger(S.tipIdx) ? S.tipIdx + 1 : 0) % TIPS.length;   // a fresh tip each open
+  applyTheme(); save();
+})();
+function applyTheme(){
+  document.documentElement.classList.toggle('dark', S.theme==='dark');
+  const m=document.querySelector('meta[name=theme-color]'); if(m) m.setAttribute('content', S.theme==='dark'?'#1b1813':'#FAFAFA');
+}
+
+/* ============ helpers ============ */
+const pad = n => String(n).padStart(2,'0');
+const clock = s => `${Math.floor(s/60)}:${pad(s%60)}`;
+function iso(d=new Date()){ return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+function hm(d=new Date()){ return `${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+function leftOf(end){ return end? Math.max(0, Math.ceil((end-Date.now())/1000)) : 0; }
+function typeOf(id){ return S.types.find(t=>t.id===id); }
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function greet(){ const h=new Date().getHours(); return h<12?'Good morning':h<17?'Good afternoon':h<22?'Good evening':'You’re up late'; }
+function partOfDay(h){ return h<5?'Night':h<12?'Morning':h<17?'Afternoon':h<22?'Evening':'Night'; }
+
+function calmDays(){
+  if(!S.sessions.length) return 0;
+  const acted = S.sessions.filter(x=>x.outcome==='acted');
+  const anchor = acted.length ? acted[0].date : S.sessions[S.sessions.length-1].date;
+  const a = new Date(anchor+'T00:00:00');
+  const n = new Date(); const mid = new Date(n.getFullYear(),n.getMonth(),n.getDate());
+  return Math.max(0, Math.floor((mid-a)/86400000));
+}
+function passRate(list){ list=list||S.sessions; if(!list.length)return 0;
+  return Math.round(list.filter(x=>x.outcome==='passed').length / list.length * 100); }
+function niceDate(d){
+  const t=iso(); const y=iso(new Date(Date.now()-86400000));
+  if(d===t)return'Today'; if(d===y)return'Yesterday';
+  const dt=new Date(d+'T00:00:00');
+  const diff=Math.floor((new Date(t)-dt)/86400000);
+  const wk=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][dt.getDay()];
+  if(diff<7)return wk;
+  const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][dt.getMonth()];
+  return `${mo} ${dt.getDate()}`;
+}
+
+/* records the active pause as a session */
+function recordPause(outcome, elapsedOverride){
+  const p=S.pause; if(!p) return;
+  const elapsed = outcome==='passed' ? p.len : (elapsedOverride ?? (p.len - leftOf(p.endTime)));
+  S.sessions.unshift({
+    id:'s'+Date.now().toString(36),
+    date:iso(), t:hm(), hour:new Date().getHours(),
+    type:p.typeId, cause:p.cause||null,
+    s0:p.s0, s1:(p.s1!=null?p.s1:p.s0),
+    len:p.len, elapsed, outcome,
+  });
+  S.sessions = S.sessions.slice(0,200);
+  S.pause = null;
+  save();
+}
+
+/* ============ export (all local, user-initiated) ============ */
+function csvCell(v){ v=String(v==null?'':v); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
+function buildCSV(){
+  const head=['Date','Time','Craving','What set it off','Strength before','Strength after','Minutes waited','Outcome'];
+  const rows=S.sessions.map(x=>{const ty=typeOf(x.type);
+    return [x.date,x.t,ty?ty.label:x.type,x.cause||'',x.s0,x.s1,(x.elapsed/60).toFixed(1),x.outcome==='passed'?'Let it pass':'Acted on it'];});
+  return [head,...rows].map(r=>r.map(csvCell).join(',')).join('\n');
+}
+function summaryText(){
+  const n=S.sessions.length, passed=S.sessions.filter(x=>x.outcome==='passed').length;
+  const cc={}; S.sessions.forEach(x=>{if(x.cause)cc[x.cause]=(cc[x.cause]||0)+1});
+  const top=Object.entries(cc).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
+  return [
+    'Pause by Pákó — my summary',
+    `${S.name?S.name+', ':''}${n} pause${n===1?'':'s'} taken, ${passed} let pass.`,
+    `Steady days: ${calmDays()}.`,
+    top.length?`Most common triggers: ${top.join(', ')}.`:''
+  ].filter(Boolean).join('\n');
+}
+function download(name,text,mime){
+  const blob=new Blob([text],{type:mime||'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=name;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url); a.remove();},120);
+}
+
+/* ============ icons (Google Material Symbols, inlined) ============ */
+let ICONS_MS = {}; /*__ICONS__*/
+function msvg(name, cls){ return `<svg class="ms ${cls||''}" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true">${ICONS_MS[name]||''}</svg>`; }
+const IC = {
+  home:  msvg('home'),
+  waves: msvg('waves'),
+  chart: msvg('monitoring'),
+  user:  msvg('person'),
+  arrow: msvg('arrow_forward','arrow'),
+  back:  msvg('arrow_back','nav24'),
+  close: msvg('close','nav24'),
+  lock:  msvg('lock','ic16'),
+  add:   msvg('add'),
+};
+
+/* ============ render ============ */
+const app = document.getElementById('app');
+let clockInt=null, breathInt=null, pauseRAF=null;
+function stop(){ if(clockInt){clearInterval(clockInt);clockInt=null} if(breathInt){clearInterval(breathInt);breathInt=null} if(pauseRAF){cancelAnimationFrame(pauseRAF);pauseRAF=null} }
+function go(v){ S.view=v; save(); render(); }
+
+const VIEWS = {onboard:Onboard, home:Home, begin:Begin, pause:PauseView, passed:Passed, acted:Acted, waves:Waves, patterns:Patterns, me:Me, privacy:PrivacyView};
+let privReturn='me';
+function render(){
+  stop();
+  waterStop();
+  welcomeStop();
+  if(S.view!=='pause') soundStop();
+  app.scrollTop=0;
+  app.innerHTML = `<div class="safe"></div>` + (VIEWS[S.view]||Home)();
+  wire();
+  if(S.view==='pause') runPause();
+}
+
+/* ============ onboarding ============ */
+let ob = {step:0, name:'', pick:new Set()};
+function Onboard(){
+  let body='';
+  if(ob.step===0){
+    body=`<div class="fade" style="margin-top:15vh">
+      <h1>Welcome!</h1>
+      <p class="lede grey" style="margin-top:16px;max-width:22em">A craving is a wave. It rises, it peaks, and then it falls on its own. Pause helps you watch it pass instead of fighting or giving in.</p>
+    </div>`;
+  } else if(ob.step===1){
+    body=`<div class="fade" style="margin-top:15vh">
+      <h1>What should we<br>call you?</h1>
+      <div style="margin-top:34px">
+        <input type="text" id="obName" placeholder="Your first name" maxlength="24" value="${esc(ob.name)}" autocomplete="off">
+      </div></div>`;
+  } else {
+    const tiles = S.types.map(t=>`<button class="tile ${ob.pick.has(t.id)?'on':''}" data-a="ob-pick" data-id="${t.id}">
+      <span class="ic">${msvg(t.icon)}</span><span class="tile-l">${esc(t.label)}</span></button>`).join('');
+    body=`<div class="fade" style="margin-top:8vh;padding-bottom:120px">
+      <h1>What are you<br>working on${ob.name.trim()?`, ${esc(ob.name.trim().split(' ')[0])}`:''}?</h1>
+      <p class="body grey" style="margin-top:10px;margin-bottom:20px">Pick as many as you like. You can change these anytime.</p>
+      <div class="tiles">${tiles}
+        <button class="tile dashed" data-a="add-type"><span class="ic" style="color:var(--mute2)">${msvg('add')}</span><span class="tile-l" style="font-weight:500;color:var(--mute)">Add your own</span></button>
+      </div></div>`;
+  }
+  const canGo = ob.step!==1 || ob.name.trim();
+  const canFin = ob.step!==2 || ob.pick.size;
+  const lbl = ob.step===0?'Get started':ob.step===1?'Continue':`Start with ${ob.pick.size||'…'}`;
+  return `<div class="screen">
+    <div style="position:absolute;top:22px;left:22px;right:22px" class="steps">${[0,1,2].map(i=>`<div class="${i<=ob.step?'on':''}"></div>`).join('')}</div>
+    ${body}
+    <div style="position:fixed;bottom:0;left:0;right:0;max-width:var(--maxw);margin:0 auto;padding:14px 22px 26px;${ob.step===0?'':'background:linear-gradient(to top,var(--white) 72%,transparent)'}">
+      ${ob.step===0?`<div style="text-align:center;margin-bottom:14px"><button class="btn-text" data-a="go-privacy" style="font-size:11px;letter-spacing:.06em">Your privacy</button></div>`:''}
+      <div style="display:flex;gap:10px">
+        ${ob.step>0?`<button class="btn btn-ghost" style="flex:1" data-a="ob-back">Back</button>`:''}
+        <button class="btn btn-red" style="flex:${ob.step>0?1.6:1}" data-a="ob-next" ${(!canGo||!canFin)?'disabled':''}>${lbl} ${IC.arrow}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ============ home ============ */
+function Home(){
+  const first=(S.name||'there').split(' ')[0];
+  const passed=S.sessions.filter(x=>x.outcome==='passed').length;
+  const recent=S.sessions.slice(0,4).map(x=>{
+    const ty=typeOf(x.type);
+    return `<div class="row">
+      <span class="dotmark ${x.outcome==='passed'?'dot-pass':'dot-act'}"></span>
+      <span style="flex:1;font-size:15px">${ty?esc(ty.label):esc(x.type)}</span>
+      <span class="grey tnum" style="font-size:13px">${x.date===iso()?x.t:niceDate(x.date)}</span>
+      <span class="state ${x.outcome==='passed'?'pass':'act'}">${x.outcome==='passed'?'Passed':'Acted'}</span>
+    </div>`;
+  }).join('') || `<p class="body grey" style="padding:14px 0;border-top:1px solid var(--faint)">No waves yet. Your first pause will show up here.</p>`;
+
+  return `<div class="screen fade" style="padding-bottom:14px">
+    <div style="display:flex;justify-content:flex-end;padding-top:18px">
+      <button data-a="theme-toggle" aria-label="Theme" style="color:var(--mute2);width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%">${S.theme==='dark'?msvg('light_mode','nav24'):msvg('dark_mode','nav24')}</button>
+    </div>
+    <h1 style="margin-top:2px">${greet()},<br>${esc(first)}.</h1>
+    <p class="lede grey" style="margin-top:10px">A craving is a wave. Let's watch this one pass.</p>
+
+    <div style="margin-top:24px">${statLine([
+      {k:'Steady days', v:calmDays()},
+      {k:'Waves passed', v:passed},
+      {k:'Pauses taken', v:S.sessions.length},
+    ])}</div>
+
+    <div class="card" style="margin-top:22px;background:var(--grey);border:none;display:flex;gap:11px;align-items:flex-start">
+      <span style="color:var(--purple);display:flex;flex-shrink:0;margin-top:1px">${msvg('lightbulb','ic16')}</span>
+      <div><span class="label" style="display:block;margin-bottom:4px">Tip</span><span class="body" style="font-size:13.5px;line-height:1.5">${TIPS[S.tipIdx]||TIPS[0]}</span></div>
+    </div>
+
+    <div style="margin-top:28px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+        <span class="label ink">Recent waves</span>
+        <button class="tlink grey" style="width:auto;padding:0;font-size:12px" data-a="go-waves">All</button>
+      </div>
+      ${recent}
+    </div>
+    <div style="flex:1;min-height:24px"></div>
+    <button class="btn btn-red" style="margin-bottom:16px" data-a="begin">Time to pause ${IC.arrow}</button>
+    ${Nav('home')}
+  </div>`;
+}
+
+/* ============ begin (guided form) ============ */
+function draft(){ if(!S.draft) S.draft={typeId:S.types[0]?.id, cause:null, s0:6, len:300}; return S.draft; }
+function Begin(){
+  const d=draft();
+  const tiles=S.types.map(t=>`<button class="tile ${t.id===d.typeId?'on':''}" data-a="bg-type" data-id="${t.id}">
+    <span class="ic">${msvg(t.icon)}</span><span class="tile-l">${esc(t.label)}</span></button>`).join('')
+    + `<button class="tile dashed" data-a="add-type"><span class="ic" style="color:var(--mute2)">${msvg('add')}</span><span class="tile-l" style="font-weight:500;color:var(--mute)">Add your own</span></button>`;
+  const inList = d.cause && CAUSES.includes(d.cause);
+  const isOther = d.cause && !inList;
+  const causeOpts='<option value="" '+(d.cause?'':'selected')+'>Not sure</option>'
+    + CAUSES.map(c=>`<option value="${esc(c)}" ${d.cause===c?'selected':''}>${esc(c)}</option>`).join('')
+    + `<option value="__other__" ${isOther?'selected':''}>Something else…</option>`;
+
+  return `<div class="screen fade" style="padding-bottom:110px">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding-top:16px">
+      <button data-a="go-home" class="grey">${IC.back}</button>
+      <span class="label ink" style="letter-spacing:.16em">New pause</span><span style="width:24px"></span>
+    </div>
+
+    <h2 style="margin-top:22px">What's the craving?</h2>
+    <div class="tiles" style="margin-top:14px">${tiles}</div>
+
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:30px">
+      <h3 style="margin:0">How strong is it right now?</h3>
+      <span class="tnum" style="font-size:15px;font-weight:800;color:var(--purple)"><span id="bgval">${d.s0}</span><span style="font-weight:600;color:var(--mute2)">/10</span></span>
+    </div>
+    <input type="range" class="range" id="bgslider" min="1" max="10" step="1" value="${d.s0}" style="margin-top:16px">
+    <div style="display:flex;justify-content:space-between;margin-top:6px"><span class="grey" style="font-size:12px">Barely there</span><span class="grey" style="font-size:12px">Very strong</span></div>
+
+    <h3 style="margin-top:28px">What set it off? <span style="font-weight:400;color:var(--mute2);font-size:14px">optional</span></h3>
+    <div class="selectwrap">
+      <select class="select ${d.cause?'':'placeholder'}" id="bgcause">${causeOpts}</select>
+      <span class="chev">${msvg('expand_more')}</span>
+    </div>
+    <input type="text" id="bgcauseother" class="select${isOther?'':' hidden'}" placeholder="Type what set it off" maxlength="40" value="${isOther?esc(d.cause):''}" style="margin-top:8px;padding-right:14px">
+
+    <h3 style="margin-top:28px">How long will you pause?</h3>
+    <div class="dialwrap">
+      <svg id="dial" viewBox="0 0 220 220">
+        <circle class="d-track" cx="110" cy="110" r="82"/>
+        <circle id="dArc" class="d-arc" cx="110" cy="110" r="82" transform="rotate(-90 110 110)"/>
+        <circle id="dHandle" class="d-handle" r="13" cx="110" cy="28"/>
+      </svg>
+      <div class="dialval"><span id="dMin">5</span><span class="dialunit">min</span></div>
+    </div>
+    <p class="grey" style="text-align:center;font-size:12px;margin-top:0">Drag the dial to set your time</p>
+
+    <div style="position:fixed;bottom:0;left:0;right:0;max-width:var(--maxw);margin:0 auto;padding:14px 22px 26px;background:linear-gradient(to top,var(--white) 74%,transparent)">
+      <button class="btn btn-red" data-a="bg-start">Start the pause ${IC.arrow}</button>
+    </div>
+  </div>`;
+}
+
+/* ============ pause (the wave) ============ */
+function PauseView(){
+  const p=S.pause; const ty=typeOf(p.typeId)||{label:'this',em:'🌊'};
+  return `<div class="screen" style="padding-bottom:0">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding-top:16px">
+      <button data-a="pz-quit" class="grey">${IC.close}</button>
+      <span class="label" style="letter-spacing:.16em;display:inline-flex;align-items:center;gap:6px">${msvg(ty.icon,'ic16')} ${esc(ty.label)}</span>
+      <button data-a="sound-toggle" id="soundbtn" aria-label="Sound" style="color:${S.sound?'var(--actx)':'var(--mute2)'}">${msvg(S.sound?'volume_up':'volume_off','nav24')}</button>
+    </div>
+
+    <div style="text-align:center;margin-top:26px">
+      <span class="label ink">Time left</span>
+      <div id="pzclock" class="tnum" style="font-size:66px;font-weight:800;color:var(--purple);line-height:1;margin-top:4px">${clock(leftOf(p.endTime))}</div>
+    </div>
+
+    <div style="text-align:center;margin-top:44px">
+      <div id="breath" style="font-size:20px;font-weight:700;color:var(--purple)">Breathe in</div>
+      <p id="pzmsg" class="body grey" style="margin-top:8px;max-width:24em;margin-left:auto;margin-right:auto;transition:opacity .4s ease">${PZ_MSGS[0]}</p>
+    </div>
+
+    <div style="flex:1"></div>
+
+    <div id="strengthbox" style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+        <span class="label ink">How strong is it now?</span><span class="grey tnum" style="font-size:13px"><span id="s1val">${p.s1!=null?p.s1:p.s0}</span> / 10</span>
+      </div>
+      <input type="range" class="range calm" id="pzslider" min="1" max="10" step="1" value="${p.s1!=null?p.s1:p.s0}">
+    </div>
+
+    <button class="btn btn-red" data-a="pz-passed">It passed</button>
+    <button class="tlink grey" data-a="pz-acted" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">I acted on it</button>
+  </div>`;
+}
+
+/* ============ passed ============ */
+function Passed(){
+  const last=S.sessions[0]; const ty=last?typeOf(last.type):null;
+  const drop = last ? last.s0 - last.s1 : 0;
+  const dropTxt = drop>0 ? `It went from ${last.s0} to ${last.s1} out of 10.`
+    : drop===0 ? `It held at ${last.s0} out of 10.`
+    : `It rose from ${last.s0} to ${last.s1} out of 10.`;
+  return `<div class="screen fade">
+    <div style="margin-top:9vh">
+      <h1 style="font-size:38px">The wave<br>passed.</h1>
+      <p class="lede grey" style="margin-top:16px;max-width:22em">${dropTxt}</p>
+    </div>
+
+    <div style="margin-top:30px">${statLine([
+      {k:'Steady days', v:calmDays()},
+      {k:'You waited', v:(last?Math.round(last.len/60):0), u:' min'},
+      {k:'Waves passed', v:S.sessions.filter(x=>x.outcome==='passed').length},
+    ])}</div>
+
+    <div style="flex:1"></div>
+    <button class="btn btn-red" data-a="go-patterns">See your patterns ${IC.arrow}</button>
+    <button class="tlink grey" data-a="go-home" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">Back home</button>
+  </div>`;
+}
+
+/* ============ acted ============ */
+function Acted(){
+  const last=S.sessions[0]; const ty=last?typeOf(last.type):null;
+  return `<div class="screen fade">
+    <button data-a="go-home" class="grey" style="margin-top:16px;align-self:flex-start">${IC.back}</button>
+    <div style="margin-top:5vh">
+      <h1 style="font-size:36px">Now you know<br>its shape.</h1>
+      <p class="lede grey" style="margin-top:16px;max-width:23em">
+        You waited ${last?clock(last.elapsed):'0:00'} before you acted.</p>
+    </div>
+    ${last&&last.cause?`<div class="card" style="margin-top:26px">
+      <span class="label ink" style="margin-bottom:6px">What set it off</span>
+      <div style="font-size:20px;font-weight:700;color:var(--purple)">${esc(last.cause)}</div></div>`:''}
+    <div style="flex:1"></div>
+    <button class="btn btn-red" data-a="begin">Try another pause ${IC.arrow}</button>
+    <button class="tlink grey" data-a="go-home" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">Back home</button>
+  </div>`;
+}
+
+/* ============ waves (history) ============ */
+let wf='all';
+function Waves(){
+  const list = wf==='all'?S.sessions:S.sessions.filter(x=>x.type===wf);
+  const g={}; list.forEach(x=>{(g[x.date]=g[x.date]||[]).push(x)});
+  const dates=Object.keys(g).sort().reverse();
+  const pills=[{id:'all',label:'All'},...S.types.filter(t=>S.sessions.some(x=>x.type===t.id))]
+    .map(t=>`<button class="chip ${t.id===wf?'on':''}" data-a="wf" data-id="${t.id}">${esc(t.label)}</button>`).join('');
+  const groups=dates.map(dt=>{
+    const rows=g[dt]; const passed=rows.filter(x=>x.outcome==='passed').length;
+    const items=rows.map(x=>{const ty=typeOf(x.type);
+      return `<div class="row">
+        <span class="grey tnum" style="width:44px;font-size:12px">${x.t}</span>
+        <span style="flex:1"><span style="font-size:15px">${ty?esc(ty.label):esc(x.type)}</span>
+          <span class="grey" style="display:block;font-size:12px">${x.cause?esc(x.cause)+' · ':''}${x.s0}→${x.s1}</span></span>
+        <span class="state ${x.outcome==='passed'?'pass':'act'}">${x.outcome==='passed'?'Passed':'Acted'}</span></div>`}).join('');
+    return `<div style="margin-top:22px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px">
+        <h3 style="color:var(--ink);font-weight:700">${niceDate(dt)}</h3>
+        <span class="grey tnum" style="font-size:12px">${passed}/${rows.length} passed</span></div>
+      ${items}</div>`;
+  }).join('') || `<p class="body grey" style="text-align:center;margin-top:50px">No waves logged yet.</p>`;
+  return `<div class="screen" style="padding-bottom:14px">
+    <div style="padding-top:24px"><h1>${S.sessions.length} ${S.sessions.length===1?'wave':'waves'}<br>watched.</h1></div>
+    ${S.sessions.length?`<div class="chiprow" style="margin-top:16px;flex-wrap:nowrap;overflow-x:auto">${pills}</div>`:''}
+    ${groups}
+    <div style="flex:1;min-height:20px"></div>
+    ${Nav('waves')}
+  </div>`;
+}
+
+/* ============ patterns ============ */
+function Patterns(){
+  const s=S.sessions;
+  const pods=['Morning','Afternoon','Evening','Night'];
+  const podCount={Morning:0,Afternoon:0,Evening:0,Night:0};
+  s.forEach(x=>{ podCount[partOfDay(x.hour!=null?x.hour:12)]++; });
+  const maxPod=Math.max(1,...Object.values(podCount));
+  const podRows=pods.map(p=>`<div class="podrow"><span class="pl">${p}</span>
+    <div class="podbar"><div style="width:${podCount[p]/maxPod*100}%"></div></div>
+    <span class="pc tnum">${podCount[p]}</span></div>`).join('');
+  const cc={}; let ct=0; s.forEach(x=>{if(!x.cause)return;cc[x.cause]=(cc[x.cause]||0)+1;ct++});
+  const top=Object.entries(cc).map(([c,n])=>({c,n,pct:Math.round(n/ct*100)})).sort((a,b)=>b.n-a.n).slice(0,5);
+  const trigs= top.length? top.map(t=>`<div class="trig">
+    <div class="tt"><span>${esc(t.c)}</span><span class="grey tnum" style="font-size:13px">${t.pct}%</span></div>
+    <div class="trigbar"><div style="width:${t.pct}%"></div></div></div>`).join('')
+    : `<p class="body grey">Add what set a craving off during a pause, and your top triggers will show up here.</p>`;
+  const avgDrop = (()=>{const p=s.filter(x=>x.outcome==='passed'&&x.s0!=null&&x.s1!=null);
+    if(!p.length)return null; return (p.reduce((a,x)=>a+(x.s0-x.s1),0)/p.length).toFixed(1);})();
+
+  return `<div class="screen" style="padding-bottom:14px">
+    <div style="padding-top:24px"><h1>When the<br>waves come.</h1></div>
+
+    <div style="margin-top:24px">${statLine([
+      {k:'Steady days', v:calmDays()},
+      {k:'Waves passed', v:S.sessions.filter(x=>x.outcome==='passed').length},
+      {k:'Avg drop', v:(avgDrop!=null?avgDrop:'—')},
+    ])}</div>
+
+    <div style="margin-top:30px">
+      <span class="label ink" style="margin-bottom:14px">Time of day</span>
+      <div class="pod" style="margin-top:6px">${podRows}</div>
+    </div>
+
+    <div style="margin-top:30px">
+      <span class="label ink" style="margin-bottom:14px;display:block">Top triggers</span>
+      ${trigs}
+    </div>
+    <div style="flex:1;min-height:20px"></div>
+    ${Nav('patterns')}
+  </div>`;
+}
+
+/* ============ full privacy notice (in-app) ============ */
+function pSection(h,b){ return `<div style="margin-top:24px"><h3 style="color:var(--ink);font-weight:700">${h}</h3><p class="body grey" style="margin-top:8px">${b}</p></div>`; }
+function PrivacyView(){
+  return `<div class="screen" style="padding-bottom:34px">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding-top:16px">
+      <button data-a="priv-back" class="grey">${IC.back}</button>
+      <span class="label ink" style="letter-spacing:.16em">Privacy</span><span style="width:24px"></span>
+    </div>
+    <h1 style="margin-top:22px">Your privacy.</h1>
+    <p class="lede grey" style="margin-top:12px">The short version: everything you put into Pause stays on your device. There's no account, and no server holding your entries.</p>
+    ${pSection('What Pause keeps, and where', `It saves your first name, your list of cravings, and a record of each pause on this device, using your browser's own storage. Pákó never receives a copy.`)}
+    ${pSection('What it does not do', `No account, no server storing your entries, and no analytics or third-party trackers inside the tool. Nothing you type is sent anywhere on its own.`)}
+    ${pSection('Hosting', `Pause is hosted on Netlify at pause.pako.health. To open the page, your browser requests it from Netlify, so Netlify can see standard technical details such as your IP address in its logs. That happens as the page loads, before you type anything, and it never includes what you enter into Pause.`)}
+    ${pSection('Sharing your data', `You can export your history or share a summary from Settings. That copy is made on your device, and it only goes somewhere if you choose to send it.`)}
+    ${pSection('Your control', `You can erase your name, your list, and your full history at any time from Settings. Clearing your browser data removes it too. Once erased, it cannot be recovered, because there is no backup anywhere.`)}
+    ${pSection('Not medical care', `Pause is a self-help tool, not therapy or medical treatment. If you are struggling, or worried about yourself, please reach out to a health professional or someone you trust.`)}
+    <p class="body grey" style="font-size:12px;margin-top:26px">Questions about your privacy can reach the Pákó team through pako.health.</p>
+  </div>`;
+}
+
+/* ============ me / settings ============ */
+function Me(){
+  const tiles=S.types.map(t=>{const on=true; // all listed are tracked; allow remove
+    return `<button class="tile on" data-a="me-untrack" data-id="${t.id}"><span class="ic">${msvg(t.icon)}</span>
+      <span class="tile-l">${esc(t.label)}</span><span style="color:rgba(255,255,255,.6);font-size:18px">×</span></button>`}).join('');
+  return `<div class="screen" style="padding-bottom:14px">
+    <div style="padding-top:20px"><h1>Settings.</h1></div>
+    <div style="margin-top:26px">
+      <span class="label ink" style="margin-bottom:8px">Your name</span>
+      <input type="text" id="meName" value="${esc(S.name)}" maxlength="24" placeholder="Your name" autocomplete="off">
+    </div>
+    <div style="margin-top:30px">
+      <span class="label ink" style="margin-bottom:12px;display:block">Appearance</span>
+      <div class="seg" style="max-width:260px">
+        <button data-a="theme" data-v="light" class="${S.theme!=='dark'?'on':''}">Light</button>
+        <button data-a="theme" data-v="dark" class="${S.theme==='dark'?'on':''}">Dark</button>
+      </div>
+    </div>
+
+    <div style="margin-top:30px">
+      <span class="label ink" style="margin-bottom:12px;display:block">What you're working on</span>
+      <div class="tiles">${tiles}
+        <button class="tile dashed" data-a="add-type"><span class="ic" style="color:var(--mute2)">${msvg('add')}</span><span class="tile-l" style="font-weight:500;color:var(--mute)">Add your own</span></button>
+      </div>
+    </div>
+    <div style="margin-top:30px">
+      <span class="label ink" style="margin-bottom:12px;display:block">Your data</span>
+      <button class="btn btn-ghost btn-sm" data-a="share-sum" style="margin-bottom:8px">Share a summary</button>
+      <button class="btn btn-ghost btn-sm" data-a="export-csv">Download my history</button>
+      <p class="body grey" style="font-size:12px;margin-top:10px">A copy is made here on your device so you can keep it or send it to a coach or doctor. It only leaves your phone if you choose to send it.</p>
+    </div>
+
+    <div class="card" style="margin-top:28px;background:var(--grey);border:none">
+      <span class="label ink" style="margin-bottom:6px;display:inline-flex;align-items:center;gap:6px">${msvg('lock','ic16')} Private by design</span>
+      <p class="body grey" style="font-size:13px">Pause runs entirely in your browser. A web host delivers the app to your device once, then it works on its own without calling out again. There's no account, and no server ever receives or stores what you enter. Your name, your list, and every pause you log stay in this browser, on your device. If you clear your browser data, they're gone for good.</p>
+      <button class="btn-text" data-a="go-privacy" style="margin-top:12px;font-size:11px;letter-spacing:.08em">Read the full privacy notice</button>
+    </div>
+
+    <div class="card" style="margin-top:14px;background:var(--grey);border:none">
+      <span class="label ink" style="margin-bottom:6px;display:inline-flex;align-items:center;gap:6px">${msvg('favorite','ic16')} If you need more than a pause</span>
+      <p class="body grey" style="font-size:13px">Pause is a self-help tool, not therapy or medical care. It can help you notice a craving and ride it out, but it can't take the place of a professional. If things feel heavy, or you're worried about yourself, please talk to someone you trust or a health professional. You don't have to do this on your own.</p>
+    </div>
+    <button class="tlink grey" data-a="wipe-ask" style="margin-top:18px">Erase everything</button>
+    <div id="wipebox" class="hidden card" style="margin-top:2px;background:var(--redtint);border:none">
+      <p class="body" style="font-size:14px;margin-bottom:12px">This erases your whole history and settings on this device. It can't be undone.</p>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-ghost btn-sm" style="flex:1" data-a="wipe-no">Keep it</button>
+        <button class="btn btn-red btn-sm" style="flex:1" data-a="wipe-yes">Erase</button>
+      </div>
+    </div>
+    <div style="flex:1;min-height:16px"></div>
+    <p class="grey" style="text-align:center;font-size:11px;padding-bottom:6px"><span class="wordmark">Pause</span> by Pákó</p>
+    ${Nav('me')}
+  </div>`;
+}
+
+/* ============ nav ============ */
+function statLine(items){
+  return `<div class="statline">${items.map(x=>`<div><span class="sk">${x.k}</span><div class="sv">${x.v}${x.u?`<small>${x.u}</small>`:''}</div></div>`).join('')}</div>`;
+}
+function Nav(active){
+  const t=[['home','Home','home'],['waves','Waves','waves'],['chart','Patterns','patterns'],['user','Me','me']];
+  return `<div class="nav">${t.map(([ic,l,v])=>`<button class="${v===active?'on':''}" data-a="nav" data-v="${v}">${IC[ic]}<span>${l}</span></button>`).join('')}</div>`;
+}
+
+/* ============ add-type modal ============ */
+let newIcon=PICK_ICONS[0];
+function iconBtnStyle(sel){return `width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:${sel?'var(--purple)':'var(--grey)'};color:${sel?'#fff':'var(--purple)'}`;}
+function addTypeModal(){
+  const ems=PICK_ICONS.map(e=>`<button class="me-em" data-e="${e}" style="${iconBtnStyle(e===newIcon)}">${msvg(e)}</button>`).join('');
+  const el=document.createElement('div');
+  el.innerHTML=`<div class="scrim on" data-a="mx-close" style="z-index:50"></div>
+    <div class="sheet on" style="z-index:51"><div class="grab"></div>
+      <h2>Add your own</h2>
+      <p class="body grey" style="margin:6px 0 18px">Name the habit you want to work on.</p>
+      <input type="text" id="mxLabel" placeholder="e.g. Fizzy drinks" maxlength="22" autocomplete="off">
+      <span class="label ink" style="margin:22px 0 10px;display:block">Pick an icon</span>
+      <div style="display:flex;flex-wrap:wrap;gap:8px" id="mxEms">${ems}</div>
+      <button class="btn btn-red" style="margin-top:22px" data-a="mx-save">Add it</button>
+    </div>`;
+  document.getElementById('frame').appendChild(el);
+  const inp=el.querySelector('#mxLabel'); setTimeout(()=>inp.focus(),50);
+  el.addEventListener('click',ev=>{
+    const emb=ev.target.closest('[data-e]');
+    if(emb){newIcon=emb.dataset.e; el.querySelectorAll('.me-em').forEach(x=>x.setAttribute('style',iconBtnStyle(x.dataset.e===newIcon))); return;}
+    const a=ev.target.closest('[data-a]')?.dataset.a;
+    if(a==='mx-close') el.remove();
+    if(a==='mx-save'){
+      const label=inp.value.trim(); if(!label) return;
+      const id='c'+Date.now().toString(36);
+      S.types.push({id,label,icon:newIcon,custom:true});
+      if(S.view==='onboard') ob.pick.add(id);
+      if(S.view==='begin' && S.draft) S.draft.typeId=id;
+      save(); el.remove(); render();
+    }
+  });
+}
+
+/* ============ pause engine ============ */
+/* ============ ambient sound (Web Audio, off by default) ============ */
+let AUD=null;
+function smoothstep(x){ x=Math.min(1,Math.max(0,x)); return x*x*(3-2*x); }
+function breathVal(t){ const c=t%10; const v=c<4?smoothstep(c/4):1-smoothstep((c-4)/6); return 0.35+0.65*v; }
+function _osc(ctx,m,f,type,g0){ const o=ctx.createOscillator(); o.type=type||'sine'; o.frequency.value=f; const g=ctx.createGain(); g.gain.value=g0; o.connect(g); g.connect(m); o.start(); return {o,g}; }
+function _noise(ctx){ const b=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate); const d=b.getChannelData(0); for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1; const s=ctx.createBufferSource(); s.buffer=b; s.loop=true; return s; }
+function soundPluck(A,when,gain){
+  const ctx=A.ctx;
+  const o=ctx.createOscillator(); o.type='sine'; o.frequency.value=82.41;
+  const o2=ctx.createOscillator(); o2.type='sine'; o2.frequency.value=164.82;
+  const g2=ctx.createGain(); g2.gain.value=0.22;
+  const g=ctx.createGain();
+  g.gain.setValueAtTime(0.0001,when);
+  g.gain.linearRampToValueAtTime(gain,when+0.03);
+  g.gain.exponentialRampToValueAtTime(0.0004,when+1.3);
+  o.connect(g); o2.connect(g2); g2.connect(g); g.connect(A.master);
+  o.start(when); o2.start(when); o.stop(when+1.6); o2.stop(when+1.6);
+}
+function soundStart(){
+  if(AUD) return;
+  let ctx; try{ ctx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return; }
+  if(ctx.state==='suspended' && ctx.resume) ctx.resume();
+  const master=ctx.createGain(); master.gain.value=0; master.connect(ctx.destination);
+  const A={ctx,master,raf:null,lastC:99};
+  _osc(ctx,master,109.75,'sine',0.16); _osc(ctx,master,110.25,'sine',0.16);   // A2
+  _osc(ctx,master,164.56,'sine',0.11); _osc(ctx,master,165.06,'sine',0.11);   // E3
+  _osc(ctx,master,55,'sine',0.06);                                            // sub
+  A.padA=_osc(ctx,master,220,'sine',0); A.padE=_osc(ctx,master,329.63,'sine',0); // pad A3+E4
+  const c=_osc(ctx,master,261.63,'sine',0); A.cG=c.g;                          // blowing C4
+  const vib=ctx.createOscillator(); vib.frequency.value=5.5; const vibG=ctx.createGain(); vibG.gain.value=1.3; vib.connect(vibG); vibG.connect(c.o.frequency); vib.start();
+  const an=_noise(ctx); const bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=261.63; bp.Q.value=6; A.airG=ctx.createGain(); A.airG.gain.value=0; an.connect(bp); bp.connect(A.airG); A.airG.connect(master); an.start();
+  A.shim=_osc(ctx,master,659.25,'sine',0);                                     // shimmer E5
+  const bn=_noise(ctx); const lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=520; const bg=ctx.createGain(); bg.gain.value=0.018; bn.connect(lp); lp.connect(bg); bg.connect(master); bn.start();
+  master.gain.linearRampToValueAtTime(0.28, ctx.currentTime+2.0);             // fade in
+  AUD=A;
+  const frame=()=>{
+    if(!AUD) return;
+    const t=Date.now()/1000, b=breathVal(t), c10=t%10;
+    A.padA.g.gain.value=0.085*b; A.padE.g.gain.value=0.055*b;
+    A.cG.gain.value=0.09*b; A.airG.gain.value=0.03*b;
+    const trem=0.6+0.4*Math.sin(2*Math.PI*0.05*t); A.shim.g.gain.value=0.035*b*trem;
+    if(A.lastC<5 && c10>=5) soundPluck(A, ctx.currentTime+0.02, 0.09);        // one soft pluck mid-breath
+    A.lastC=c10;
+    A.raf=requestAnimationFrame(frame);
+  };
+  frame();
+}
+function soundStop(){
+  const A=AUD; if(!A) return; AUD=null;
+  cancelAnimationFrame(A.raf);
+  try{
+    A.master.gain.cancelScheduledValues(A.ctx.currentTime);
+    A.master.gain.setValueAtTime(A.master.gain.value, A.ctx.currentTime);
+    A.master.gain.linearRampToValueAtTime(0, A.ctx.currentTime+0.7);
+  }catch(e){}
+  const ctx=A.ctx; setTimeout(()=>{ try{ctx.close()}catch(e){} },800);
+}
+
+/* full-screen draining water behind the pause */
+let waterCv=null, waterCtx=null, waterW=0, waterH=0;
+function waterInit(){
+  waterStop();
+  const fr=document.getElementById('frame');
+  const cv=document.createElement('canvas'); cv.id='watercv';
+  cv.style.cssText='position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none';
+  fr.insertBefore(cv, fr.firstChild);
+  const dpr=Math.min(window.devicePixelRatio||1, 2);
+  waterW=fr.clientWidth; waterH=fr.clientHeight;
+  cv.width=Math.round(waterW*dpr); cv.height=Math.round(waterH*dpr);
+  const ctx=cv.getContext('2d'); ctx.scale(dpr,dpr);
+  waterCv=cv; waterCtx=ctx;
+}
+function waterStop(){ if(waterCv){ waterCv.remove(); waterCv=null; waterCtx=null; } }
+function waterLayer(ctx,W,H,surf,t,amp,k,spd,phase,col){
+  ctx.beginPath(); ctx.moveTo(0,H);
+  for(let x=0;x<=W;x+=6){
+    const y = surf + Math.sin(x*k + t*spd + phase)*amp + Math.sin(x*k*2.1 - t*spd*1.4)*amp*0.4;
+    x===0?ctx.lineTo(0,y):ctx.lineTo(x,y);
+  }
+  ctx.lineTo(W,H); ctx.closePath(); ctx.fillStyle=col; ctx.fill();
+}
+function waterDraw(prog){
+  const ctx=waterCtx; if(!ctx) return;
+  const W=waterW,H=waterH; ctx.clearRect(0,0,W,H);
+  const surf = H*0.06 + (H*1.06 - H*0.06)*prog;          // near top -> below the bottom
+  const t=Date.now()/1000, k=2*Math.PI/W*1.25;
+  const lift = 1 - 0.6*prog;                             // fades paler as it drains, so the mood lifts
+  const dk=document.documentElement.classList.contains('dark'); const base=dk?'150,140,192':'192,57,43'; const mm=dk?1.7:1;
+  const rd = a => `rgba(${base},${(a*lift*mm).toFixed(3)})`;
+  // back layer (lighter, slower) then front layer for depth
+  waterLayer(ctx,W,H,surf+7,t,7,k*1.7,0.5,2.1,rd(0.08));
+  const g=ctx.createLinearGradient(0,surf,0,H);
+  g.addColorStop(0,rd(0.12)); g.addColorStop(1,rd(0.24));
+  waterLayer(ctx,W,H,surf,t,10,k,0.9,0,g);
+  // surface line
+  ctx.beginPath();
+  for(let x=0;x<=W;x+=6){ const y=surf+Math.sin(x*k+t*0.9)*10+Math.sin(x*k*2.1-t*1.26)*4; x===0?ctx.moveTo(0,y):ctx.lineTo(x,y); }
+  ctx.strokeStyle=rd(0.32); ctx.lineWidth=1.5; ctx.stroke();
+}
+
+/* welcome screen: gently flowing water, previewing the pause metaphor */
+let wcCv=null, wcCtx=null, wcW=0, wcH=0, wcRAF=null;
+function welcomeStop(){ if(wcRAF){cancelAnimationFrame(wcRAF);wcRAF=null} if(wcCv){wcCv.remove();wcCv=null;wcCtx=null;} }
+function welcomeInit(){
+  welcomeStop();
+  const fr=document.getElementById('frame');
+  const cv=document.createElement('canvas'); cv.id='wcwater';
+  cv.style.cssText='position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none';
+  fr.insertBefore(cv, fr.firstChild);
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  wcW=fr.clientWidth; wcH=fr.clientHeight;
+  cv.width=Math.round(wcW*dpr); cv.height=Math.round(wcH*dpr);
+  const ctx=cv.getContext('2d'); ctx.scale(dpr,dpr); wcCv=cv; wcCtx=ctx;
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const draw=()=>{
+    if(!wcCtx) return; const W=wcW,H=wcH; wcCtx.clearRect(0,0,W,H);
+    const surf=H*0.72, t=Date.now()/1000, k=2*Math.PI/W*1.25;
+    const dk=document.documentElement.classList.contains('dark'); const base=dk?'150,140,192':'192,57,43'; const mm=dk?1.7:1;
+    const rd=a=>`rgba(${base},${(a*mm).toFixed(3)})`;
+    waterLayer(wcCtx,W,H,surf+8,t,8,k*1.7,0.5,2.1,rd(0.07));
+    const g=wcCtx.createLinearGradient(0,surf,0,H);
+    g.addColorStop(0,rd(0.12)); g.addColorStop(1,rd(0.20));
+    waterLayer(wcCtx,W,H,surf,t,11,k,0.85,0,g);
+    wcCtx.beginPath();
+    for(let x=0;x<=W;x+=6){const y=surf+Math.sin(x*k+t*0.85)*11+Math.sin(x*k*2.1-t*1.2)*4; x===0?wcCtx.moveTo(0,y):wcCtx.lineTo(x,y);}
+    wcCtx.strokeStyle=rd(0.28); wcCtx.lineWidth=1.5; wcCtx.stroke();
+    if(!reduce) wcRAF=requestAnimationFrame(draw);
+  };
+  draw();
+}
+
+function runPause(){
+  const p=S.pause; if(!p){ go('home'); return; }
+  if(S.sound) soundStart();
+  waterInit();
+  const b=document.getElementById('breath');
+  let lastMsg=0, revealed=false;
+  const frame=()=>{
+    const msLeft = p.endTime - Date.now();
+    if(msLeft<=0){ recordPause('passed'); go('passed'); return; }
+    const cl=document.getElementById('pzclock'); if(cl) cl.textContent=clock(Math.ceil(msLeft/1000));
+    const prog=Math.min(1, Math.max(0, 1 - msLeft/(p.len*1000)));
+    waterDraw(prog);
+    if(b) b.textContent = ((Date.now()/1000)%10)<4 ? 'Breathe in' : 'Breathe out';
+    // cycle the reassurance line every ~18s
+    const mi=Math.floor((p.len*prog)/18)%PZ_MSGS.length;
+    if(mi!==lastMsg){ lastMsg=mi; const m=document.getElementById('pzmsg');
+      if(m){ m.style.opacity='0'; setTimeout(()=>{ const mm=document.getElementById('pzmsg'); if(mm){ mm.innerHTML=PZ_MSGS[mi]; mm.style.opacity='1'; } },400); } }
+    // reveal the after-rating near the end
+    if(!revealed && prog>=0.7){ revealed=true; const box=document.getElementById('strengthbox'); if(box) box.classList.add('show'); }
+    pauseRAF=requestAnimationFrame(frame);
+  };
+  frame();
+  document.addEventListener('visibilitychange',onVis);
+}
+function onVis(){ if(document.visibilityState==='visible' && S.view==='pause'){
+  if(leftOf(S.pause?.endTime)<=0){ recordPause('passed'); go('passed'); } } }
+
+/* ============ input wiring ============ */
+function fillRange(el){ const mn=+el.min,mx=+el.max,v=+el.value; const p=(v-mn)/(mx-mn)*100; const c=el.classList.contains('calm')?'var(--purple)':'var(--act)'; el.style.background=`linear-gradient(to right,${c} ${p}%,var(--grey) ${p}%)`; }
+
+/* radial, drag-to-set time dial (1–20 min) */
+function initDial(){
+  const svg=document.getElementById('dial'); if(!svg) return;
+  const cx=110, cy=110, R=82, C=2*Math.PI*R, MIN=1, MAX=20;
+  const arc=document.getElementById('dArc'), handle=document.getElementById('dHandle'), lab=document.getElementById('dMin');
+  let lastM=null;
+  function setMin(m){
+    m=Math.max(MIN,Math.min(MAX,Math.round(m)));
+    draft().len=m*60; lab.textContent=m;
+    const f=m/MAX, a=(-90+f*360)*Math.PI/180;
+    arc.style.strokeDasharray=`${(C*f).toFixed(1)} ${C.toFixed(1)}`;
+    handle.setAttribute('cx',(cx+R*Math.cos(a)).toFixed(1));
+    handle.setAttribute('cy',(cy+R*Math.sin(a)).toFixed(1));
+    lastM=m;
+  }
+  function fromEvent(e, first){
+    const r=svg.getBoundingClientRect();
+    const px=(e.clientX)-r.left-r.width/2, py=(e.clientY)-r.top-r.height/2;
+    let ang=Math.atan2(py,px)*180/Math.PI;      // 0 = east
+    ang=(ang+90+360)%360;                        // 0 at top, clockwise
+    let m=Math.round((ang/360)*MAX); if(m<MIN)m=MIN;
+    if(!first && lastM!=null && Math.abs(m-lastM)>MAX*0.6) return;  // ignore wrap jumps mid-drag
+    setMin(m);
+  }
+  let dragging=false;
+  svg.addEventListener('pointerdown',e=>{ dragging=true; try{svg.setPointerCapture(e.pointerId)}catch(_){} fromEvent(e,true); e.preventDefault(); });
+  svg.addEventListener('pointermove',e=>{ if(dragging){ fromEvent(e,false); e.preventDefault(); } });
+  const end=()=>{ dragging=false; };
+  svg.addEventListener('pointerup',end); svg.addEventListener('pointercancel',end);
+  setMin((draft().len||300)/60);
+}
+function wire(){
+  const on=document.getElementById('obName');
+  if(on) on.addEventListener('input',e=>{ob.name=e.target.value; const b=document.querySelector('[data-a=ob-next]'); if(b)b.disabled=!ob.name.trim();});
+  const mn=document.getElementById('meName');
+  if(mn) mn.addEventListener('input',e=>{S.name=e.target.value; save();});
+  const bs=document.getElementById('bgslider');
+  if(bs){ fillRange(bs); bs.addEventListener('input',e=>{ draft().s0=+e.target.value; const v=document.getElementById('bgval'); if(v)v.textContent=e.target.value; fillRange(bs); }); }
+  const ps=document.getElementById('pzslider');
+  if(ps){ fillRange(ps); ps.addEventListener('input',e=>{ S.pause.s1=+e.target.value; const v=document.getElementById('s1val'); if(v)v.textContent=e.target.value; fillRange(ps); save(); }); }
+  const cs=document.getElementById('bgcause'), co=document.getElementById('bgcauseother');
+  if(cs) cs.addEventListener('change',e=>{
+    const v=e.target.value;
+    if(v==='__other__'){ if(co){ co.classList.remove('hidden'); co.focus(); } draft().cause=(co&&co.value.trim())||null; e.target.classList.remove('placeholder'); }
+    else { if(co) co.classList.add('hidden'); draft().cause=v||null; e.target.classList.toggle('placeholder', !v); }
+  });
+  if(co) co.addEventListener('input',e=>{ draft().cause=e.target.value.trim()||null; });
+  initDial();
+  if(S.view==='onboard' && ob.step===0) welcomeInit();
+}
+
+/* ============ click handling ============ */
+app.addEventListener('click',e=>{
+  const el=e.target.closest('[data-a]'); if(!el) return;
+  const a=el.dataset.a, id=el.dataset.id;
+  switch(a){
+    /* onboarding */
+    case'ob-pick':{
+      ob.pick.has(id)?ob.pick.delete(id):ob.pick.add(id);
+      el.classList.toggle('on', ob.pick.has(id));
+      const nb=document.querySelector('[data-a=ob-next]');
+      if(nb){ nb.disabled=ob.pick.size===0; nb.innerHTML='Start with '+(ob.pick.size||'…')+' '+IC.arrow; }
+      break; }
+    case'ob-back': ob.step--; render(); break;
+    case'ob-next':
+      if(ob.step<2){ ob.step++; render(); }
+      else{
+        const picked=S.types.filter(t=>ob.pick.has(t.id));
+        S.name=ob.name.trim()||'there';
+        S.types=picked.length?picked.concat(S.types.filter(t=>!ob.pick.has(t.id)&&false)):S.types; // keep only picked
+        S.types = picked.length?picked:S.types;
+        S.onboarded=true; S.view='home'; save(); render();
+      }
+      break;
+    case'add-type': addTypeModal(); break;
+    case'export-csv': download('pause-history.csv', buildCSV(), 'text/csv'); break;
+    case'share-sum':{ const tx=summaryText();
+      if(navigator.share){ navigator.share({title:'Pause',text:tx}).catch(()=>{}); }
+      else { download('pause-summary.txt', tx, 'text/plain'); }
+      break; }
+
+    /* nav */
+    case'nav': go(el.dataset.v); break;
+    case'begin': S.draft=null; go('begin'); break;
+    case'go-home': go('home'); break;
+    case'go-waves': go('waves'); break;
+    case'go-patterns': go('patterns'); break;
+    case'go-privacy': privReturn=S.view; go('privacy'); break;
+    case'priv-back': go(privReturn||'me'); break;
+
+    /* begin form */
+    case'bg-type':{ draft().typeId=id;
+      document.querySelectorAll('[data-a=bg-type]').forEach(x=>x.classList.toggle('on', x.dataset.id===id));
+      break; }
+    case'bg-s0': draft().s0=+el.dataset.v;
+      document.querySelectorAll('.scale>button').forEach((b,i)=>b.classList.toggle('on',i<draft().s0)); break;
+    case'bg-cause':{const c=el.dataset.c; const d=draft(); d.cause=d.cause===c?null:c;
+      document.querySelectorAll('[data-a=bg-cause]').forEach(x=>x.classList.toggle('on',x.dataset.c===d.cause)); break;}
+    case'bg-len': draft().len=+el.dataset.s;
+      document.querySelectorAll('[data-a=bg-len]').forEach(x=>x.classList.toggle('on',+x.dataset.s===draft().len)); break;
+    case'bg-start':{const d=draft();
+      S.pause={typeId:d.typeId,cause:d.cause,s0:d.s0,s1:d.s0,len:d.len,endTime:Date.now()+d.len*1000};
+      S.draft=null; go('pause'); break;}
+
+    /* pause */
+    case'pz-s1':{const v=+el.dataset.v; S.pause.s1=v;
+      document.getElementById('s1val').textContent=v;
+      document.querySelectorAll('.scale.calm>button').forEach((b,i)=>b.classList.toggle('on',i<v)); save(); break;}
+    case'pz-passed': recordPause('passed'); go('passed'); break;
+    case'pz-acted':{ recordPause('acted'); go('acted'); break; }
+    case'pz-quit': S.pause=null; save(); go('home'); break;
+    case'sound-toggle':{
+      S.sound=!S.sound; save();
+      const sb=document.getElementById('soundbtn');
+      if(sb){ sb.innerHTML=msvg(S.sound?'volume_up':'volume_off','nav24'); sb.style.color=S.sound?'var(--actx)':'var(--mute2)'; }
+      if(S.sound) soundStart(); else soundStop();
+      break; }
+
+    /* me */
+    case'me-untrack':{ if(S.types.length>1){ S.types=S.types.filter(t=>t.id!==id); save(); render(); } break; }
+    case'theme': S.theme=el.dataset.v; save(); applyTheme(); render(); break;
+    case'theme-toggle': S.theme = S.theme==='dark'?'light':'dark'; save(); applyTheme(); render(); break;
+    case'wipe-ask': document.getElementById('wipebox').classList.remove('hidden'); break;
+    case'wipe-no': document.getElementById('wipebox').classList.add('hidden'); break;
+    case'wipe-yes': try{localStorage.removeItem(KEY)}catch(e){}; S=fresh(); ob={step:0,name:'',pick:new Set()}; render(); break;
+  }
+});
+
+render();
+
+// brief logo splash, then reveal the app
+setTimeout(()=>{ const sp=document.getElementById('splash'); if(sp){ sp.classList.add('gone'); setTimeout(()=>sp.remove(),550); } }, 1150);
+</script>
+</body>
+</html>

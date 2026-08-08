@@ -1,0 +1,13 @@
+Pause by Pákó — Source-Available Licence
+Copyright (c) 2026 Pákó. All rights reserved.
+
+This source is published for transparency, so anyone can read and audit exactly
+how Pause handles data (it stores everything in your own browser and sends
+nothing to any server).
+
+You MAY: read, review, and audit this code.
+You MAY NOT: copy, redistribute, host, rebrand, or sell this app or any
+substantial part of it, without written permission from Pákó.
+
+This is "source-available", not an OSI open-source licence. Provided as is,
+without warranty of any kind.

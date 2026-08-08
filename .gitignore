@@ -1,0 +1,8 @@
+node_modules/
+PJS/ MS/ gf/
+pause.built.html
+logo.json
+assets.json
+*.zip
+__pycache__/
+.DS_Store
