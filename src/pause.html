@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>if((window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone)document.documentElement.classList.add('app-installed');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#FAFAFA">
 <link rel="icon" type="image/png" href="__PAUSE_FAVICON__">
@@ -181,6 +182,18 @@
   #wave{width:100%;height:150px;display:block;overflow:visible}
   .breathe-dot{transition:none}
   @keyframes breathe{0%,100%{r:9}50%{r:15}}
+  /* breathing cue on the pause screen */
+  .breathstage{position:relative;width:210px;height:210px;margin:18px auto 0}
+  .breathring{position:absolute;inset:0;margin:auto;width:186px;height:186px;border-radius:50%;
+    border:2px solid var(--purple);
+    background:radial-gradient(circle at center,var(--white) 52%,rgba(0,0,0,0) 100%);
+    transform:scale(.6);will-change:transform}
+  .breathtext{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+  #breathword{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--purple);opacity:.8}
+  #breathcount{font-size:40px;font-weight:800;color:var(--purple);line-height:1;margin-top:6px;font-variant-numeric:tabular-nums}
+  /* gentle nudge so people notice the speaker is a control they can mute */
+  @keyframes soundnudge{0%,100%{transform:rotate(0)}18%{transform:rotate(-11deg)}36%{transform:rotate(9deg)}54%{transform:rotate(-6deg)}72%{transform:rotate(3deg)}}
+  #soundbtn.nudge{animation:soundnudge 1.05s ease .5s 2}
 
   /* rows */
   .row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--faint)}
@@ -225,6 +238,7 @@
 
   #splash{position:absolute;inset:0;z-index:100;background:#3c3158;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease}
   #splash.gone{opacity:0;pointer-events:none}
+  html.app-installed #splash{display:none}
   #splash img{width:240px;height:auto;animation:sp-in .7s cubic-bezier(.22,1,.36,1) both}
   @keyframes sp-in{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
   .fade{animation:fade .3s ease}
@@ -259,7 +273,7 @@ const TYPES_SEED = [
 const CAUSES = ['Stress','Boredom','Tired','Hungry','After a meal','Around people','Low mood','Just habit'];
 const LENGTHS = [180, 300, 600];
 const TIPS = [
-  "Tap the speaker during a pause to hear calming sounds.",
+  "Calming sound plays during a pause. Tap the speaker to mute it.",
   "Drag the dial to set any pause length you like.",
   "You can add a custom craving in Settings.",
   "Rate your craving again near the end to see how far it dropped.",
@@ -291,7 +305,7 @@ function fresh(){
     name:'', types:TYPES_SEED.slice(), sessions:[],
     pause:null,            // active pause: {typeId,cause,s0,s1,len,endTime}
     draft:null,            // in-progress "begin" form
-    sound:false,           // ambient sound, off by default
+    sound:true,            // ambient sound, on by default; muting is remembered
     theme:null,            // 'light' | 'dark' (null = follow system)
     tipIdx:-1,             // rotating dashboard tip, advances each open
   };
@@ -576,15 +590,18 @@ function PauseView(){
       <button data-a="sound-toggle" id="soundbtn" aria-label="Sound" style="color:${S.sound?'var(--actx)':'var(--mute2)'}">${msvg(S.sound?'volume_up':'volume_off','nav24')}</button>
     </div>
 
-    <div style="text-align:center;margin-top:26px">
-      <span class="label ink">Time left</span>
-      <div id="pzclock" class="tnum" style="font-size:66px;font-weight:800;color:var(--purple);line-height:1;margin-top:4px">${clock(leftOf(p.endTime))}</div>
+    <div style="text-align:center;margin-top:14px">
+      <span id="pzclock" class="grey tnum" style="font-size:13px;letter-spacing:.02em">${clock(leftOf(p.endTime))} left</span>
     </div>
 
-    <div style="text-align:center;margin-top:44px">
-      <div id="breath" style="font-size:20px;font-weight:700;color:var(--purple)">Breathe in</div>
-      <p id="pzmsg" class="body grey" style="margin-top:8px;max-width:24em;margin-left:auto;margin-right:auto;transition:opacity .4s ease">${PZ_MSGS[0]}</p>
+    <div class="breathstage">
+      <div class="breathring" id="bring"></div>
+      <div class="breathtext">
+        <div id="breathword">Breathe in</div>
+        <div id="breathcount" class="tnum">1</div>
+      </div>
     </div>
+    <p id="pzmsg" class="body grey" style="text-align:center;margin-top:22px;max-width:24em;margin-left:auto;margin-right:auto;transition:opacity .4s ease">${PZ_MSGS[0]}</p>
 
     <div style="flex:1"></div>
 
@@ -971,15 +988,22 @@ function runPause(){
   const p=S.pause; if(!p){ go('home'); return; }
   if(S.sound) soundStart();
   waterInit();
-  const b=document.getElementById('breath');
-  let lastMsg=0, revealed=false;
+  const ring=document.getElementById('bring'), bw=document.getElementById('breathword'), bc=document.getElementById('breathcount');
+  if(S.sound){ const sb=document.getElementById('soundbtn'); if(sb){ sb.classList.add('nudge'); setTimeout(()=>{ if(sb) sb.classList.remove('nudge'); },3300); } }
+  let lastMsg=0, revealed=false, lastWord='', lastCount=0;
   const frame=()=>{
     const msLeft = p.endTime - Date.now();
     if(msLeft<=0){ recordPause('passed'); go('passed'); return; }
-    const cl=document.getElementById('pzclock'); if(cl) cl.textContent=clock(Math.ceil(msLeft/1000));
+    const cl=document.getElementById('pzclock'); if(cl) cl.textContent=clock(Math.ceil(msLeft/1000))+' left';
     const prog=Math.min(1, Math.max(0, 1 - msLeft/(p.len*1000)));
     waterDraw(prog);
-    if(b) b.textContent = ((Date.now()/1000)%10)<4 ? 'Breathe in' : 'Breathe out';
+    // breathing cue: 4s in, 6s out, sharing the sound's breath curve
+    const now=Date.now()/1000, c10=now%10, inhale=c10<4;
+    if(ring) ring.style.transform='scale('+(0.6+0.4*((breathVal(now)-0.35)/0.65)).toFixed(3)+')';
+    const word=inhale?'Breathe in':'Breathe out';
+    if(word!==lastWord && bw){ bw.textContent=word; lastWord=word; }
+    const cnt=inhale?Math.floor(c10)+1:Math.floor(c10-4)+1;
+    if(cnt!==lastCount && bc){ bc.textContent=cnt; lastCount=cnt; }
     // cycle the reassurance line every ~18s
     const mi=Math.floor((p.len*prog)/18)%PZ_MSGS.length;
     if(mi!==lastMsg){ lastMsg=mi; const m=document.getElementById('pzmsg');
@@ -1127,8 +1151,9 @@ app.addEventListener('click',e=>{
 
 render();
 
-// brief logo splash, then reveal the app
-setTimeout(()=>{ const sp=document.getElementById('splash'); if(sp){ sp.classList.add('gone'); setTimeout(()=>sp.remove(),550); } }, 1150);
+// brief logo splash, then reveal the app (skipped when installed: the OS already showed one)
+if(document.documentElement.classList.contains('app-installed')){ const sp=document.getElementById('splash'); if(sp) sp.remove(); }
+else setTimeout(()=>{ const sp=document.getElementById('splash'); if(sp){ sp.classList.add('gone'); setTimeout(()=>sp.remove(),550); } }, 1150);
 </script>
 </body>
 </html>
