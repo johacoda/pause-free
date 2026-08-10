@@ -273,7 +273,7 @@ const TYPES_SEED = [
 const CAUSES = ['Stress','Boredom','Tired','Hungry','After a meal','Around people','Low mood','Just habit'];
 const LENGTHS = [180, 300, 600];
 const TIPS = [
-  "On the pause screen, calming sound plays. Tap the speaker to mute it.",
+  "On the pause screen, a calming sound plays by default. Tap the speaker to mute it.",
   "When you start a pause, drag the dial to set any length you like.",
   "In Settings, you can add a craving of your own.",
   "On the pause screen, rate your craving again near the end to see how far it dropped.",
@@ -435,10 +435,12 @@ function render(){
   waterStop();
   welcomeStop();
   if(S.view!=='pause') soundStop();
+  if(S.view!=='home') homeStop();
   app.scrollTop=0;
   app.innerHTML = `<div class="safe"></div>` + (VIEWS[S.view]||Home)();
   wire();
   if(S.view==='pause') runPause();
+  if(S.view==='home' && S.sound && audioUnlocked) homeStart();
 }
 
 /* ============ onboarding ============ */
@@ -497,7 +499,8 @@ function Home(){
   }).join('') || `<p class="body grey" style="padding:14px 0;border-top:1px solid var(--faint)">No waves yet. Your first pause will show up here.</p>`;
 
   return `<div class="screen fade" style="padding-bottom:14px">
-    <div style="display:flex;justify-content:flex-end;padding-top:18px">
+    <div style="display:flex;justify-content:flex-end;gap:4px;padding-top:18px">
+      <button data-a="home-sound" id="homesound" aria-label="Sound" style="color:${S.sound?'var(--actx)':'var(--mute2)'};width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%">${msvg(S.sound?'volume_up':'volume_off','nav24')}</button>
       <button data-a="theme-toggle" aria-label="Theme" style="color:var(--mute2);width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%">${S.theme==='dark'?msvg('light_mode','nav24'):msvg('dark_mode','nav24')}</button>
     </div>
     <h1 style="margin-top:2px">${greet()},<br>${esc(first)}.</h1>
@@ -853,8 +856,28 @@ function addTypeModal(){
 }
 
 /* ============ pause engine ============ */
-/* ============ ambient sound (Web Audio, off by default) ============ */
-let AUD=null;
+/* ============ ambient sound (Web Audio) ============ */
+let AUD=null, silentEl=null;
+// iOS silences Web Audio when the ring/silent switch is on and routes it through a quiet
+// session. Playing a short looping silent media element on the tap flips the page into the
+// louder media-playback session, so the generated ambient is audible either way.
+let SILENT_URL=null;
+function silentURL(){
+  if(SILENT_URL) return SILENT_URL;
+  const sr=8000, n=Math.floor(sr*0.25), buf=new ArrayBuffer(44+n*2), dv=new DataView(buf);
+  const ws=(o,t)=>{ for(let i=0;i<t.length;i++) dv.setUint8(o+i,t.charCodeAt(i)); };
+  ws(0,'RIFF'); dv.setUint32(4,36+n*2,true); ws(8,'WAVE'); ws(12,'fmt '); dv.setUint32(16,16,true);
+  dv.setUint16(20,1,true); dv.setUint16(22,1,true); dv.setUint32(24,sr,true); dv.setUint32(28,sr*2,true);
+  dv.setUint16(32,2,true); dv.setUint16(34,16,true); ws(36,'data'); dv.setUint32(40,n*2,true);
+  let bin='', u8=new Uint8Array(buf); for(let i=0;i<u8.length;i++) bin+=String.fromCharCode(u8[i]);
+  SILENT_URL='data:audio/wav;base64,'+btoa(bin); return SILENT_URL;
+}
+function primeAudioSession(){
+  try{
+    if(!silentEl){ silentEl=new Audio(silentURL()); silentEl.loop=true; silentEl.preload='auto'; silentEl.setAttribute('playsinline',''); }
+    const p=silentEl.play(); if(p&&p.catch) p.catch(()=>{});
+  }catch(e){}
+}
 function smoothstep(x){ x=Math.min(1,Math.max(0,x)); return x*x*(3-2*x); }
 function breathVal(t){ const c=t%10; const v=c<4?smoothstep(c/4):1-smoothstep((c-4)/6); return 0.35+0.65*v; }
 function _osc(ctx,m,f,type,g0){ const o=ctx.createOscillator(); o.type=type||'sine'; o.frequency.value=f; const g=ctx.createGain(); g.gain.value=g0; o.connect(g); g.connect(m); o.start(); return {o,g}; }
@@ -873,8 +896,10 @@ function soundPluck(A,when,gain){
 }
 function soundStart(){
   if(AUD) return;
+  primeAudioSession();                                                        // flip iOS into the media-playback session
   let ctx; try{ ctx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return; }
-  if(ctx.state==='suspended' && ctx.resume) ctx.resume();
+  const resume=()=>{ try{ if(ctx.state!=='running' && ctx.resume) ctx.resume(); }catch(e){} };
+  resume(); setTimeout(resume,200);                                           // some iOS builds need a second nudge
   const master=ctx.createGain(); master.gain.value=0; master.connect(ctx.destination);
   const A={ctx,master,raf:null,lastC:99};
   _osc(ctx,master,109.75,'sine',0.16); _osc(ctx,master,110.25,'sine',0.16);   // A2
@@ -909,6 +934,7 @@ function soundStop(){
     A.master.gain.linearRampToValueAtTime(0, A.ctx.currentTime+0.7);
   }catch(e){}
   const ctx=A.ctx; setTimeout(()=>{ try{ctx.close()}catch(e){} },800);
+  try{ if(silentEl){ silentEl.pause(); silentEl.currentTime=0; } }catch(e){}  // release the media session
 }
 
 /* full-screen draining water behind the pause */
@@ -982,6 +1008,74 @@ function welcomeInit(){
     if(!reduce) wcRAF=requestAnimationFrame(draw);
   };
   draw();
+}
+
+/* home: an arrival chime, then soft synthesized sea (obeys the sound setting) */
+let HOME=null, chimeDone=false, audioUnlocked=false, homeTimers=[];
+function playChime(ctx){
+  const now=ctx.currentTime;
+  const g=ctx.createGain(); g.gain.value=0; g.connect(ctx.destination);
+  [[220,0.5],[329.63,0.30],[440,0.20],[659.25,0.10]].forEach(([f,amp])=>{  // A3 E4 A4 E5, a warm bowl
+    const o=ctx.createOscillator(); o.type='sine'; o.frequency.value=f;
+    const og=ctx.createGain(); og.gain.value=amp; o.connect(og); og.connect(g);
+    o.start(now); o.stop(now+4.4);
+  });
+  g.gain.setValueAtTime(0.0001,now);
+  g.gain.linearRampToValueAtTime(0.16,now+0.28);         // soft swell in
+  g.gain.exponentialRampToValueAtTime(0.0006,now+4.2);   // long, restful decay
+}
+// one lane of waves: filtered noise whose loudness and brightness rise fast then
+// recede slowly, at irregular intervals, so it breathes like real surf rather than a pulse
+function waveLane(ctx,master,cfg){
+  const nz=_noise(ctx);
+  const hp=ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=cfg.hp;
+  const lp=ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=cfg.dull; lp.Q.value=0.5;
+  const g=ctx.createGain(); g.gain.value=0.03;
+  nz.connect(hp); hp.connect(lp); lp.connect(g); g.connect(master); nz.start();
+  const rnd=(a,b)=>a+Math.random()*(b-a);
+  const step=()=>{
+    if(!HOME) return;
+    const now=ctx.currentTime;
+    const peak=rnd(cfg.peak*0.7, cfg.peak*1.15);
+    const rise=rnd(cfg.rise*0.7, cfg.rise*1.3);
+    const fall=rnd(cfg.fall*0.8, cfg.fall*1.4);
+    g.gain.cancelScheduledValues(now); g.gain.setValueAtTime(Math.max(0.002,g.gain.value),now);
+    g.gain.linearRampToValueAtTime(peak, now+rise);            // rush in
+    g.gain.linearRampToValueAtTime(0.02, now+rise+fall);       // recede
+    lp.frequency.cancelScheduledValues(now); lp.frequency.setValueAtTime(lp.frequency.value,now);
+    lp.frequency.linearRampToValueAtTime(rnd(cfg.bright*0.85,cfg.bright*1.2), now+rise*0.8); // foam brightens on the crest
+    lp.frequency.linearRampToValueAtTime(cfg.dull, now+rise+fall);
+    const gap=(rise+fall)*rnd(0.45,0.8);
+    homeTimers.push(setTimeout(step, Math.max(1200, gap*1000)));
+  };
+  homeTimers.push(setTimeout(step, Math.random()*cfg.rise*1000));
+}
+function homeStart(){
+  if(!S.sound || HOME) return;
+  primeAudioSession();
+  let ctx; try{ ctx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return; }
+  const rz=()=>{ try{ if(ctx.state!=='running'&&ctx.resume) ctx.resume(); }catch(e){} }; rz(); setTimeout(rz,200);
+  const master=ctx.createGain(); master.gain.value=0; master.connect(ctx.destination);
+  HOME={ctx,master};
+  // constant distant sea bed under it all
+  const bn=_noise(ctx); const bl=ctx.createBiquadFilter(); bl.type='lowpass'; bl.frequency.value=240; const bg=ctx.createGain(); bg.gain.value=0.05;
+  bn.connect(bl); bl.connect(bg); bg.connect(master); bn.start();
+  // two overlapping lanes: a nearer, brighter surf and a farther, slower swell
+  waveLane(ctx,master,{hp:220,dull:420,bright:1500,peak:0.5,rise:1.6,fall:4.5});
+  waveLane(ctx,master,{hp:120,dull:300,bright:900, peak:0.42,rise:2.6,fall:7.0});
+  master.gain.linearRampToValueAtTime(0.5, ctx.currentTime+3.0);   // gentle swell in
+  if(!chimeDone){ chimeDone=true; playChime(ctx); }
+}
+function homeStop(){
+  const A=HOME; if(!A) return; HOME=null;
+  homeTimers.forEach(clearTimeout); homeTimers=[];
+  try{
+    A.master.gain.cancelScheduledValues(A.ctx.currentTime);
+    A.master.gain.setValueAtTime(A.master.gain.value, A.ctx.currentTime);
+    A.master.gain.linearRampToValueAtTime(0, A.ctx.currentTime+0.7);
+  }catch(e){}
+  const ctx=A.ctx; setTimeout(()=>{ try{ctx.close()}catch(e){} },800);
+  try{ if(silentEl){ silentEl.pause(); silentEl.currentTime=0; } }catch(e){}
 }
 
 function runPause(){
@@ -1139,6 +1233,13 @@ app.addEventListener('click',e=>{
       if(S.sound) soundStart(); else soundStop();
       break; }
 
+    case'home-sound':{
+      S.sound=!S.sound; save();
+      const hb=document.getElementById('homesound');
+      if(hb){ hb.innerHTML=msvg(S.sound?'volume_up':'volume_off','nav24'); hb.style.color=S.sound?'var(--actx)':'var(--mute2)'; }
+      if(S.sound){ audioUnlocked=true; homeStart(); } else homeStop();
+      break; }
+
     /* me */
     case'me-untrack':{ if(S.types.length>1){ S.types=S.types.filter(t=>t.id!==id); save(); render(); } break; }
     case'theme': S.theme=el.dataset.v; save(); applyTheme(); render(); break;
@@ -1150,6 +1251,12 @@ app.addEventListener('click',e=>{
 });
 
 render();
+
+// audio can't play until the first touch; arm it so the arrival chime and waves begin then
+document.addEventListener('pointerdown', function unlockAudio(){
+  if(audioUnlocked) return; audioUnlocked=true; primeAudioSession();
+  if(S.view==='home' && S.sound && !HOME) homeStart();
+}, {capture:true});
 
 // brief logo splash, then reveal the app (skipped when installed: the OS already showed one)
 if(document.documentElement.classList.contains('app-installed')){ const sp=document.getElementById('splash'); if(sp) sp.remove(); }
