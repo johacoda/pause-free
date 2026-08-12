@@ -10,6 +10,8 @@ html=html.replaceAll('__PAUSE_LOGO_DARK__', logo.logodark);
 html=html.replaceAll('__PAUSE_LOCKUP__', logo.lockup);
 html=html.replaceAll('__PAUSE_LOCKUP_DARK__', logo.lockupdark);
 html=html.replaceAll('__PAUSE_APPICON__', logo.appicon);
+const waves=JSON.parse(fs.readFileSync('waves.json','utf8'));
+html=html.replaceAll('__PAUSE_WAVES__', waves.loop);
 if(html.includes('/*__FONT__*/')||html.includes('/*__ICONS__*/')||html.includes('__PAUSE_')) throw new Error('placeholder left');
 fs.writeFileSync('pause.built.html', html);
 console.log('built KB:', Math.round(fs.statSync('pause.built.html').size/1024), '| external refs:', (html.match(/https?:\/\/(?!www\.w3\.org)/g)||[]).length);
