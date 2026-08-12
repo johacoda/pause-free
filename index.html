@@ -272,15 +272,6 @@ const TYPES_SEED = [
 ];
 const CAUSES = ['Stress','Boredom','Tired','Hungry','After a meal','Around people','Low mood','Just habit'];
 const LENGTHS = [180, 300, 600];
-const TIPS = [
-  "On the pause screen, a calming sound plays by default. Tap the speaker to mute it.",
-  "When you start a pause, drag the dial to set any length you like.",
-  "In Settings, you can add a craving of your own.",
-  "On the pause screen, rate your craving again near the end to see how far it dropped.",
-  "In Settings, you can switch to a dark theme.",
-  "A short pause is still a good pause.",
-  "In Settings, you can export your history to share with a coach.",
-];
 const PZ_MSGS = [
   "This wave is already changing.<br>Let it.",
   "A big wave is still just a wave.<br>It will settle.",
@@ -293,7 +284,7 @@ const PICK_ICONS = ['bolt','local_fire_department','eco','menu_book','sports_esp
 
 /* ============ storage ============ */
 const KEY = 'pako-pause/v1';
-const PERSIST = ['name','types','sessions','onboarded','pause','sound','theme','tipIdx'];
+const PERSIST = ['name','types','sessions','onboarded','pause','sound','theme'];
 let storageOK = true;
 function loadRaw(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ storageOK=false; return null; } }
 function save(){ if(!storageOK)return; try{ const o={}; PERSIST.forEach(k=>o[k]=S[k]); localStorage.setItem(KEY,JSON.stringify(o)); }catch(e){ storageOK=false; } }
@@ -307,7 +298,6 @@ function fresh(){
     draft:null,            // in-progress "begin" form
     sound:true,            // ambient sound, on by default; muting is remembered
     theme:null,            // 'light' | 'dark' (null = follow system)
-    tipIdx:-1,             // rotating dashboard tip, advances each open
   };
 }
 let S = fresh();
@@ -324,7 +314,6 @@ let S = fresh();
     }
   }
   if(!S.theme) S.theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
-  S.tipIdx = (Number.isInteger(S.tipIdx) ? S.tipIdx + 1 : 0) % TIPS.length;   // a fresh tip each open
   applyTheme(); save();
 })();
 function applyTheme(){
@@ -435,12 +424,11 @@ function render(){
   waterStop();
   welcomeStop();
   if(S.view!=='pause') soundStop();
-  if(S.view!=='home') homeStop();
   app.scrollTop=0;
   app.innerHTML = `<div class="safe"></div>` + (VIEWS[S.view]||Home)();
   wire();
   if(S.view==='pause') runPause();
-  if(S.view==='home' && S.sound && audioUnlocked) homeStart();
+  seaSync();                                  // sea plays across the app, quieter off the home screen
 }
 
 /* ============ onboarding ============ */
@@ -511,11 +499,6 @@ function Home(){
       {k:'Waves passed', v:passed},
       {k:'Pauses taken', v:S.sessions.length},
     ])}</div>
-
-    <div class="card" style="margin-top:22px;background:var(--grey);border:none;display:flex;gap:11px;align-items:flex-start">
-      <span style="color:var(--purple);display:flex;flex-shrink:0;margin-top:1px">${msvg('lightbulb','ic16')}</span>
-      <div><span class="label" style="display:block;margin-bottom:4px">Tip</span><span class="body" style="font-size:13.5px;line-height:1.5">${TIPS[S.tipIdx]||TIPS[0]}</span></div>
-    </div>
 
     <div style="margin-top:28px">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
@@ -1010,20 +993,10 @@ function welcomeInit(){
   draw();
 }
 
-/* home: an arrival chime, then soft synthesized sea (obeys the sound setting) */
-let HOME=null, chimeDone=false, audioUnlocked=false, homeTimers=[];
-function playChime(ctx){
-  const now=ctx.currentTime;
-  const g=ctx.createGain(); g.gain.value=0; g.connect(ctx.destination);
-  [[220,0.5],[329.63,0.30],[440,0.20],[659.25,0.10]].forEach(([f,amp])=>{  // A3 E4 A4 E5, a warm bowl
-    const o=ctx.createOscillator(); o.type='sine'; o.frequency.value=f;
-    const og=ctx.createGain(); og.gain.value=amp; o.connect(og); og.connect(g);
-    o.start(now); o.stop(now+4.4);
-  });
-  g.gain.setValueAtTime(0.0001,now);
-  g.gain.linearRampToValueAtTime(0.16,now+0.28);         // soft swell in
-  g.gain.exponentialRampToValueAtTime(0.0006,now+4.2);   // long, restful decay
-}
+/* soft synthesized sea, playing across the whole app; louder on home, quieter elsewhere */
+let SEA=null, audioUnlocked=false, seaTimers=[];
+const SEA_HOME=0.5, SEA_ELSE=0.2;                        // volume on home vs the rest of the app
+function seaLevel(){ return S.view==='home' ? SEA_HOME : SEA_ELSE; }
 // one lane of waves: filtered noise whose loudness and brightness rise fast then
 // recede slowly, at irregular intervals, so it breathes like real surf rather than a pulse
 function waveLane(ctx,master,cfg){
@@ -1034,7 +1007,7 @@ function waveLane(ctx,master,cfg){
   nz.connect(hp); hp.connect(lp); lp.connect(g); g.connect(master); nz.start();
   const rnd=(a,b)=>a+Math.random()*(b-a);
   const step=()=>{
-    if(!HOME) return;
+    if(!SEA) return;
     const now=ctx.currentTime;
     const peak=rnd(cfg.peak*0.7, cfg.peak*1.15);
     const rise=rnd(cfg.rise*0.7, cfg.rise*1.3);
@@ -1046,29 +1019,37 @@ function waveLane(ctx,master,cfg){
     lp.frequency.linearRampToValueAtTime(rnd(cfg.bright*0.85,cfg.bright*1.2), now+rise*0.8); // foam brightens on the crest
     lp.frequency.linearRampToValueAtTime(cfg.dull, now+rise+fall);
     const gap=(rise+fall)*rnd(0.45,0.8);
-    homeTimers.push(setTimeout(step, Math.max(1200, gap*1000)));
+    seaTimers.push(setTimeout(step, Math.max(1200, gap*1000)));
   };
-  homeTimers.push(setTimeout(step, Math.random()*cfg.rise*1000));
+  seaTimers.push(setTimeout(step, Math.random()*cfg.rise*1000));
 }
-function homeStart(){
-  if(!S.sound || HOME) return;
+function seaStart(){
+  if(!S.sound || SEA) return;
   primeAudioSession();
   let ctx; try{ ctx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return; }
   const rz=()=>{ try{ if(ctx.state!=='running'&&ctx.resume) ctx.resume(); }catch(e){} }; rz(); setTimeout(rz,200);
   const master=ctx.createGain(); master.gain.value=0; master.connect(ctx.destination);
-  HOME={ctx,master};
+  SEA={ctx,master};
   // constant distant sea bed under it all
   const bn=_noise(ctx); const bl=ctx.createBiquadFilter(); bl.type='lowpass'; bl.frequency.value=240; const bg=ctx.createGain(); bg.gain.value=0.05;
   bn.connect(bl); bl.connect(bg); bg.connect(master); bn.start();
   // two overlapping lanes: a nearer, brighter surf and a farther, slower swell
   waveLane(ctx,master,{hp:220,dull:420,bright:1500,peak:0.5,rise:1.6,fall:4.5});
   waveLane(ctx,master,{hp:120,dull:300,bright:900, peak:0.42,rise:2.6,fall:7.0});
-  master.gain.linearRampToValueAtTime(0.5, ctx.currentTime+3.0);   // gentle swell in
-  if(!chimeDone){ chimeDone=true; playChime(ctx); }
+  master.gain.linearRampToValueAtTime(seaLevel(), ctx.currentTime+3.0);   // gentle swell in
 }
-function homeStop(){
-  const A=HOME; if(!A) return; HOME=null;
-  homeTimers.forEach(clearTimeout); homeTimers=[];
+function seaLevelSet(){                                    // duck to the level for the current screen
+  if(!SEA) return;
+  try{
+    const t=SEA.ctx.currentTime;
+    SEA.master.gain.cancelScheduledValues(t);
+    SEA.master.gain.setValueAtTime(SEA.master.gain.value, t);
+    SEA.master.gain.linearRampToValueAtTime(seaLevel(), t+0.8);
+  }catch(e){}
+}
+function seaStop(){
+  const A=SEA; if(!A) return; SEA=null;
+  seaTimers.forEach(clearTimeout); seaTimers=[];
   try{
     A.master.gain.cancelScheduledValues(A.ctx.currentTime);
     A.master.gain.setValueAtTime(A.master.gain.value, A.ctx.currentTime);
@@ -1077,6 +1058,8 @@ function homeStop(){
   const ctx=A.ctx; setTimeout(()=>{ try{ctx.close()}catch(e){} },800);
   try{ if(silentEl){ silentEl.pause(); silentEl.currentTime=0; } }catch(e){}
 }
+// start the sea if it should play, otherwise just set the level for this screen
+function seaSync(){ if(S.sound && audioUnlocked){ if(!SEA) seaStart(); else seaLevelSet(); } }
 
 function runPause(){
   const p=S.pause; if(!p){ go('home'); return; }
@@ -1230,14 +1213,14 @@ app.addEventListener('click',e=>{
       S.sound=!S.sound; save();
       const sb=document.getElementById('soundbtn');
       if(sb){ sb.innerHTML=msvg(S.sound?'volume_up':'volume_off','nav24'); sb.style.color=S.sound?'var(--actx)':'var(--mute2)'; }
-      if(S.sound) soundStart(); else soundStop();
+      if(S.sound){ audioUnlocked=true; soundStart(); seaSync(); } else { soundStop(); seaStop(); }
       break; }
 
     case'home-sound':{
       S.sound=!S.sound; save();
       const hb=document.getElementById('homesound');
       if(hb){ hb.innerHTML=msvg(S.sound?'volume_up':'volume_off','nav24'); hb.style.color=S.sound?'var(--actx)':'var(--mute2)'; }
-      if(S.sound){ audioUnlocked=true; homeStart(); } else homeStop();
+      if(S.sound){ audioUnlocked=true; seaSync(); } else { seaStop(); soundStop(); }
       break; }
 
     /* me */
@@ -1255,7 +1238,7 @@ render();
 // audio can't play until the first touch; arm it so the arrival chime and waves begin then
 document.addEventListener('pointerdown', function unlockAudio(){
   if(audioUnlocked) return; audioUnlocked=true; primeAudioSession();
-  if(S.view==='home' && S.sound && !HOME) homeStart();
+  if(S.sound && !SEA) seaStart();
 }, {capture:true});
 
 // brief logo splash, then reveal the app (skipped when installed: the OS already showed one)
