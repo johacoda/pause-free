@@ -280,6 +280,8 @@ const PZ_MSGS = [
   "Unlike you, this wave<br>can't rise forever.",
   "You're not your craving.<br>You'll be here when it's gone.",
 ];
+// stimulus control: moving away from the cue is the strongest single strategy, shown first
+const MOVE_NUDGE = "If you can, step away from where you are.<br>Even the next room helps.";
 const PICK_ICONS = ['bolt','local_fire_department','eco','menu_book','sports_esports','headphones','local_drink','cookie','laptop_mac','directions_run','bedtime','chat_bubble','shopping_cart','fitness_center','local_pizza','savings','mood','favorite'];
 
 /* ============ storage ============ */
@@ -328,6 +330,19 @@ function iso(d=new Date()){ return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${
 function hm(d=new Date()){ return `${pad(d.getHours())}:${pad(d.getMinutes())}`; }
 function leftOf(end){ return end? Math.max(0, Math.ceil((end-Date.now())/1000)) : 0; }
 function typeOf(id){ return S.types.find(t=>t.id===id); }
+function planOf(id){ const t=typeOf(id); return t&&t.plan&&t.plan.trim() ? t.plan.trim() : ''; }
+// the lines shown under the breathing ring: your own plan (if set), then the move nudge, then reassurance
+function pauseLead(p){
+  const lead=[]; const pl=planOf(p.typeId);
+  if(pl) lead.push(`<span class="label" style="display:block;margin-bottom:5px;color:var(--actx)">Your plan</span>${esc(pl)}`);
+  lead.push(MOVE_NUDGE);
+  return lead;
+}
+function pauseMsgAt(elapsed, lead){
+  const L=16;                                   // seconds each lead line holds
+  if(elapsed < lead.length*L){ const i=Math.floor(elapsed/L); return {k:'L'+i, html:lead[i]}; }
+  const i=Math.floor((elapsed-lead.length*L)/18)%PZ_MSGS.length; return {k:'P'+i, html:PZ_MSGS[i]};
+}
 function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function greet(){ const h=new Date().getHours(); return h<12?'Good morning':h<17?'Good afternoon':h<22?'Good evening':'You’re up late'; }
 function partOfDay(h){ return h<5?'Night':h<12?'Morning':h<17?'Afternoon':h<22?'Evening':'Night'; }
@@ -587,7 +602,7 @@ function PauseView(){
         <div id="breathcount" class="tnum">1</div>
       </div>
     </div>
-    <p id="pzmsg" class="body grey" style="text-align:center;margin-top:22px;max-width:24em;margin-left:auto;margin-right:auto;transition:opacity .4s ease">${PZ_MSGS[0]}</p>
+    <p id="pzmsg" class="body grey" style="text-align:center;margin-top:22px;max-width:24em;margin-left:auto;margin-right:auto;transition:opacity .4s ease">${pauseLead(p)[0]}</p>
 
     <div style="flex:1"></div>
 
@@ -765,6 +780,16 @@ function Me(){
         <button class="tile dashed" data-a="add-type"><span class="ic" style="color:var(--mute2)">${msvg('add')}</span><span class="tile-l" style="font-weight:500;color:var(--mute)">Add your own</span></button>
       </div>
     </div>
+
+    <div style="margin-top:30px">
+      <span class="label ink" style="margin-bottom:8px;display:block">If-then plans</span>
+      <p class="body grey" style="font-size:12.5px;margin-bottom:16px">Deciding what you'll do before a craving hits makes it easier in the moment.</p>
+      ${S.types.map(t=>`<div style="margin-bottom:14px">
+        <span style="display:block;font-size:12px;font-weight:600;color:var(--mute);margin-bottom:5px">If I crave ${esc(t.label)}, I will…</span>
+        <input type="text" data-plan="${t.id}" value="${esc(t.plan||'')}" maxlength="120" placeholder="e.g. drink water and step outside" autocomplete="off">
+      </div>`).join('')}
+    </div>
+
     <div style="margin-top:30px">
       <span class="label ink" style="margin-bottom:12px;display:block">Your data</span>
       <button class="btn btn-ghost btn-sm" data-a="share-sum" style="margin-bottom:8px">Share a summary</button>
@@ -996,7 +1021,7 @@ function welcomeInit(){
 /* recorded sea, a seamless 30s loop playing across the whole app; louder on home, quieter elsewhere */
 let SEA=null, audioUnlocked=false, seaEl=null, seaFadeTimer=null;
 const SEA_LOOP='__PAUSE_WAVES__';                        // 30s crossfaded ocean loop, inlined at build
-const SEA_HOME=0.5, SEA_ELSE=0.2;                        // volume on home vs the rest of the app
+const SEA_HOME=0.2, SEA_ELSE=0.2;                        // even volume across the whole app
 function seaLevel(){ return S.view==='home' ? SEA_HOME : SEA_ELSE; }
 function seaFade(to,ms,done){
   if(!seaEl) return;
@@ -1027,7 +1052,8 @@ function runPause(){
   waterInit();
   const ring=document.getElementById('bring'), bw=document.getElementById('breathword'), bc=document.getElementById('breathcount');
   if(S.sound){ const sb=document.getElementById('soundbtn'); if(sb){ sb.classList.add('nudge'); setTimeout(()=>{ if(sb) sb.classList.remove('nudge'); },3300); } }
-  let lastMsg=0, revealed=false, lastWord='', lastCount=0;
+  const lead=pauseLead(p);
+  let lastMsgKey=pauseMsgAt(0,lead).k, revealed=false, lastWord='', lastCount=0;
   const frame=()=>{
     const msLeft = p.endTime - Date.now();
     if(msLeft<=0){ recordPause('passed'); go('passed'); return; }
@@ -1041,10 +1067,10 @@ function runPause(){
     if(word!==lastWord && bw){ bw.textContent=word; lastWord=word; }
     const cnt=inhale?Math.floor(c10)+1:Math.floor(c10-4)+1;
     if(cnt!==lastCount && bc){ bc.textContent=cnt; lastCount=cnt; }
-    // cycle the reassurance line every ~18s
-    const mi=Math.floor((p.len*prog)/18)%PZ_MSGS.length;
-    if(mi!==lastMsg){ lastMsg=mi; const m=document.getElementById('pzmsg');
-      if(m){ m.style.opacity='0'; setTimeout(()=>{ const mm=document.getElementById('pzmsg'); if(mm){ mm.innerHTML=PZ_MSGS[mi]; mm.style.opacity='1'; } },400); } }
+    // the line under the ring: plan, then move nudge, then the reassurance rotation
+    const msg=pauseMsgAt(p.len*prog, lead);
+    if(msg.k!==lastMsgKey){ lastMsgKey=msg.k; const m=document.getElementById('pzmsg');
+      if(m){ m.style.opacity='0'; setTimeout(()=>{ const mm=document.getElementById('pzmsg'); if(mm){ mm.innerHTML=msg.html; mm.style.opacity='1'; } },400); } }
     // reveal the after-rating near the end
     if(!revealed && prog>=0.7){ revealed=true; const box=document.getElementById('strengthbox'); if(box) box.classList.add('show'); }
     pauseRAF=requestAnimationFrame(frame);
@@ -1105,6 +1131,9 @@ function wire(){
     else { if(co) co.classList.add('hidden'); draft().cause=v||null; e.target.classList.toggle('placeholder', !v); }
   });
   if(co) co.addEventListener('input',e=>{ draft().cause=e.target.value.trim()||null; });
+  document.querySelectorAll('input[data-plan]').forEach(inp=>{
+    inp.addEventListener('input',e=>{ const t=typeOf(e.target.dataset.plan); if(t){ t.plan=e.target.value.trim()||undefined; save(); } });
+  });
   initDial();
   if(S.view==='onboard' && ob.step===0) welcomeInit();
 }
