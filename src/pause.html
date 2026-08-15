@@ -9,16 +9,16 @@
 <link rel="apple-touch-icon" href="__PAUSE_APPICON__">
 <link rel="manifest" href="/site.webmanifest">
 <meta property="og:title" content="Pause by Pákó">
-<meta property="og:description" content="Ride out a craving instead of fighting it. Private, and it stays on your device.">
+<meta property="og:description" content="Ride out a craving instead of fighting it. Nothing leaves your device.">
 <meta property="og:image" content="/og-image.png">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://pause.pako.health">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Pause by Pákó">
-<meta name="twitter:description" content="Ride out a craving instead of fighting it. Private, and it stays on your device.">
+<meta name="twitter:description" content="Ride out a craving instead of fighting it. Nothing leaves your device.">
 <meta name="twitter:image" content="/og-image.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="description" content="Pause by Pákó. A craving is a wave. Watch it rise, crest, and pass instead of acting on it. Everything stays on your device.">
+<meta name="description" content="Pause by Pákó. A craving is a wave. Watch it rise and pass. Everything stays on your device.">
 <title>Pause by Pákó</title>
 <style>/*__FONT__*/</style>
 <style>
@@ -397,7 +397,7 @@ function summaryText(){
   const cc={}; S.sessions.forEach(x=>{if(x.cause)cc[x.cause]=(cc[x.cause]||0)+1});
   const top=Object.entries(cc).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
   return [
-    'Pause by Pákó — my summary',
+    'Pause by Pákó: my summary',
     `${S.name?S.name+', ':''}${n} pause${n===1?'':'s'} taken, ${passed} let pass.`,
     `Steady days: ${calmDays()}.`,
     top.length?`Most common triggers: ${top.join(', ')}.`:''
@@ -453,7 +453,7 @@ function Onboard(){
   if(ob.step===0){
     body=`<div class="fade" style="margin-top:15vh">
       <h1>Welcome!</h1>
-      <p class="lede grey" style="margin-top:16px;max-width:22em">A craving is a wave. It rises, it peaks, and then it falls on its own. Pause helps you watch it pass instead of fighting or giving in.</p>
+      <p class="lede grey" style="margin-top:16px;max-width:22em">A craving is a wave. It rises, then it passes. Pause helps you wait it out.</p>
     </div>`;
   } else if(ob.step===1){
     body=`<div class="fade" style="margin-top:15vh">
@@ -506,8 +506,8 @@ function Home(){
       <button data-a="home-sound" id="homesound" aria-label="Sound" style="color:${S.sound?'var(--actx)':'var(--mute2)'};width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%">${msvg(S.sound?'volume_up':'volume_off','nav24')}</button>
       <button data-a="theme-toggle" aria-label="Theme" style="color:var(--mute2);width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%">${S.theme==='dark'?msvg('light_mode','nav24'):msvg('dark_mode','nav24')}</button>
     </div>
-    <h1 style="margin-top:2px">${greet()},<br>${esc(first)}.</h1>
-    <p class="lede grey" style="margin-top:10px">A craving is a wave. Let's watch this one pass.</p>
+    <h1 style="margin-top:2px">${greet()},<br>${esc(first)}</h1>
+    <p class="lede grey" style="margin-top:10px">Every craving passes if you give it time.</p>
 
     <div style="margin-top:24px">${statLine([
       {k:'Steady days', v:calmDays()},
@@ -627,7 +627,7 @@ function Passed(){
     : `It rose from ${last.s0} to ${last.s1} out of 10.`;
   return `<div class="screen fade">
     <div style="margin-top:9vh">
-      <h1 style="font-size:38px">The wave<br>passed.</h1>
+      <h1 style="font-size:38px">The wave<br>passed</h1>
       <p class="lede grey" style="margin-top:16px;max-width:22em">${dropTxt}</p>
     </div>
 
@@ -649,7 +649,7 @@ function Acted(){
   return `<div class="screen fade">
     <button data-a="go-home" class="grey" style="margin-top:16px;align-self:flex-start">${IC.back}</button>
     <div style="margin-top:5vh">
-      <h1 style="font-size:36px">Now you know<br>its shape.</h1>
+      <h1 style="font-size:36px">You'll catch<br>the next one</h1>
       <p class="lede grey" style="margin-top:16px;max-width:23em">
         You waited ${last?clock(last.elapsed):'0:00'} before you acted.</p>
     </div>
@@ -685,7 +685,7 @@ function Waves(){
       ${items}</div>`;
   }).join('') || `<p class="body grey" style="text-align:center;margin-top:50px">No waves logged yet.</p>`;
   return `<div class="screen" style="padding-bottom:14px">
-    <div style="padding-top:24px"><h1>${S.sessions.length} ${S.sessions.length===1?'wave':'waves'}<br>watched.</h1></div>
+    <div style="padding-top:24px"><h1>${S.sessions.length} ${S.sessions.length===1?'wave':'waves'}<br>watched</h1></div>
     ${S.sessions.length?`<div class="chiprow" style="margin-top:16px;flex-wrap:nowrap;overflow-x:auto">${pills}</div>`:''}
     ${groups}
     <div style="flex:1;min-height:20px"></div>
@@ -713,12 +713,12 @@ function Patterns(){
     if(!p.length)return null; return (p.reduce((a,x)=>a+(x.s0-x.s1),0)/p.length).toFixed(1);})();
 
   return `<div class="screen" style="padding-bottom:14px">
-    <div style="padding-top:24px"><h1>When the<br>waves come.</h1></div>
+    <div style="padding-top:24px"><h1>Your patterns</h1></div>
 
     <div style="margin-top:24px">${statLine([
       {k:'Steady days', v:calmDays()},
       {k:'Waves passed', v:S.sessions.filter(x=>x.outcome==='passed').length},
-      {k:'Avg drop', v:(avgDrop!=null?avgDrop:'—')},
+      {k:'Avg drop', v:(avgDrop!=null?avgDrop:'–')},
     ])}</div>
 
     <div style="margin-top:30px">
@@ -743,8 +743,8 @@ function PrivacyView(){
       <button data-a="priv-back" class="grey">${IC.back}</button>
       <span class="label ink" style="letter-spacing:.16em">Privacy</span><span style="width:24px"></span>
     </div>
-    <h1 style="margin-top:22px">Your privacy.</h1>
-    <p class="lede grey" style="margin-top:12px">The short version: everything you put into Pause stays on your device. There's no account, and no server holding your entries.</p>
+    <h1 style="margin-top:22px">Your privacy</h1>
+    <p class="lede grey" style="margin-top:12px">Everything you put into Pause stays on your device. There's no account, and no server holding your entries.</p>
     ${pSection('What Pause keeps, and where', `It saves your first name, your list of cravings, and a record of each pause on this device, using your browser's own storage. Pákó never receives a copy.`)}
     ${pSection('What it does not do', `No account, no server storing your entries, and no analytics or third-party trackers inside the tool. Nothing you type is sent anywhere on its own.`)}
     ${pSection('Hosting', `Pause is hosted on Netlify at pause.pako.health. To open the page, your browser requests it from Netlify, so Netlify can see standard technical details such as your IP address in its logs. That happens as the page loads, before you type anything, and it never includes what you enter into Pause.`)}
@@ -761,7 +761,7 @@ function Me(){
     return `<button class="tile on" data-a="me-untrack" data-id="${t.id}"><span class="ic">${msvg(t.icon)}</span>
       <span class="tile-l">${esc(t.label)}</span><span style="color:rgba(255,255,255,.6);font-size:18px">×</span></button>`}).join('');
   return `<div class="screen" style="padding-bottom:14px">
-    <div style="padding-top:20px"><h1>Settings.</h1></div>
+    <div style="padding-top:20px"><h1>Settings</h1></div>
     <div style="margin-top:26px">
       <span class="label ink" style="margin-bottom:8px">Your name</span>
       <input type="text" id="meName" value="${esc(S.name)}" maxlength="24" placeholder="Your name" autocomplete="off">
@@ -783,7 +783,7 @@ function Me(){
 
     <div style="margin-top:30px">
       <span class="label ink" style="margin-bottom:8px;display:block">If-then plans</span>
-      <p class="body grey" style="font-size:12.5px;margin-bottom:16px">Deciding what you'll do before a craving hits makes it easier in the moment.</p>
+      <p class="body grey" style="font-size:12.5px;margin-bottom:16px">Deciding in advance makes it easier to follow through.</p>
       ${S.types.map(t=>`<div style="margin-bottom:14px">
         <span style="display:block;font-size:12px;font-weight:600;color:var(--mute);margin-bottom:5px">If I crave ${esc(t.label)}, I will…</span>
         <input type="text" data-plan="${t.id}" value="${esc(t.plan||'')}" maxlength="120" placeholder="e.g. drink water and step outside" autocomplete="off">
@@ -794,18 +794,18 @@ function Me(){
       <span class="label ink" style="margin-bottom:12px;display:block">Your data</span>
       <button class="btn btn-ghost btn-sm" data-a="share-sum" style="margin-bottom:8px">Share a summary</button>
       <button class="btn btn-ghost btn-sm" data-a="export-csv">Download my history</button>
-      <p class="body grey" style="font-size:12px;margin-top:10px">A copy is made here on your device so you can keep it or send it to a coach or doctor. It only leaves your phone if you choose to send it.</p>
+      <p class="body grey" style="font-size:12px;margin-top:10px">The copy is made on your device and only leaves it if you send it.</p>
     </div>
 
     <div class="card" style="margin-top:28px;background:var(--grey);border:none">
       <span class="label ink" style="margin-bottom:6px;display:inline-flex;align-items:center;gap:6px">${msvg('lock','ic16')} Private by design</span>
-      <p class="body grey" style="font-size:13px">Pause runs entirely in your browser. A web host delivers the app to your device once, then it works on its own without calling out again. There's no account, and no server ever receives or stores what you enter. Your name, your list, and every pause you log stay in this browser, on your device. If you clear your browser data, they're gone for good.</p>
+      <p class="body grey" style="font-size:13px">Pause runs entirely in your browser. A web host delivers the app to your device once, then it works on its own. There's no account, and no server ever receives what you enter. Everything you log stays in this browser, on your device, and clearing your browser data erases it.</p>
       <button class="btn-text" data-a="go-privacy" style="margin-top:12px;font-size:11px;letter-spacing:.08em">Read the full privacy notice</button>
     </div>
 
     <div class="card" style="margin-top:14px;background:var(--grey);border:none">
       <span class="label ink" style="margin-bottom:6px;display:inline-flex;align-items:center;gap:6px">${msvg('favorite','ic16')} If you need more than a pause</span>
-      <p class="body grey" style="font-size:13px">Pause is a self-help tool, not therapy or medical care. It can help you notice a craving and ride it out, but it can't take the place of a professional. If things feel heavy, or you're worried about yourself, please talk to someone you trust or a health professional. You don't have to do this on your own.</p>
+      <p class="body grey" style="font-size:13px">Pause can help you ride out a craving, but it isn't therapy or medical care. If you're worried about yourself, please talk to someone you trust or a professional.</p>
     </div>
     <button class="tlink grey" data-a="wipe-ask" style="margin-top:18px">Erase everything</button>
     <div id="wipebox" class="hidden card" style="margin-top:2px;background:var(--redtint);border:none">
