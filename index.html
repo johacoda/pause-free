@@ -102,7 +102,13 @@
   .hero{position:relative;background:#3c3158;overflow:hidden}
   .hero-d{flex:0 0 auto;height:250px}
   .hero-w{flex:1 1 auto}
-  .hero-waves{position:absolute;left:0;bottom:0;width:100%;display:block}
+  .herowrap{position:absolute;left:0;bottom:0;width:100%;overflow:hidden;pointer-events:none}
+  .wlayer{position:absolute;left:0;bottom:0;width:200%;height:100%;will-change:transform}
+  .wlayer svg{width:100%;height:100%;display:block}
+  .wlayer.b{animation:wdrift 26s linear infinite}
+  .wlayer.f{animation:wdrift 17s linear infinite reverse}
+  @keyframes wdrift{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @media(prefers-reduced-motion:reduce){.wlayer{animation:none}}
   .hero-sun{position:absolute;border-radius:50%;background:radial-gradient(circle at 50% 40%,#f0a878,#e07a4e)}
   .hero-toggles{position:absolute;top:calc(env(safe-area-inset-top,0) + 12px);right:14px;display:flex;gap:2px;z-index:3}
   .hero-toggles button{width:38px;height:38px;display:flex;align-items:center;justify-content:center;color:#c9c1e0}
@@ -488,7 +494,7 @@ function Onboard(){
         </div>
       </div>
       <div class="hsheet welcome-sheet">
-        <p class="w-sub">It rises, then it passes. Pause helps you wait it out.</p>
+        <p class="w-sub">It rises, then it passes.<br>Pause helps you wait it out.</p>
         <button class="btn btn-red" data-a="ob-next">Get started ${IC.arrow}</button>
         <button class="btn-text" data-a="go-privacy" style="margin-top:16px;font-size:11px;letter-spacing:.08em">Your privacy</button>
       </div>
@@ -528,11 +534,18 @@ function Onboard(){
 }
 
 /* ============ home ============ */
-// the sun-and-waves hero, reused by the welcome and dashboard
-function heroWaves(h){ return `<svg class="hero-waves" viewBox="0 0 480 ${h}" preserveAspectRatio="none" style="height:${h}px">
-    <path d="M0,${h*0.5} C110,${h*0.32} 190,${h*0.72} 290,${h*0.52} C370,${h*0.36} 430,${h*0.62} 480,${h*0.5} L480,${h} L0,${h} Z" fill="#9c93b8" opacity=".33"/>
-    <path d="M0,${h*0.72} C100,${h*0.58} 200,${h*0.86} 310,${h*0.68} C390,${h*0.56} 440,${h*0.76} 480,${h*0.7} L480,${h} L0,${h} Z" fill="#6d6299" opacity=".5"/>
-  </svg>`; }
+// the sun-and-waves hero, reused across screens; two layers drift in opposite directions
+function waveArea(h,amp,surf,lam,fill,op){
+  let d='';
+  for(let x=0;x<=1200;x+=12){ const y=(surf+amp*Math.sin(2*Math.PI*x/lam)).toFixed(1); d+=(x?' L':'M')+x+','+y; }
+  return `<path d="${d} L1200,${h} L0,${h} Z" fill="${fill}" opacity="${op}"/>`;
+}
+function heroWaves(h){
+  return `<div class="herowrap" style="height:${h}px">
+    <div class="wlayer b"><svg viewBox="0 0 1200 ${h}" preserveAspectRatio="none">${waveArea(h, h*0.085, h*0.52, 300, '#9c93b8', .33)}</svg></div>
+    <div class="wlayer f"><svg viewBox="0 0 1200 ${h}" preserveAspectRatio="none">${waveArea(h, h*0.11, h*0.72, 200, '#6d6299', .5)}</svg></div>
+  </div>`;
+}
 // each tile carries a wave motif matched to its meaning, tinted, sitting quietly behind the number
 const MOTIF={
   steady:`<svg viewBox="0 0 120 44" preserveAspectRatio="none"><path d="M0,28 Q20,23 40,28 T80,28 T120,28" fill="none" stroke="var(--m1)" stroke-width="1.8" stroke-linecap="round" opacity=".3"/><path d="M0,36 Q20,32 40,36 T80,36 T120,36" fill="none" stroke="var(--m1)" stroke-width="1.8" stroke-linecap="round" opacity=".16"/></svg>`,
@@ -540,6 +553,18 @@ const MOTIF={
   taken:`<svg viewBox="0 0 120 44" preserveAspectRatio="none"><path d="M0,16 Q20,10 40,16 T80,16 T120,16" fill="none" stroke="var(--m3)" stroke-width="1.8" stroke-linecap="round" opacity=".26"/><path d="M0,28 Q20,22 40,28 T80,28 T120,28" fill="none" stroke="var(--m3)" stroke-width="1.8" stroke-linecap="round" opacity=".18"/><path d="M0,40 Q20,34 40,40 T80,40 T120,40" fill="none" stroke="var(--m3)" stroke-width="1.8" stroke-linecap="round" opacity=".12"/></svg>`,
 };
 function statTile(cls,val,label,motif){ return `<div class="stat ${cls}"><div class="n">${val}</div><div class="k">${label}</div>${motif}</div>`; }
+// slim hero used across the top-level screens
+function navHero(title){ return `<div class="hero" style="height:168px">
+  <div class="hero-sun" style="right:28px;top:calc(env(safe-area-inset-top,0) + 24px);width:50px;height:50px"></div>
+  ${heroWaves(84)}
+  <div class="d-head"><div class="d-name" style="font-size:29px">${title}</div></div>
+</div>`; }
+// taller hero for the two result screens
+function resultHero(titleHTML,tf){ return `<div class="hero" style="height:248px">
+  <div class="hero-sun" style="right:30px;top:calc(env(safe-area-inset-top,0) + 28px);width:56px;height:56px"></div>
+  ${heroWaves(120)}
+  <div class="d-head"><div class="d-name" style="font-size:${tf||36}px">${titleHTML}</div></div>
+</div>`; }
 function Home(){
   const first=(S.name||'there').split(' ')[0];
   const passed=S.sessions.filter(x=>x.outcome==='passed').length;
@@ -684,40 +709,36 @@ function Passed(){
   const dropTxt = drop>0 ? `It went from ${last.s0} to ${last.s1} out of 10.`
     : drop===0 ? `It held at ${last.s0} out of 10.`
     : `It rose from ${last.s0} to ${last.s1} out of 10.`;
-  return `<div class="screen fade">
-    <div style="margin-top:9vh">
-      <h1 style="font-size:38px">The wave<br>passed</h1>
-      <p class="lede grey" style="margin-top:16px;max-width:22em">${dropTxt}</p>
+  return `<div class="home fade">
+    ${resultHero('The wave<br>passed',38)}
+    <div class="hsheet">
+      <p class="body grey" style="max-width:24em">${dropTxt}</p>
+      <div class="stats" style="margin-top:18px">
+        ${statTile('s1', calmDays(), 'Steady days', MOTIF.steady)}
+        ${statTile('s3', (last?Math.round(last.len/60):0), 'Min waited', MOTIF.taken)}
+        ${statTile('s2', S.sessions.filter(x=>x.outcome==='passed').length, 'Waves passed', MOTIF.passed)}
+      </div>
+      <div style="flex:1;min-height:20px"></div>
+      <button class="btn btn-red" data-a="go-patterns" style="margin-bottom:10px">See your patterns ${IC.arrow}</button>
+      <button class="tlink grey" data-a="go-home" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">Back home</button>
     </div>
-
-    <div style="margin-top:30px">${statLine([
-      {k:'Steady days', v:calmDays()},
-      {k:'You waited', v:(last?Math.round(last.len/60):0), u:' min'},
-      {k:'Waves passed', v:S.sessions.filter(x=>x.outcome==='passed').length},
-    ])}</div>
-
-    <div style="flex:1"></div>
-    <button class="btn btn-red" data-a="go-patterns">See your patterns ${IC.arrow}</button>
-    <button class="tlink grey" data-a="go-home" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">Back home</button>
   </div>`;
 }
 
 /* ============ acted ============ */
 function Acted(){
   const last=S.sessions[0]; const ty=last?typeOf(last.type):null;
-  return `<div class="screen fade">
-    <button data-a="go-home" class="grey" style="margin-top:16px;align-self:flex-start">${IC.back}</button>
-    <div style="margin-top:5vh">
-      <h1 style="font-size:36px">You'll catch<br>the next one</h1>
-      <p class="lede grey" style="margin-top:16px;max-width:23em">
-        You waited ${last?clock(last.elapsed):'0:00'} before you acted.</p>
+  return `<div class="home fade">
+    ${resultHero("You'll catch<br>the next one",34)}
+    <div class="hsheet">
+      <p class="body grey" style="max-width:23em">You waited ${last?clock(last.elapsed):'0:00'} before you acted.</p>
+      ${last&&last.cause?`<div class="card" style="margin-top:18px;background:var(--grey);border:none">
+        <span class="label ink" style="margin-bottom:6px">What set it off</span>
+        <div style="font-size:20px;font-weight:700;color:var(--purple)">${esc(last.cause)}</div></div>`:''}
+      <div style="flex:1;min-height:20px"></div>
+      <button class="btn btn-red" data-a="begin" style="margin-bottom:10px">Try another pause ${IC.arrow}</button>
+      <button class="tlink grey" data-a="go-home" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">Back home</button>
     </div>
-    ${last&&last.cause?`<div class="card" style="margin-top:26px">
-      <span class="label ink" style="margin-bottom:6px">What set it off</span>
-      <div style="font-size:20px;font-weight:700;color:var(--purple)">${esc(last.cause)}</div></div>`:''}
-    <div style="flex:1"></div>
-    <button class="btn btn-red" data-a="begin">Try another pause ${IC.arrow}</button>
-    <button class="tlink grey" data-a="go-home" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">Back home</button>
   </div>`;
 }
 
@@ -743,11 +764,13 @@ function Waves(){
         <span class="grey tnum" style="font-size:12px">${passed}/${rows.length} passed</span></div>
       ${items}</div>`;
   }).join('') || `<p class="body grey" style="text-align:center;margin-top:50px">No waves logged yet.</p>`;
-  return `<div class="screen" style="padding-bottom:14px">
-    <div style="padding-top:24px"><h1>${S.sessions.length} ${S.sessions.length===1?'wave':'waves'}<br>watched</h1></div>
-    ${S.sessions.length?`<div class="chiprow" style="margin-top:16px;flex-wrap:nowrap;overflow-x:auto">${pills}</div>`:''}
-    ${groups}
-    <div style="flex:1;min-height:20px"></div>
+  return `<div class="home">
+    ${navHero(`${S.sessions.length} ${S.sessions.length===1?'wave':'waves'} watched`)}
+    <div class="hsheet">
+      ${S.sessions.length?`<div class="chiprow" style="margin-bottom:2px;flex-wrap:nowrap;overflow-x:auto">${pills}</div>`:''}
+      ${groups}
+      <div style="flex:1;min-height:20px"></div>
+    </div>
     ${Nav('waves')}
   </div>`;
 }
@@ -771,25 +794,24 @@ function Patterns(){
   const avgDrop = (()=>{const p=s.filter(x=>x.outcome==='passed'&&x.s0!=null&&x.s1!=null);
     if(!p.length)return null; return (p.reduce((a,x)=>a+(x.s0-x.s1),0)/p.length).toFixed(1);})();
 
-  return `<div class="screen" style="padding-bottom:14px">
-    <div style="padding-top:24px"><h1>Your patterns</h1></div>
-
-    <div style="margin-top:24px">${statLine([
-      {k:'Steady days', v:calmDays()},
-      {k:'Waves passed', v:S.sessions.filter(x=>x.outcome==='passed').length},
-      {k:'Avg drop', v:(avgDrop!=null?avgDrop:'–')},
-    ])}</div>
-
-    <div style="margin-top:30px">
-      <span class="label ink" style="margin-bottom:14px">Time of day</span>
-      <div class="pod" style="margin-top:6px">${podRows}</div>
+  return `<div class="home">
+    ${navHero('Your patterns')}
+    <div class="hsheet">
+      <div class="stats">
+        ${statTile('s1', calmDays(), 'Steady days', MOTIF.steady)}
+        ${statTile('s2', S.sessions.filter(x=>x.outcome==='passed').length, 'Waves passed', MOTIF.passed)}
+        ${statTile('s3', (avgDrop!=null?avgDrop:'–'), 'Avg drop', MOTIF.taken)}
+      </div>
+      <div style="margin-top:28px">
+        <span class="label ink" style="margin-bottom:14px">Time of day</span>
+        <div class="pod" style="margin-top:6px">${podRows}</div>
+      </div>
+      <div style="margin-top:28px">
+        <span class="label ink" style="margin-bottom:14px;display:block">Top triggers</span>
+        ${trigs}
+      </div>
+      <div style="flex:1;min-height:20px"></div>
     </div>
-
-    <div style="margin-top:30px">
-      <span class="label ink" style="margin-bottom:14px;display:block">Top triggers</span>
-      ${trigs}
-    </div>
-    <div style="flex:1;min-height:20px"></div>
     ${Nav('patterns')}
   </div>`;
 }
@@ -819,9 +841,10 @@ function Me(){
   const tiles=S.types.map(t=>{const on=true; // all listed are tracked; allow remove
     return `<button class="tile on" data-a="me-untrack" data-id="${t.id}"><span class="ic">${msvg(t.icon)}</span>
       <span class="tile-l">${esc(t.label)}</span><span style="color:rgba(255,255,255,.6);font-size:18px">×</span></button>`}).join('');
-  return `<div class="screen" style="padding-bottom:14px">
-    <div style="padding-top:20px"><h1>Settings</h1></div>
-    <div style="margin-top:26px">
+  return `<div class="home">
+    ${navHero('Settings')}
+    <div class="hsheet">
+    <div style="margin-top:4px">
       <span class="label ink" style="margin-bottom:8px">Your name</span>
       <input type="text" id="meName" value="${esc(S.name)}" maxlength="24" placeholder="Your name" autocomplete="off">
     </div>
@@ -876,6 +899,7 @@ function Me(){
     </div>
     <div style="flex:1;min-height:16px"></div>
     <p class="grey" style="text-align:center;font-size:11px;padding-bottom:6px"><span class="wordmark">Pause</span> by Pákó</p>
+    </div>
     ${Nav('me')}
   </div>`;
 }
