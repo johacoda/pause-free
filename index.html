@@ -28,6 +28,7 @@
     --redtint:#f6e6e4; --page:#E9E9E6; --accent-lt:rgba(60,49,88,.06);
     --act:#c0392b; --actx:#c0392b;
     --mute:rgba(13,13,11,.6); --mute2:rgba(13,13,11,.42); --mute3:rgba(13,13,11,.28);
+    --t1:#efeaf3; --t2:#f7e9e4; --t3:#eae7f0; --m1:#6d6299; --m2:#c0392b; --m3:#3c3158;
     --font:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     --maxw:480px;
   }
@@ -37,6 +38,7 @@
     --redtint:#241f33; --page:#0f0d0a; --accent-lt:rgba(156,147,184,.14);
     --act:#6d6299; --actx:#a79dc6;
     --mute:rgba(243,239,232,.62); --mute2:rgba(243,239,232,.42); --mute3:rgba(243,239,232,.3);
+    --t1:rgba(156,147,184,.13); --t2:rgba(216,120,90,.15); --t3:rgba(156,147,184,.08); --m1:#9c93b8; --m2:#d84b31; --m3:#9c93b8;
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   html,body{height:100%}
@@ -94,6 +96,32 @@
   .statline .sk{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--purple)}
   .statline .sv{font-size:30px;font-weight:800;color:var(--ink);margin-top:6px;line-height:1;font-variant-numeric:tabular-nums}
   .statline .sv small{font-size:13px;font-weight:600;color:var(--mute2);margin-left:2px}
+
+  /* redesigned home + welcome: sun-and-waves hero, cream sheet, tinted stat tiles */
+  .home{min-height:100%;display:flex;flex-direction:column}
+  .hero{position:relative;background:#3c3158;overflow:hidden}
+  .hero-d{flex:0 0 auto;height:250px}
+  .hero-w{flex:1 1 auto}
+  .hero-waves{position:absolute;left:0;bottom:0;width:100%;display:block}
+  .hero-sun{position:absolute;border-radius:50%;background:radial-gradient(circle at 50% 40%,#f0a878,#e07a4e)}
+  .hero-toggles{position:absolute;top:calc(env(safe-area-inset-top,0) + 12px);right:14px;display:flex;gap:2px;z-index:3}
+  .hero-toggles button{width:38px;height:38px;display:flex;align-items:center;justify-content:center;color:#c9c1e0}
+  .d-head{position:absolute;top:calc(env(safe-area-inset-top,0) + 40px);left:22px;right:22px;z-index:2}
+  .d-hi{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#c9c1e0}
+  .d-name{font-size:34px;font-weight:800;letter-spacing:-.02em;margin-top:6px;line-height:1;color:#FAFAFA}
+  .d-sub{color:#c9c1e0;font-size:14px;margin-top:12px;max-width:17em;line-height:1.45}
+  .hsheet{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;background:var(--white);margin-top:-24px;border-radius:24px 24px 0 0;padding:22px 22px 0}
+  .stats{display:flex;gap:9px}
+  .stat{position:relative;flex:1;height:104px;border-radius:16px;overflow:hidden;padding:13px 11px}
+  .stat .n{font-size:26px;font-weight:800;color:var(--ink);line-height:1;position:relative;z-index:2;font-variant-numeric:tabular-nums}
+  .stat .k{font-size:9.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--mute2);margin-top:6px;position:relative;z-index:2;white-space:nowrap}
+  .stat svg{position:absolute;left:0;right:0;bottom:0;width:100%;height:44px;display:block}
+  .stat.s1{background:var(--t1)} .stat.s2{background:var(--t2)} .stat.s3{background:var(--t3)}
+  .hero-copy{position:absolute;top:calc(env(safe-area-inset-top,0) + 44px);left:26px;right:26px;text-align:center;z-index:2}
+  .hero-eyebrow{font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#c9c1e0}
+  .hero-title{font-size:40px;font-weight:800;line-height:1.05;letter-spacing:-.02em;color:#FAFAFA;margin-top:12px}
+  .welcome-sheet{flex:0 0 auto;align-items:center;text-align:center;padding-bottom:calc(30px + env(safe-area-inset-bottom,0))}
+  .w-sub{color:var(--mute);font-size:16px;line-height:1.5;margin:0 auto 22px;max-width:20em}
   .divider{height:1px;background:var(--faint)}
 
   .chip{padding:9px 14px;border-radius:10px;font-size:14px;font-weight:500;color:var(--ink);
@@ -449,13 +477,25 @@ function render(){
 /* ============ onboarding ============ */
 let ob = {step:0, name:'', pick:new Set()};
 function Onboard(){
-  let body='';
   if(ob.step===0){
-    body=`<div class="fade" style="margin-top:15vh">
-      <h1>Welcome!</h1>
-      <p class="lede grey" style="margin-top:16px;max-width:22em">A craving is a wave. It rises, then it passes. Pause helps you wait it out.</p>
+    return `<div class="home fade">
+      <div class="hero hero-w">
+        <div class="hero-sun" style="left:50%;transform:translateX(-50%);top:36%;width:140px;height:140px"></div>
+        ${heroWaves(210)}
+        <div class="hero-copy">
+          <div class="hero-eyebrow">Pause by Pákó</div>
+          <div class="hero-title">A craving<br>is a wave</div>
+        </div>
+      </div>
+      <div class="hsheet welcome-sheet">
+        <p class="w-sub">It rises, then it passes. Pause helps you wait it out.</p>
+        <button class="btn btn-red" data-a="ob-next">Get started ${IC.arrow}</button>
+        <button class="btn-text" data-a="go-privacy" style="margin-top:16px;font-size:11px;letter-spacing:.08em">Your privacy</button>
+      </div>
     </div>`;
-  } else if(ob.step===1){
+  }
+  let body='';
+  if(ob.step===1){
     body=`<div class="fade" style="margin-top:15vh">
       <h1>What should we<br>call you?</h1>
       <div style="margin-top:34px">
@@ -488,6 +528,18 @@ function Onboard(){
 }
 
 /* ============ home ============ */
+// the sun-and-waves hero, reused by the welcome and dashboard
+function heroWaves(h){ return `<svg class="hero-waves" viewBox="0 0 480 ${h}" preserveAspectRatio="none" style="height:${h}px">
+    <path d="M0,${h*0.5} C110,${h*0.32} 190,${h*0.72} 290,${h*0.52} C370,${h*0.36} 430,${h*0.62} 480,${h*0.5} L480,${h} L0,${h} Z" fill="#9c93b8" opacity=".33"/>
+    <path d="M0,${h*0.72} C100,${h*0.58} 200,${h*0.86} 310,${h*0.68} C390,${h*0.56} 440,${h*0.76} 480,${h*0.7} L480,${h} L0,${h} Z" fill="#6d6299" opacity=".5"/>
+  </svg>`; }
+// each tile carries a wave motif matched to its meaning, tinted, sitting quietly behind the number
+const MOTIF={
+  steady:`<svg viewBox="0 0 120 44" preserveAspectRatio="none"><path d="M0,28 Q20,23 40,28 T80,28 T120,28" fill="none" stroke="var(--m1)" stroke-width="1.8" stroke-linecap="round" opacity=".3"/><path d="M0,36 Q20,32 40,36 T80,36 T120,36" fill="none" stroke="var(--m1)" stroke-width="1.8" stroke-linecap="round" opacity=".16"/></svg>`,
+  passed:`<svg viewBox="0 0 120 44" preserveAspectRatio="none"><path d="M0,38 C24,38 32,12 60,12 C88,12 96,38 120,38" fill="none" stroke="var(--m2)" stroke-width="2" stroke-linecap="round" opacity=".3"/></svg>`,
+  taken:`<svg viewBox="0 0 120 44" preserveAspectRatio="none"><path d="M0,16 Q20,10 40,16 T80,16 T120,16" fill="none" stroke="var(--m3)" stroke-width="1.8" stroke-linecap="round" opacity=".26"/><path d="M0,28 Q20,22 40,28 T80,28 T120,28" fill="none" stroke="var(--m3)" stroke-width="1.8" stroke-linecap="round" opacity=".18"/><path d="M0,40 Q20,34 40,40 T80,40 T120,40" fill="none" stroke="var(--m3)" stroke-width="1.8" stroke-linecap="round" opacity=".12"/></svg>`,
+};
+function statTile(cls,val,label,motif){ return `<div class="stat ${cls}"><div class="n">${val}</div><div class="k">${label}</div>${motif}</div>`; }
 function Home(){
   const first=(S.name||'there').split(' ')[0];
   const passed=S.sessions.filter(x=>x.outcome==='passed').length;
@@ -501,29 +553,36 @@ function Home(){
     </div>`;
   }).join('') || `<p class="body grey" style="padding:14px 0;border-top:1px solid var(--faint)">No waves yet. Your first pause will show up here.</p>`;
 
-  return `<div class="screen fade" style="padding-bottom:14px">
-    <div style="display:flex;justify-content:flex-end;gap:4px;padding-top:18px">
-      <button data-a="home-sound" id="homesound" aria-label="Sound" style="color:${S.sound?'var(--actx)':'var(--mute2)'};width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%">${msvg(S.sound?'volume_up':'volume_off','nav24')}</button>
-      <button data-a="theme-toggle" aria-label="Theme" style="color:var(--mute2);width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%">${S.theme==='dark'?msvg('light_mode','nav24'):msvg('dark_mode','nav24')}</button>
-    </div>
-    <h1 style="margin-top:2px">${greet()},<br>${esc(first)}</h1>
-    <p class="lede grey" style="margin-top:10px">Every craving passes if you give it time.</p>
-
-    <div style="margin-top:24px">${statLine([
-      {k:'Steady days', v:calmDays()},
-      {k:'Waves passed', v:passed},
-      {k:'Pauses taken', v:S.sessions.length},
-    ])}</div>
-
-    <div style="margin-top:28px">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-        <span class="label ink">Recent waves</span>
-        <button class="tlink grey" style="width:auto;padding:0;font-size:12px" data-a="go-waves">All</button>
+  return `<div class="home fade">
+    <div class="hero hero-d">
+      <div class="hero-sun" style="right:34px;top:calc(env(safe-area-inset-top,0) + 30px);width:64px;height:64px"></div>
+      ${heroWaves(130)}
+      <div class="hero-toggles">
+        <button data-a="home-sound" id="homesound" aria-label="Sound" style="color:${S.sound?'#FAFAFA':'#8f86ad'}">${msvg(S.sound?'volume_up':'volume_off','nav24')}</button>
+        <button data-a="theme-toggle" aria-label="Theme">${S.theme==='dark'?msvg('light_mode','nav24'):msvg('dark_mode','nav24')}</button>
       </div>
-      ${recent}
+      <div class="d-head">
+        <div class="d-hi">${greet()}</div>
+        <div class="d-name">${esc(first)}</div>
+        <div class="d-sub">Every craving passes if you give it time.</div>
+      </div>
     </div>
-    <div style="flex:1;min-height:24px"></div>
-    <button class="btn btn-red" style="margin-bottom:16px" data-a="begin">Time to pause ${IC.arrow}</button>
+    <div class="hsheet">
+      <div class="stats">
+        ${statTile('s1', calmDays(), 'Steady days', MOTIF.steady)}
+        ${statTile('s2', passed, 'Waves passed', MOTIF.passed)}
+        ${statTile('s3', S.sessions.length, 'Pauses taken', MOTIF.taken)}
+      </div>
+      <div style="margin-top:24px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+          <span class="label ink">Recent waves</span>
+          <button class="tlink grey" style="width:auto;padding:0;font-size:12px" data-a="go-waves">All</button>
+        </div>
+        ${recent}
+      </div>
+      <div style="flex:1;min-height:20px"></div>
+      <button class="btn btn-red" style="margin-bottom:16px" data-a="begin">Time to pause ${IC.arrow}</button>
+    </div>
     ${Nav('home')}
   </div>`;
 }
@@ -1135,7 +1194,6 @@ function wire(){
     inp.addEventListener('input',e=>{ const t=typeOf(e.target.dataset.plan); if(t){ t.plan=e.target.value.trim()||undefined; save(); } });
   });
   initDial();
-  if(S.view==='onboard' && ob.step===0) welcomeInit();
 }
 
 /* ============ click handling ============ */
@@ -1208,7 +1266,7 @@ app.addEventListener('click',e=>{
     case'home-sound':{
       S.sound=!S.sound; save();
       const hb=document.getElementById('homesound');
-      if(hb){ hb.innerHTML=msvg(S.sound?'volume_up':'volume_off','nav24'); hb.style.color=S.sound?'var(--actx)':'var(--mute2)'; }
+      if(hb){ hb.innerHTML=msvg(S.sound?'volume_up':'volume_off','nav24'); hb.style.color=S.sound?'#FAFAFA':'#8f86ad'; }
       if(S.sound){ audioUnlocked=true; seaSync(); } else { seaStop(); soundStop(); }
       break; }
 
