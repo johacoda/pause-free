@@ -45,15 +45,30 @@
   body{font-family:var(--font);background:var(--page);color:var(--ink);
     -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
     display:flex;justify-content:center}
-  #frame{width:100%;max-width:var(--maxw);background:var(--white);position:relative;
+  #frame{width:100%;max-width:var(--maxw);background:linear-gradient(to bottom,#3c3158 0%,#574a7d 46%,#8b7fae 74%,#d8cfe4 100%);position:relative;
     min-height:100dvh;overflow:hidden;display:flex;flex-direction:column}
+  .dark #frame{background:linear-gradient(to bottom,#3c3158 0%,#2f2748 30%,#201b2d 64%,#171310 100%)}
   @media(min-width:520px){
     body{align-items:center;padding:22px 0}
     #frame{min-height:min(880px,calc(100dvh - 44px));height:min(880px,calc(100dvh - 44px));
       border-radius:20px;box-shadow:0 1px 0 var(--faint)}
   }
   #app{flex:1;position:relative;z-index:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:transparent}
-  .screen{min-height:100%;padding:0 22px;display:flex;flex-direction:column}
+  .screen{min-height:100%;padding:0 22px;display:flex;flex-direction:column;background:rgba(250,250,250,.7);
+    -webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%)}
+  .dark .screen{background:rgba(27,24,19,.64)}
+  .ob-flow{background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}/* onboarding rides the gradient; content screens are frosted glass */
+  .pausescreen{background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}/* pause screen stays clear so the draining-water canvas shows through */
+  /* the pause is a focused, immersive moment: a deep backdrop in both themes so the draining water pops and every label reads in light cream */
+  /* light mode: a soft, light backdrop consistent with the rest of the app — the draining water reads as a warm rose and the normal dark text stays legible */
+  .pausing #frame{background:linear-gradient(to bottom,#f2ecf5 0%,#eae1ef 48%,#e4d9e8 100%)}
+  /* dark mode: a deep, immersive backdrop so the water glows; text turns light */
+  .pausing.dark #frame{background:linear-gradient(to bottom,#1a1526 0%,#171221 42%,#14101b 74%,#100d16 100%)}
+  .pausing.dark .pausescreen .grey{color:rgba(243,239,232,.72)}
+  .pausing.dark .pausescreen .ink,.pausing.dark .pausescreen .label.ink{color:#F3EFE8}
+  .pausing.dark .pausescreen #pzclock{color:rgba(243,239,232,.8)}
+  .pausing.dark .pausescreen #pzmsg{color:rgba(243,239,232,.92)}
+  .pausing.dark .pausescreen .tlink{color:rgba(243,239,232,.66)}
   .safe{height:env(safe-area-inset-top,0)}
 
   h1,h2,h3{letter-spacing:-0.02em;line-height:1.12;color:var(--purple)}
@@ -70,11 +85,21 @@
 
   button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
   .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
-    height:52px;border-radius:10px;font-size:15px;font-weight:700;letter-spacing:.01em;transition:background .15s,opacity .15s}
-  .btn-red{background:var(--act);color:var(--white)}
+    height:52px;border-radius:10px;font-size:15px;font-weight:700;letter-spacing:.01em;transition:background .15s,opacity .15s;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.22)}
+  .btn-red{background:var(--act);color:#fff}
   .btn-red:active{opacity:.85}
   .btn-ink{background:var(--ink);color:var(--white)}
-  .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--faint2)}
+  .btn-ghost{background:rgba(255,255,255,.16);color:var(--ink);border:1px solid var(--faint2);
+    -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+  .dark .btn-ghost{background:rgba(255,255,255,.06);box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
+  /* the frost + fade live on a ::before layer so the button on top stays crisp and flat, matching the dashboard's "Time to pause" */
+  .actionbar::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+    -webkit-backdrop-filter:blur(16px) saturate(140%);backdrop-filter:blur(16px) saturate(140%);
+    background:linear-gradient(to top,rgba(216,207,228,.86),rgba(216,207,228,0));
+    -webkit-mask-image:linear-gradient(to top,#000 58%,transparent);mask-image:linear-gradient(to top,#000 58%,transparent)}
+  .dark .actionbar::before{background:linear-gradient(to top,rgba(23,19,16,.9),rgba(23,19,16,0))}
+  .actionbar>*{position:relative;z-index:1}
   .btn[disabled]{opacity:.3;pointer-events:none}
   .btn-sm{height:46px;font-size:14px}
   .tlink{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);
@@ -84,7 +109,8 @@
     background:none;border:none;border-bottom:2px solid var(--ink);padding:0 0 2px}
   .arrow{width:15px;height:15px}
 
-  .card{background:var(--white);border:1px solid var(--faint);border-radius:14px;padding:18px}
+  .card{background:rgba(255,255,255,.42);border:1px solid rgba(255,255,255,.5);border-radius:14px;padding:18px;-webkit-backdrop-filter:blur(12px) saturate(140%);backdrop-filter:blur(12px) saturate(140%)}
+  .dark .card{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1)}
   .pane-purple{background:var(--purple);border-radius:14px;padding:20px;color:var(--white)}
   .pane-purple .label{color:var(--white);opacity:.7}
   /* subtle stat line: purple labels, values beneath, fine dividers, no fill */
@@ -103,16 +129,20 @@
   .hero-d{flex:0 0 auto;height:250px}
   .hero-w{flex:1 1 auto}
   .herowave{position:absolute;left:0;bottom:0;width:100%;display:block}
-  .hero-sun{position:absolute;border-radius:50%;background:radial-gradient(circle at 50% 40%,#f0a878,#e07a4e);overflow:hidden}
-  .hero-sun.moon{background:radial-gradient(circle at 32% 45%,#eef0f7,#c9c2dd)}
+  .hero-sun{position:absolute;border-radius:50%;background:radial-gradient(circle at 50% 40%,#f0a878,#e07a4e);overflow:hidden;
+    --halo:rgba(240,140,78,.55);--halo2:rgba(240,140,78,.28);animation:orbHalo 5s ease-in-out infinite}
+  .hero-sun.moon{background:radial-gradient(circle at 32% 45%,#eef0f7,#c9c2dd);--halo:rgba(222,228,248,.5);--halo2:rgba(198,208,240,.26)}
   .hero-sun.moon::before{content:'';position:absolute;width:100%;height:100%;border-radius:50%;background:#3c3158;top:-16%;left:34%}
+  @keyframes orbHalo{0%,100%{box-shadow:0 0 16px 3px var(--halo),0 0 32px 9px var(--halo2)}50%{box-shadow:0 0 28px 9px var(--halo),0 0 54px 20px var(--halo2)}}
+  @media (prefers-reduced-motion:reduce){.hero-sun{animation:none;box-shadow:0 0 22px 6px var(--halo),0 0 40px 12px var(--halo2)}}
   .hero-toggles{position:absolute;top:calc(env(safe-area-inset-top,0) + 12px);right:14px;display:flex;gap:2px;z-index:3}
   .hero-toggles button{width:38px;height:38px;display:flex;align-items:center;justify-content:center;color:#c9c1e0}
   .d-head{position:absolute;top:calc(env(safe-area-inset-top,0) + 40px);left:22px;right:22px;z-index:2}
   .d-hi{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#c9c1e0}
   .d-name{font-size:34px;font-weight:800;letter-spacing:-.02em;margin-top:6px;line-height:1;color:#FAFAFA}
   .d-sub{color:#c9c1e0;font-size:14px;margin-top:12px;max-width:17em;line-height:1.45}
-  .hsheet{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;background:var(--white);margin-top:-24px;border-radius:24px 24px 0 0;padding:22px 22px 0}
+  .hsheet{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;background:rgba(250,250,250,.72);-webkit-backdrop-filter:blur(20px) saturate(150%);backdrop-filter:blur(20px) saturate(150%);margin-top:-24px;border-radius:24px 24px 0 0;padding:22px 22px 0;box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
+  .dark .hsheet{background:rgba(27,24,19,.68);box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
   .stats{display:flex;gap:9px}
   .stat{position:relative;flex:1;height:104px;border-radius:16px;overflow:hidden;padding:13px 11px}
   .stat .n{font-size:26px;font-weight:800;color:var(--ink);line-height:1;position:relative;z-index:2;font-variant-numeric:tabular-nums}
@@ -120,31 +150,42 @@
   .stat svg{position:absolute;left:0;right:0;bottom:0;width:100%;height:44px;display:block}
   .stat.s1{background:var(--t1)} .stat.s2{background:var(--t2)} .stat.s3{background:var(--t3)}
   .hero-copy{position:absolute;top:calc(env(safe-area-inset-top,0) + 40px);left:26px;right:26px;text-align:center;z-index:2}
-  .gazer{position:absolute;left:0;bottom:0;width:100%;height:auto;z-index:1;pointer-events:none}
+  .gazer{position:absolute;left:50%;transform:translateX(-50%);bottom:0;width:128%;height:auto;z-index:1;pointer-events:none}
   .fignight{display:none}
   .dark .figday{display:none}
   .dark .fignight{display:block}
   .hero-eyebrow{font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#c9c1e0}
   .hero-mark{display:block;margin:0 auto 4px;width:94px;height:auto}
   .ob-illus{width:190px;height:auto;display:block;margin:0 auto}
-  .ob-namebg{flex:1;position:relative;margin:0 -22px;padding:9vh 22px 0;overflow:hidden;background:linear-gradient(to bottom,rgb(236,248,251),rgb(229,245,250))}
-  .dark .ob-namebg{background:#3c3158}
+  .ob-namebg{flex:1;position:relative;margin:0 -22px;padding:9vh 22px 0;overflow:hidden;background:transparent}
+  /* onboarding sits on the app gradient; keep the top text light so it reads on purple */
+  .ob-flow h1{color:#F3EFE8}
+  .ob-flow .grey{color:rgba(243,239,232,.72)}
+  .ob-flow input[type=text]{color:#F3EFE8;border-bottom-color:rgba(255,255,255,.34);caret-color:#fff}
+  .ob-flow input[type=text]::placeholder{color:rgba(243,239,232,.5)}
+  .ob-flow input[type=text]:focus{border-bottom-color:#fff}
+  .ob-flow input[type=text].planinput{color:#F3EFE8}/* beat the .planinput dark color inside onboarding */
+  .ob-flow .planlabel{color:#F3EFE8}
+  .ob-flow .planlabel b{color:#cdc0f2}
   .ob-bg{position:absolute;left:0;right:0;bottom:0;width:100%;height:auto;z-index:0;display:block}
-  .ob-bg.fignight{display:none}
   .dark .ob-bg.figday{display:none}
-  .dark .ob-bg.fignight{display:block}
-  .ob-bg.scenetall{top:0;bottom:0;height:100%;object-fit:cover;object-position:center bottom}
-  .ob-purplefade{position:absolute;inset:0;z-index:1;pointer-events:none;display:none;background:linear-gradient(to bottom,#3c3158 0%,#3c3158 30%,rgba(60,49,88,0) 50%)}
-  .dark .ob-purplefade{display:block}
+  .ob-fig{position:absolute;left:50%;transform:translateX(-50%);bottom:0;width:128%;height:auto;z-index:0}
   .ob-namebg-top{position:relative;z-index:2}
   .hero-title{font-size:58px;font-weight:300;line-height:.98;letter-spacing:-.03em;color:#FAFAFA;margin-top:22px}
-  .hero-title .wv{font-weight:800;font-style:italic;letter-spacing:-.02em}
-  .welcome-sheet{flex:0 0 auto;align-items:center;text-align:center;padding-bottom:calc(30px + env(safe-area-inset-bottom,0));background:#f4e9d3}
-  .welcome-sheet .w-sub{color:#6b5636}
-  .welcome-sheet .btn-text{color:#8a7554}
-  .dark .welcome-sheet{background:var(--white)}
-  .dark .welcome-sheet .w-sub{color:var(--mute)}
-  .dark .welcome-sheet .btn-text{color:var(--ink)}
+  .hero-title .wv{font-weight:inherit;font-style:normal}
+  .rotline{display:inline-block;transition:opacity .9s ease-in-out}
+  .rotline.fade{opacity:0}
+  .welcome-sheet{flex:0 0 auto;align-items:center;text-align:center;padding-bottom:calc(30px + env(safe-area-inset-bottom,0));
+    background:linear-gradient(to bottom,rgba(250,246,238,.44),rgba(250,246,238,.26));
+    -webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%);
+    border-top:1px solid rgba(255,255,255,.6);
+    box-shadow:0 -12px 34px rgba(28,18,48,.20),inset 0 1px 0 rgba(255,255,255,.55)}
+  .welcome-sheet .w-sub{color:#4c3c22}
+  .welcome-sheet .btn-text{color:#5f4a2c}
+  .dark .welcome-sheet{background:linear-gradient(to bottom,rgba(26,22,34,.52),rgba(26,22,34,.34));border-top-color:rgba(255,255,255,.16);
+    box-shadow:0 -12px 34px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.14)}
+  .dark .welcome-sheet .w-sub{color:rgba(243,239,232,.86)}
+  .dark .welcome-sheet .btn-text{color:rgba(243,239,232,.8)}
   .w-sub{color:var(--mute);font-size:16px;line-height:1.5;margin:0 auto 22px;max-width:20em}
   /* settings controls */
   .themesw{position:relative;width:64px;height:34px;border-radius:18px;background:var(--grey);border:none;cursor:pointer;display:block}
@@ -163,6 +204,8 @@
     background:var(--grey);white-space:nowrap;transition:all .12s;border:1px solid transparent}
   .chip.on{background:var(--purple);color:var(--white)}
   .chiprow{display:flex;flex-wrap:wrap;gap:8px}
+  .lenrow{display:flex;gap:8px}
+  .lenchip{flex:1;text-align:center;padding:13px 0;font-size:15px;font-weight:600}
   /* if-then plan items */
   .planitem{margin-bottom:24px}
   .planlabel{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:10px;line-height:1.4}
@@ -203,11 +246,10 @@
   .scale.calm>button.on{background:var(--purple)}
 
   /* intensity slider */
-  .range{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:5px;background:var(--grey);outline:none;margin:2px 0}
-  .range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--act);border:3px solid var(--white);box-shadow:0 0 0 1px var(--faint);cursor:pointer}
-  .range::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--act);border:3px solid var(--white);cursor:pointer}
-  .range.calm::-webkit-slider-thumb{background:var(--purple)}
-  .range.calm::-moz-range-thumb{background:var(--purple)}
+  /* thin-line treatment to match the wave outlines and breath ring; white knob with a fine purple ring, same on both sliders */
+  .range{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:3px;background:var(--faint2);outline:none;margin:8px 0}
+  .range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid var(--purple);box-shadow:0 1px 3px rgba(0,0,0,.16);cursor:pointer}
+  .range::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid var(--purple);box-shadow:0 1px 3px rgba(0,0,0,.16);cursor:pointer}
   #strengthbox{opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .6s ease,transform .6s ease}
   #strengthbox.show{opacity:1;transform:none;pointer-events:auto}
   /* clock-style duration picker */
@@ -222,9 +264,9 @@
   /* radial time dial */
   .dialwrap{position:relative;width:220px;height:220px;margin:16px auto 0;touch-action:none;user-select:none;-webkit-user-select:none}
   #dial{width:220px;height:220px;display:block;cursor:pointer}
-  .d-track{fill:none;stroke:var(--faint2);stroke-width:10}
-  .d-arc{fill:none;stroke:var(--purple);stroke-width:10;stroke-linecap:round}
-  .d-handle{fill:#fff;stroke:var(--purple);stroke-width:3}
+  .d-track{fill:none;stroke:var(--faint2);stroke-width:3}
+  .d-arc{fill:none;stroke:var(--purple);stroke-width:3;stroke-linecap:round}
+  .d-handle{fill:#fff;stroke:var(--purple);stroke-width:2}
   .dialval{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
   #dMin{font-size:46px;font-weight:800;color:var(--purple);line-height:1;font-variant-numeric:tabular-nums}
   .dialunit{font-size:12px;font-weight:700;color:var(--mute2);letter-spacing:.14em;text-transform:uppercase;margin-top:6px}
@@ -296,7 +338,8 @@
 
   /* nav */
   .nav{display:flex;justify-content:space-around;padding:11px 16px calc(12px + env(safe-area-inset-bottom,0));
-    border-top:1px solid var(--faint);background:var(--white)}
+    border-top:1px solid rgba(255,255,255,.4);background:rgba(250,250,250,.72);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%)}
+  .dark .nav{background:rgba(27,24,19,.7);border-top-color:rgba(255,255,255,.1)}
   .nav button{display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.35;padding:2px 12px;transition:opacity .15s}
   .nav button.on{opacity:1;color:var(--actx)}
   .nav svg{width:21px;height:21px}
@@ -313,10 +356,16 @@
   #splash{position:absolute;inset:0;z-index:100;background:#3c3158;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease}
   #splash.gone{opacity:0;pointer-events:none}
   html.app-installed #splash{display:none}
-  #splash img{width:240px;height:auto;animation:sp-in .7s cubic-bezier(.22,1,.36,1) both}
+  .splash-in{display:flex;flex-direction:column;align-items:center;animation:sp-in .7s cubic-bezier(.22,1,.36,1) both}
+  .splash-mark{width:88px;height:auto;margin-bottom:20px;border-radius:50%}
+  .splash-word{width:172px;height:auto}
+  .splash-by{margin-top:12px;font-size:12px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(250,250,250,.6)}
   @keyframes sp-in{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
   .fade{animation:fade .3s ease}
   @keyframes fade{from{opacity:0}to{opacity:1}}
+  /* glass screens reveal via transform, not opacity, so backdrop-filter never suspends (no first-load flash) */
+  .home.fade{animation:homeReveal .3s ease}
+  @keyframes homeReveal{from{transform:translateY(8px)}to{transform:translateY(0)}}
   .hidden{display:none!important}
   .wordmark{font-weight:800;letter-spacing:-.02em}
   ::-webkit-scrollbar{display:none}
@@ -325,7 +374,11 @@
 </head>
 <body>
 <div id="frame">
-  <div id="splash"><img src="__PAUSE_LOCKUP_DARK__" alt="Pause by Pákó"></div>
+  <div id="splash"><div class="splash-in">
+    <img class="splash-mark" src="__PAUSE_FAVICON__" alt="">
+    <img class="splash-word" src="__PAUSE_SCRIPT__" alt="Pause">
+    <div class="splash-by">by Pákó</div>
+  </div></div>
   <div id="app"></div>
 </div>
 <script>
@@ -355,7 +408,7 @@ const PZ_MSGS = [
   "You're not your craving.<br>You'll be here when it's gone.",
 ];
 // stimulus control: moving away from the cue is the strongest single strategy, shown first
-const MOVE_NUDGE = "If you can, step away from where you are.<br>Even the next room helps.";
+const MOVE_NUDGE = "If you can, take a few steps away from where you first felt the wave.";
 const SUGGESTIONS = [
   {s:'drink water', i:'local_drink', l:'Water'},
   {s:'step outside', i:'park', l:'Step out'},
@@ -422,7 +475,7 @@ function planOf(id){ const t=typeOf(id); return t&&t.plan&&t.plan.trim() ? t.pla
 // the lines shown under the breathing ring: your own plan (if set), then the move nudge, then reassurance
 function pauseLead(p){
   const lead=[]; const pl=planOf(p.typeId);
-  if(pl) lead.push(`<span class="label" style="display:block;margin-bottom:5px;color:var(--actx)">Your plan</span>${esc(pl)}`);
+  if(pl) lead.push(`<span class="label planlead" style="display:block;margin-bottom:5px;color:var(--actx)">Your plan</span>${esc(pl)}`);
   lead.push(MOVE_NUDGE);
   return lead;
 }
@@ -528,11 +581,33 @@ function render(){
   welcomeStop();
   if(S.view!=='pause') soundStop();
   app.scrollTop=0;
+  document.documentElement.classList.toggle('pausing', S.view==='pause');
   app.innerHTML = `<div class="safe"></div>` + (VIEWS[S.view]||Home)();
   wire();
   if(S.view==='pause') runPause();
   seaSync();                                  // sea plays across the app, quieter off the home screen
   if(document.querySelector('.herowave')) heroStart(); else heroStop();
+  if(document.querySelector('.hero-welcome')) welcomeInit();
+  if(document.getElementById('rotline')) rotStart(); else rotStop();
+}
+/* gentle rotating affirmation on the welcome headline */
+const CRAVE_LINES = ['is a <span class="wv">wave</span>','will pass',"isn't you"];
+let rotTimer=null, rotIdx=0;
+function rotStop(){ if(rotTimer){ clearInterval(rotTimer); rotTimer=null; } }
+function rotStart(){
+  rotStop();
+  const el=document.getElementById('rotline'); if(!el) return;
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  rotIdx=0;
+  rotTimer=setInterval(()=>{
+    // compositor-driven opacity fade, unaffected by the wave rAF on the main thread
+    const out=el.animate([{opacity:1},{opacity:0}],{duration:650,easing:'ease-in',fill:'forwards'});
+    out.onfinish=()=>{
+      rotIdx=(rotIdx+1)%CRAVE_LINES.length;
+      el.innerHTML=CRAVE_LINES[rotIdx];
+      el.animate([{opacity:0},{opacity:1}],{duration:900,easing:'ease-out',fill:'forwards'});
+    };
+  }, 4600);
 }
 
 /* ============ onboarding ============ */
@@ -542,17 +617,15 @@ let ob = {step:0, name:'', pick:new Set()};
 function Onboard(){
   if(ob.step===0){
     return `<div class="home fade">
-      <div class="hero hero-w">
-        ${heroWaves(210)}
+      <div class="hero hero-w hero-welcome">
         <div class="hero-copy">
           <img class="hero-mark" src="__PAUSE_SCRIPT__" alt="Pause">
           <div class="hero-eyebrow" style="margin-top:6px">Welcome, surfer</div>
-          <div class="hero-title" style="margin-top:14px">A craving<br>is a <span class="wv">wave</span></div>
+          <div class="hero-title" style="margin-top:14px">A craving<br><span id="rotline" class="rotline">is a <span class="wv">wave</span></span></div>
         </div>
       </div>
-      ${gazer()}
       <div class="hsheet welcome-sheet">
-        <p class="w-sub">It rises, then it passes.<br>Pause helps you wait it out.</p>
+        <p class="w-sub">Learn to ride it out</p>
         <button class="btn btn-red" data-a="ob-next">Get started ${IC.arrow}</button>
         <button class="btn-text" data-a="go-privacy" style="margin-top:16px;font-size:11px;letter-spacing:.08em">Your privacy</button>
       </div>
@@ -561,9 +634,6 @@ function Onboard(){
   let body='';
   if(ob.step===1){
     body=`<div class="fade ob-namebg">
-      <img class="ob-bg figday" src="__PAUSE_SURFER__" alt="">
-      <img class="ob-bg fignight scenetall" src="__PAUSE_NIGHTTALL__" alt="">
-      <div class="ob-purplefade"></div>
       <div class="ob-namebg-top">
         <h1>What should we<br>call you?</h1>
         <div style="margin-top:26px">
@@ -590,10 +660,10 @@ function Onboard(){
   const canGo = ob.step!==1 || ob.name.trim();
   const canFin = ob.step!==2 || ob.pick.size;
   const lbl = ob.step===1?'Continue':ob.step===2?'Continue':'Enter Pause';
-  return `<div class="screen">
+  return `<div class="screen ob-flow">
     <div style="position:absolute;top:22px;left:22px;right:22px" class="steps">${[1,2,3].map(i=>`<div class="${i<=ob.step?'on':''}"></div>`).join('')}</div>
     ${body}
-    <div style="position:fixed;bottom:0;left:0;right:0;max-width:var(--maxw);margin:0 auto;padding:14px 22px 26px;${ob.step===0?'':'background:linear-gradient(to top,var(--white) 72%,transparent)'}">
+    <div class="${ob.step===0?'':'actionbar'}" style="position:fixed;bottom:0;left:0;right:0;max-width:var(--maxw);margin:0 auto;padding:14px 22px 26px">
       ${ob.step===0?`<div style="text-align:center;margin-bottom:14px"><button class="btn-text" data-a="go-privacy" style="font-size:11px;letter-spacing:.06em">Your privacy</button></div>`:''}
       <div style="display:flex;gap:10px">
         ${ob.step>0?`<button class="btn btn-ghost" style="flex:1" data-a="ob-back">Back</button>`:''}
@@ -668,7 +738,7 @@ function Home(){
 
   return `<div class="home fade">
     <div class="hero hero-d">
-      <div class="hero-sun${orbCls()}" style="right:34px;top:calc(env(safe-area-inset-top,0) + 30px);width:64px;height:64px"></div>
+      <div class="hero-sun${orbCls()}" style="right:22px;top:calc(env(safe-area-inset-top,0) + 134px);width:64px;height:64px"></div>
       ${heroWaves(130)}
       <div class="hero-toggles">
         <button data-a="home-sound" id="homesound" aria-label="Sound" style="color:${S.sound?'#FAFAFA':'#8f86ad'}">${msvg(S.sound?'volume_up':'volume_off','nav24')}</button>
@@ -701,53 +771,42 @@ function Home(){
 }
 
 /* ============ begin (guided form) ============ */
-function draft(){ if(!S.draft) S.draft={typeId:S.types[0]?.id, cause:null, s0:6, len:300}; return S.draft; }
+function draft(){ if(!S.draft) S.draft={typeId:S.types[0]?.id, cause:null, s0:6, len:600}; return S.draft; }
 function Begin(){
   const d=draft();
-  const tiles=S.types.map(t=>`<button class="tile ${t.id===d.typeId?'on':''}" data-a="bg-type" data-id="${t.id}">
+  // the craving picker only earns its space when there's an actual choice to make
+  const showPicker = S.types.length >= 2;
+  const tiles = showPicker ? S.types.map(t=>`<button class="tile ${t.id===d.typeId?'on':''}" data-a="bg-type" data-id="${t.id}">
     <span class="ic">${msvg(t.icon)}</span><span class="tile-l">${esc(t.label)}</span></button>`).join('')
-    + `<button class="tile dashed" data-a="add-type"><span class="ic" style="color:var(--mute2)">${msvg('add')}</span><span class="tile-l" style="font-weight:500;color:var(--mute)">Add your own</span></button>`;
-  const inList = d.cause && CAUSES.includes(d.cause);
-  const isOther = d.cause && !inList;
-  const causeOpts='<option value="" '+(d.cause?'':'selected')+'>Not sure</option>'
-    + CAUSES.map(c=>`<option value="${esc(c)}" ${d.cause===c?'selected':''}>${esc(c)}</option>`).join('')
-    + `<option value="__other__" ${isOther?'selected':''}>Something else…</option>`;
+    + `<button class="tile dashed" data-a="add-type"><span class="ic" style="color:var(--mute2)">${msvg('add')}</span><span class="tile-l" style="font-weight:500;color:var(--mute)">Add your own</span></button>` : '';
 
-  return `<div class="screen fade" style="padding-bottom:110px">
+  return `<div class="screen" style="padding-bottom:110px">
     <div style="display:flex;align-items:center;justify-content:space-between;padding-top:16px">
       <button data-a="go-home" class="grey">${IC.back}</button>
       <span class="label ink" style="letter-spacing:.16em">New pause</span><span style="width:24px"></span>
     </div>
-
-    <h2 style="margin-top:22px">What's the craving?</h2>
-    <div class="tiles" style="margin-top:14px">${tiles}</div>
-
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:30px">
-      <h3 style="margin:0">How strong is it right now?</h3>
-      <span class="tnum" style="font-size:15px;font-weight:800;color:var(--purple)"><span id="bgval">${d.s0}</span><span style="font-weight:600;color:var(--mute2)">/10</span></span>
+${showPicker?`
+    <span class="label ink" style="display:block;margin-top:26px">What's the craving?</span>
+    <div class="tiles" style="margin-top:12px">${tiles}</div>
+`:''}
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:${showPicker?28:26}px">
+      <span class="label ink">How strong is it right now?</span>
+      <span class="tnum" style="font-size:14px;font-weight:800;color:var(--purple)"><span id="bgval">${d.s0}</span><span style="font-weight:600;color:var(--mute2)">/10</span></span>
     </div>
-    <input type="range" class="range" id="bgslider" min="1" max="10" step="1" value="${d.s0}" style="margin-top:16px">
-    <div style="display:flex;justify-content:space-between;margin-top:6px"><span class="grey" style="font-size:12px">Barely there</span><span class="grey" style="font-size:12px">Very strong</span></div>
+    <input type="range" class="range calm" id="bgslider" min="1" max="10" step="1" value="${d.s0}" style="margin-top:13px">
 
-    <h3 style="margin-top:28px">What set it off? <span style="font-weight:400;color:var(--mute2);font-size:14px">optional</span></h3>
-    <div class="selectwrap">
-      <select class="select ${d.cause?'':'placeholder'}" id="bgcause">${causeOpts}</select>
-      <span class="chev">${msvg('expand_more')}</span>
-    </div>
-    <input type="text" id="bgcauseother" class="select${isOther?'':' hidden'}" placeholder="Type what set it off" maxlength="40" value="${isOther?esc(d.cause):''}" style="margin-top:8px;padding-right:14px">
-
-    <h3 style="margin-top:28px">How long will you pause?</h3>
+    <span class="label ink" style="display:block;margin-top:28px">How long will you pause?</span>
     <div class="dialwrap">
       <svg id="dial" viewBox="0 0 220 220">
         <circle class="d-track" cx="110" cy="110" r="82"/>
         <circle id="dArc" class="d-arc" cx="110" cy="110" r="82" transform="rotate(-90 110 110)"/>
-        <circle id="dHandle" class="d-handle" r="13" cx="110" cy="28"/>
+        <circle id="dHandle" class="d-handle" r="11" cx="110" cy="28"/>
       </svg>
-      <div class="dialval"><span id="dMin">5</span><span class="dialunit">min</span></div>
+      <div class="dialval"><span id="dMin">10</span><span class="dialunit">min</span></div>
     </div>
     <p class="grey" style="text-align:center;font-size:12px;margin-top:0">Drag the dial to set your time</p>
 
-    <div style="position:fixed;bottom:0;left:0;right:0;max-width:var(--maxw);margin:0 auto;padding:14px 22px 26px;background:linear-gradient(to top,var(--white) 74%,transparent)">
+    <div class="actionbar" style="position:fixed;bottom:0;left:0;right:0;max-width:var(--maxw);margin:0 auto;padding:14px 22px 26px">
       <button class="btn btn-red" data-a="bg-start">Start the pause ${IC.arrow}</button>
     </div>
   </div>`;
@@ -756,7 +815,7 @@ function Begin(){
 /* ============ pause (the wave) ============ */
 function PauseView(){
   const p=S.pause; const ty=typeOf(p.typeId)||{label:'this',em:'🌊'};
-  return `<div class="screen" style="padding-bottom:0">
+  return `<div class="screen pausescreen" style="padding-bottom:0">
     <div style="display:flex;align-items:center;justify-content:space-between;padding-top:16px">
       <button data-a="pz-quit" class="grey">${IC.close}</button>
       <span class="label" style="letter-spacing:.16em;display:inline-flex;align-items:center;gap:6px">${msvg(ty.icon,'ic16')} ${esc(ty.label)}</span>
@@ -790,6 +849,24 @@ function PauseView(){
   </div>`;
 }
 
+/* the trigger reflection now lives here, after the wave — it's easier to name what set it off once the craving has eased, and it keeps the pre-pause screen to just what you need to start */
+function causeReflect(){
+  const last=S.sessions[0]; if(!last) return '';
+  const inList = last.cause && CAUSES.includes(last.cause);
+  const isOther = last.cause && !inList;
+  const opts='<option value="" '+(last.cause?'':'selected')+'>Not sure</option>'
+    + CAUSES.map(c=>`<option value="${esc(c)}" ${last.cause===c?'selected':''}>${esc(c)}</option>`).join('')
+    + `<option value="__other__" ${isOther?'selected':''}>Something else…</option>`;
+  return `<div style="margin-top:20px">
+    <span class="label ink" style="display:block;margin-bottom:9px">What set it off? <span style="font-weight:400;color:var(--mute2);font-size:12px;text-transform:none;letter-spacing:0">optional</span></span>
+    <div class="selectwrap" style="margin-top:0">
+      <select class="select ${last.cause?'':'placeholder'}" id="pxcause">${opts}</select>
+      <span class="chev">${msvg('expand_more')}</span>
+    </div>
+    <input type="text" id="pxcauseother" class="select${isOther?'':' hidden'}" placeholder="Type what set it off" maxlength="40" value="${isOther?esc(last.cause):''}" style="margin-top:8px;padding-right:14px">
+  </div>`;
+}
+
 /* ============ passed ============ */
 function Passed(){
   const last=S.sessions[0]; const ty=last?typeOf(last.type):null;
@@ -806,6 +883,7 @@ function Passed(){
         ${statTile('s3', (last?Math.round(last.len/60):0), 'Min waited', MOTIF.taken)}
         ${statTile('s2', S.sessions.filter(x=>x.outcome==='passed').length, 'Waves passed', MOTIF.passed)}
       </div>
+      ${causeReflect()}
       <div style="flex:1;min-height:20px"></div>
       <button class="btn btn-red" data-a="go-patterns" style="margin-bottom:10px">See your patterns ${IC.arrow}</button>
       <button class="tlink grey" data-a="go-home" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">Back home</button>
@@ -820,9 +898,7 @@ function Acted(){
     ${resultHero("You'll catch<br>the next one",34)}
     <div class="hsheet">
       <p class="body grey" style="max-width:23em">You waited ${last?clock(last.elapsed):'0:00'} before you acted.</p>
-      ${last&&last.cause?`<div class="card" style="margin-top:18px;background:var(--grey);border:none">
-        <span class="label ink" style="margin-bottom:6px">What set it off</span>
-        <div style="font-size:20px;font-weight:700;color:var(--purple)">${esc(last.cause)}</div></div>`:''}
+      ${causeReflect()}
       <div style="flex:1;min-height:20px"></div>
       <button class="btn btn-red" data-a="begin" style="margin-bottom:10px">Try another pause ${IC.arrow}</button>
       <button class="tlink grey" data-a="go-home" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">Back home</button>
@@ -844,7 +920,7 @@ function Waves(){
       return `<div class="row">
         <span class="grey tnum" style="width:44px;font-size:12px">${x.t}</span>
         <span style="flex:1"><span style="font-size:15px">${ty?esc(ty.label):esc(x.type)}</span>
-          <span class="grey" style="display:block;font-size:12px">${x.cause?esc(x.cause)+' · ':''}${x.s0}→${x.s1}</span></span>
+          ${(x.cause||(x.s0!=null&&x.s1!=null))?`<span class="grey" style="display:block;font-size:12px">${x.cause?esc(x.cause):''}${(x.cause&&x.s0!=null)?' · ':''}${(x.s0!=null&&x.s1!=null)?`${x.s0}→${x.s1}`:''}</span>`:''}</span>
         <span class="state ${x.outcome==='passed'?'pass':'act'}">${x.outcome==='passed'?'Passed':'Acted'}</span></div>`}).join('');
     return `<div style="margin-top:22px">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px">
@@ -975,7 +1051,7 @@ function Me(){
 
     <div class="card" style="margin-top:14px;background:var(--grey);border:none">
       <span class="label ink" style="margin-bottom:6px;display:inline-flex;align-items:center;gap:6px">${msvg('favorite','ic16')} If you need more than a pause</span>
-      <p class="body grey" style="font-size:13px">Pause can help you ride out a craving, but it isn't therapy or medical care. If you're worried about yourself, please talk to someone you trust or a professional.</p>
+      <p class="body grey" style="font-size:13px"><em>Pause</em> can help you ride out a craving, but it isn't therapy or medical care. If you're worried about your health or safety, please talk to a professional.</p>
     </div>
     <button class="erasebtn" data-a="wipe-ask" style="margin-top:18px">${msvg('delete','ic16')} Erase everything</button>
     <div id="wipebox" class="hidden card" style="margin-top:2px;background:var(--redtint);border:none">
@@ -1158,35 +1234,47 @@ function waterDraw(prog){
   ctx.strokeStyle=rd(0.32); ctx.lineWidth=1.5; ctx.stroke();
 }
 
-/* welcome screen: gently flowing water, previewing the pause metaphor */
+/* welcome screen: the water starts just below the header copy and rapidly falls to its
+   resting level, then keeps the gentle undulation. The drama previews the pause metaphor. */
 let wcCv=null, wcCtx=null, wcW=0, wcH=0, wcRAF=null;
 function welcomeStop(){ if(wcRAF){cancelAnimationFrame(wcRAF);wcRAF=null} if(wcCv){wcCv.remove();wcCv=null;wcCtx=null;} }
 function welcomeInit(){
   welcomeStop();
-  const fr=document.getElementById('frame');
-  const cv=document.createElement('canvas'); cv.id='wcwater';
-  cv.style.cssText='position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none';
-  fr.insertBefore(cv, fr.firstChild);
+  const hero=document.querySelector('.hero-welcome'); if(!hero) return;
   const dpr=Math.min(window.devicePixelRatio||1,2);
-  wcW=fr.clientWidth; wcH=fr.clientHeight;
-  cv.width=Math.round(wcW*dpr); cv.height=Math.round(wcH*dpr);
+  const heroW=hero.clientWidth, heroH=hero.clientHeight;
+  const restF=heroH*0.72, restB=restF-44;             // resting surfaces (front lower, back a touch higher)
+  const lift0=restF-heroH*0.30;                        // start: surface sits just below the header copy
+  // the canvas only ever paints a steady undulation at the resting level; the fall is a compositor-
+  // driven transform (below), so the descent stays smooth even if a paint frame is dropped.
+  const cH=heroH+lift0;                                // extend below the hero so the lift never exposes a gap
+  const cv=document.createElement('canvas'); cv.id='wcwater';
+  cv.style.cssText=`position:absolute;left:0;top:0;width:100%;height:${cH}px;z-index:1;pointer-events:none;will-change:transform;transform:translateY(${-lift0}px)`;
+  hero.insertBefore(cv, hero.firstChild);
+  wcW=heroW; wcH=cH;
+  cv.width=Math.round(heroW*dpr); cv.height=Math.round(cH*dpr);
   const ctx=cv.getContext('2d'); ctx.scale(dpr,dpr); wcCv=cv; wcCtx=ctx;
-  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ampF=Math.max(11,heroH*0.026), ampB=Math.max(8,heroH*0.019);
   const draw=()=>{
     if(!wcCtx) return; const W=wcW,H=wcH; wcCtx.clearRect(0,0,W,H);
-    const surf=H*0.72, t=Date.now()/1000, k=2*Math.PI/W*1.25;
-    const dk=document.documentElement.classList.contains('dark'); const base=dk?'150,140,192':'192,57,43'; const mm=dk?1.7:1;
-    const rd=a=>`rgba(${base},${(a*mm).toFixed(3)})`;
-    waterLayer(wcCtx,W,H,surf+8,t,8,k*1.7,0.5,2.1,rd(0.07));
-    const g=wcCtx.createLinearGradient(0,surf,0,H);
-    g.addColorStop(0,rd(0.12)); g.addColorStop(1,rd(0.20));
-    waterLayer(wcCtx,W,H,surf,t,11,k,0.85,0,g);
+    const t=Date.now()/1000, k=2*Math.PI/W*1.35;
+    // back layer (fainter, higher), then front layer for depth — the app's purple, matching the hero
+    waterLayer(wcCtx,W,H,restB,t,ampB,k,0.9,0,'rgba(156,147,184,.34)');
+    const g=wcCtx.createLinearGradient(0,restF,0,H);
+    g.addColorStop(0,'rgba(109,98,153,.58)'); g.addColorStop(1,'rgba(88,78,133,.72)');
+    waterLayer(wcCtx,W,H,restF,t,ampF,k,1.15,1.3,g);
+    // crest highlight on the front surface
     wcCtx.beginPath();
-    for(let x=0;x<=W;x+=6){const y=surf+Math.sin(x*k+t*0.85)*11+Math.sin(x*k*2.1-t*1.2)*4; x===0?wcCtx.moveTo(0,y):wcCtx.lineTo(x,y);}
-    wcCtx.strokeStyle=rd(0.28); wcCtx.lineWidth=1.5; wcCtx.stroke();
-    if(!reduce) wcRAF=requestAnimationFrame(draw);
+    for(let x=0;x<=W;x+=6){ const y=restF+Math.sin(x*k+t*1.15+1.3)*ampF+Math.sin(x*k*2.1-t*1.15*1.4)*ampF*0.4; x===0?wcCtx.moveTo(0,y):wcCtx.lineTo(x,y); }
+    wcCtx.strokeStyle='rgba(201,193,224,.5)'; wcCtx.lineWidth=1.5; wcCtx.stroke();
+    wcRAF=requestAnimationFrame(draw);
   };
   draw();
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce){ cv.style.transform='translateY(0)'; return; }
+  // smoothstep-like ease across a deliberate 5-second descent, handed to the compositor
+  cv.animate([{transform:`translateY(${-lift0}px)`},{transform:'translateY(0)'}],
+    {duration:5000, easing:'cubic-bezier(.45,.05,.55,.95)', fill:'both'});
 }
 
 /* recorded sea, a seamless 30s loop playing across the whole app; louder on home, quieter elsewhere */
@@ -1268,10 +1356,18 @@ function onVis(){ if(document.visibilityState==='visible' && S.view==='pause'){
   if(leftOf(S.pause?.endTime)<=0){ recordPause('passed'); go('passed'); } } }
 
 /* ============ input wiring ============ */
-function fillRange(el){ const mn=+el.min,mx=+el.max,v=+el.value; const p=(v-mn)/(mx-mn)*100; const c=el.classList.contains('calm')?'var(--purple)':'var(--act)'; el.style.background=`linear-gradient(to right,${c} ${p}%,var(--grey) ${p}%)`; }
+function fillRange(el){ const mn=+el.min,mx=+el.max,v=+el.value; const p=(v-mn)/(mx-mn)*100;
+  const pausing=document.documentElement.classList.contains('pausing');
+  const dk=document.documentElement.classList.contains('dark');
+  const c=el.classList.contains('calm')?(pausing&&dk?'#b7addb':'var(--purple)'):'var(--act)';
+  const track='var(--faint2)';                 // same soft grey as the dial's unfilled ring
+  el.style.background=`linear-gradient(to right,${c} ${p}%,${track} ${p}%)`; }
 
 /* radial, drag-to-set time dial (1–20 min) */
+let dialSetMin=null;
+function syncLenChips(sec){ document.querySelectorAll('[data-a=bg-len]').forEach(x=>x.classList.toggle('on',+x.dataset.s===sec)); }
 function initDial(){
+  dialSetMin=null;
   const svg=document.getElementById('dial'); if(!svg) return;
   const cx=110, cy=110, R=82, C=2*Math.PI*R, MIN=1, MAX=20;
   const arc=document.getElementById('dArc'), handle=document.getElementById('dHandle'), lab=document.getElementById('dMin');
@@ -1283,8 +1379,10 @@ function initDial(){
     arc.style.strokeDasharray=`${(C*f).toFixed(1)} ${C.toFixed(1)}`;
     handle.setAttribute('cx',(cx+R*Math.cos(a)).toFixed(1));
     handle.setAttribute('cy',(cy+R*Math.sin(a)).toFixed(1));
+    syncLenChips(m*60);
     lastM=m;
   }
+  dialSetMin=setMin;
   function fromEvent(e, first){
     const r=svg.getBoundingClientRect();
     const px=(e.clientX)-r.left-r.width/2, py=(e.clientY)-r.top-r.height/2;
@@ -1317,6 +1415,14 @@ function wire(){
     else { if(co) co.classList.add('hidden'); draft().cause=v||null; e.target.classList.toggle('placeholder', !v); }
   });
   if(co) co.addEventListener('input',e=>{ draft().cause=e.target.value.trim()||null; });
+  const pcs=document.getElementById('pxcause'), pco=document.getElementById('pxcauseother');
+  if(pcs) pcs.addEventListener('change',e=>{
+    const v=e.target.value, last=S.sessions[0]; if(!last) return;
+    if(v==='__other__'){ if(pco){ pco.classList.remove('hidden'); pco.focus(); } last.cause=(pco&&pco.value.trim())||null; e.target.classList.remove('placeholder'); }
+    else { if(pco) pco.classList.add('hidden'); last.cause=v||null; e.target.classList.toggle('placeholder', !v); }
+    save();
+  });
+  if(pco) pco.addEventListener('input',e=>{ const last=S.sessions[0]; if(last){ last.cause=e.target.value.trim()||null; save(); } });
   document.querySelectorAll('input[data-plan]').forEach(inp=>{
     inp.addEventListener('input',e=>{ const t=typeOf(e.target.dataset.plan); if(t){ t.plan=e.target.value.trim()||undefined; save(); } });
   });
@@ -1374,8 +1480,8 @@ app.addEventListener('click',e=>{
       document.querySelectorAll('.scale>button').forEach((b,i)=>b.classList.toggle('on',i<draft().s0)); break;
     case'bg-cause':{const c=el.dataset.c; const d=draft(); d.cause=d.cause===c?null:c;
       document.querySelectorAll('[data-a=bg-cause]').forEach(x=>x.classList.toggle('on',x.dataset.c===d.cause)); break;}
-    case'bg-len': draft().len=+el.dataset.s;
-      document.querySelectorAll('[data-a=bg-len]').forEach(x=>x.classList.toggle('on',+x.dataset.s===draft().len)); break;
+    case'bg-len': if(dialSetMin){ dialSetMin(+el.dataset.s/60); } else { draft().len=+el.dataset.s; syncLenChips(+el.dataset.s); } break;
+    case'bg-finetune':{ const w=document.getElementById('dialbox'); if(w){ const hid=w.classList.toggle('hidden'); el.textContent=hid?'Fine-tune':'Hide dial'; } break; }
     case'bg-start':{const d=draft();
       S.pause={typeId:d.typeId,cause:d.cause,s0:d.s0,s1:d.s0,len:d.len,endTime:Date.now()+d.len*1000};
       S.draft=null; go('pause'); break;}
@@ -1421,7 +1527,7 @@ document.addEventListener('pointerdown', function unlockAudio(){
 
 // brief logo splash, then reveal the app (skipped when installed: the OS already showed one)
 if(document.documentElement.classList.contains('app-installed')){ const sp=document.getElementById('splash'); if(sp) sp.remove(); }
-else setTimeout(()=>{ const sp=document.getElementById('splash'); if(sp){ sp.classList.add('gone'); setTimeout(()=>sp.remove(),550); } }, 1150);
+else setTimeout(()=>{ const sp=document.getElementById('splash'); if(sp){ sp.classList.add('gone'); setTimeout(()=>{ sp.remove(); if(document.querySelector('.hero-welcome')) welcomeInit(); },550); } }, 1150);
 </script>
 </body>
 </html>
