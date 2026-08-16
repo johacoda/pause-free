@@ -5,6 +5,7 @@ const need = {
   home:'home', waves:'waves', monitoring:'monitoring', person:'person',
   arrow_back:'arrow_back', arrow_forward:'arrow_forward', close:'close', lock:'lock', add:'add',
   volume_up:'volume_up', volume_off:'volume_off', expand_more:'keyboard_arrow_down', lightbulb:'lightbulb', light_mode:'light_mode', dark_mode:'dark_mode',
+  share:'share', download:'download', delete:'delete',
   // type presets
   smoking_rooms:'smoking_rooms', sports_bar:'sports_bar', cake:'cake', devices:'devices',
   casino:'casino', fastfood:'fastfood', local_cafe:'local_cafe', shopping_bag:'shopping_bag',
@@ -15,6 +16,9 @@ const need = {
   laptop_mac:'laptop_mac', directions_run:'directions_run', bedtime:'bedtime', chat_bubble:'chat_bubble',
   shopping_cart:'shopping_cart', fitness_center:'fitness_center', local_pizza:'local_pizza', savings:'savings',
   mood:'mood', favorite:'favorite',
+  // plan suggestion icons
+  local_drink2:'local_drink', park:'park', self_improvement:'self_improvement',
+  call:'call', directions_walk:'directions_walk', schedule:'schedule',
 };
 const icons={};
 for(const [key,file] of Object.entries(need)){

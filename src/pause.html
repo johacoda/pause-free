@@ -98,12 +98,14 @@
   .statline .sv small{font-size:13px;font-weight:600;color:var(--mute2);margin-left:2px}
 
   /* redesigned home + welcome: sun-and-waves hero, cream sheet, tinted stat tiles */
-  .home{min-height:100%;display:flex;flex-direction:column}
+  .home{min-height:100%;display:flex;flex-direction:column;position:relative}
   .hero{position:relative;background:#3c3158;overflow:hidden}
   .hero-d{flex:0 0 auto;height:250px}
   .hero-w{flex:1 1 auto}
   .herowave{position:absolute;left:0;bottom:0;width:100%;display:block}
-  .hero-sun{position:absolute;border-radius:50%;background:radial-gradient(circle at 50% 40%,#f0a878,#e07a4e)}
+  .hero-sun{position:absolute;border-radius:50%;background:radial-gradient(circle at 50% 40%,#f0a878,#e07a4e);overflow:hidden}
+  .hero-sun.moon{background:radial-gradient(circle at 32% 45%,#eef0f7,#c9c2dd)}
+  .hero-sun.moon::before{content:'';position:absolute;width:100%;height:100%;border-radius:50%;background:#3c3158;top:-16%;left:34%}
   .hero-toggles{position:absolute;top:calc(env(safe-area-inset-top,0) + 12px);right:14px;display:flex;gap:2px;z-index:3}
   .hero-toggles button{width:38px;height:38px;display:flex;align-items:center;justify-content:center;color:#c9c1e0}
   .d-head{position:absolute;top:calc(env(safe-area-inset-top,0) + 40px);left:22px;right:22px;z-index:2}
@@ -117,18 +119,61 @@
   .stat .k{font-size:9.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--mute2);margin-top:6px;position:relative;z-index:2;white-space:nowrap}
   .stat svg{position:absolute;left:0;right:0;bottom:0;width:100%;height:44px;display:block}
   .stat.s1{background:var(--t1)} .stat.s2{background:var(--t2)} .stat.s3{background:var(--t3)}
-  .hero-copy{position:absolute;top:calc(env(safe-area-inset-top,0) + 44px);left:26px;right:26px;text-align:center;z-index:2}
+  .hero-copy{position:absolute;top:calc(env(safe-area-inset-top,0) + 40px);left:26px;right:26px;text-align:center;z-index:2}
+  .gazer{position:absolute;left:0;bottom:0;width:100%;height:auto;z-index:1;pointer-events:none}
+  .fignight{display:none}
+  .dark .figday{display:none}
+  .dark .fignight{display:block}
   .hero-eyebrow{font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#c9c1e0}
-  .hero-mark{display:block;margin:0 auto 4px;width:156px;height:auto}
-  .hero-title{font-size:40px;font-weight:800;line-height:1.05;letter-spacing:-.02em;color:#FAFAFA;margin-top:12px}
-  .welcome-sheet{flex:0 0 auto;align-items:center;text-align:center;padding-bottom:calc(30px + env(safe-area-inset-bottom,0))}
+  .hero-mark{display:block;margin:0 auto 4px;width:94px;height:auto}
+  .ob-illus{width:190px;height:auto;display:block;margin:0 auto}
+  .ob-namebg{flex:1;position:relative;margin:0 -22px;padding:9vh 22px 0;overflow:hidden;background:linear-gradient(to bottom,rgb(236,248,251),rgb(229,245,250))}
+  .dark .ob-namebg{background:#3c3158}
+  .ob-bg{position:absolute;left:0;right:0;bottom:0;width:100%;height:auto;z-index:0;display:block}
+  .ob-bg.fignight{display:none}
+  .dark .ob-bg.figday{display:none}
+  .dark .ob-bg.fignight{display:block}
+  .ob-bg.scenetall{top:0;bottom:0;height:100%;object-fit:cover;object-position:center bottom}
+  .ob-purplefade{position:absolute;inset:0;z-index:1;pointer-events:none;display:none;background:linear-gradient(to bottom,#3c3158 0%,#3c3158 30%,rgba(60,49,88,0) 50%)}
+  .dark .ob-purplefade{display:block}
+  .ob-namebg-top{position:relative;z-index:2}
+  .hero-title{font-size:58px;font-weight:300;line-height:.98;letter-spacing:-.03em;color:#FAFAFA;margin-top:22px}
+  .hero-title .wv{font-weight:800;font-style:italic;letter-spacing:-.02em}
+  .welcome-sheet{flex:0 0 auto;align-items:center;text-align:center;padding-bottom:calc(30px + env(safe-area-inset-bottom,0));background:#f4e9d3}
+  .welcome-sheet .w-sub{color:#6b5636}
+  .welcome-sheet .btn-text{color:#8a7554}
+  .dark .welcome-sheet{background:var(--white)}
+  .dark .welcome-sheet .w-sub{color:var(--mute)}
+  .dark .welcome-sheet .btn-text{color:var(--ink)}
   .w-sub{color:var(--mute);font-size:16px;line-height:1.5;margin:0 auto 22px;max-width:20em}
+  /* settings controls */
+  .themesw{position:relative;width:64px;height:34px;border-radius:18px;background:var(--grey);border:none;cursor:pointer;display:block}
+  .themesw .knob{position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:50%;background:var(--purple);color:#fff;display:flex;align-items:center;justify-content:center;transition:transform .2s}
+  .themesw.on .knob{transform:translateX(30px)}
+  .themesw .knob svg{width:16px;height:16px}
+  .iconrow{display:flex;gap:10px}
+  .icontab{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 10px;border-radius:14px;background:var(--grey);border:none;cursor:pointer}
+  .icontab svg{width:22px;height:22px;color:var(--purple)}
+  .icontab span{font-size:12px;font-weight:600;color:var(--mute)}
+  .erasebtn{display:inline-flex;align-items:center;gap:8px;background:none;border:none;color:var(--actx);font-size:14px;font-weight:600;padding:8px 0;cursor:pointer}
+  .erasebtn svg{width:17px;height:17px}
   .divider{height:1px;background:var(--faint)}
 
   .chip{padding:9px 14px;border-radius:10px;font-size:14px;font-weight:500;color:var(--ink);
     background:var(--grey);white-space:nowrap;transition:all .12s;border:1px solid transparent}
   .chip.on{background:var(--purple);color:var(--white)}
   .chiprow{display:flex;flex-wrap:wrap;gap:8px}
+  /* if-then plan items */
+  .planitem{margin-bottom:24px}
+  .planlabel{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:10px;line-height:1.4}
+  .planlabel b{font-weight:800;color:var(--purple)}
+  input[type=text].planinput{font-size:16px;font-weight:500;color:var(--ink)}
+  .sugrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .sugchip{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:22px;background:var(--grey);
+    border:1px solid transparent;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;transition:all .12s}
+  .sugchip svg{width:15px;height:15px;color:var(--purple)}
+  .sugchip:active{background:var(--purple);color:var(--white)}
+  .sugchip:active svg{color:var(--white)}
 
   .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .tile{display:flex;align-items:center;gap:11px;padding:14px;border-radius:12px;background:var(--grey);
@@ -311,6 +356,20 @@ const PZ_MSGS = [
 ];
 // stimulus control: moving away from the cue is the strongest single strategy, shown first
 const MOVE_NUDGE = "If you can, step away from where you are.<br>Even the next room helps.";
+const SUGGESTIONS = [
+  {s:'drink water', i:'local_drink', l:'Water'},
+  {s:'step outside', i:'park', l:'Step out'},
+  {s:'take five breaths', i:'self_improvement', l:'Breathe'},
+  {s:'call someone', i:'call', l:'Call'},
+  {s:'go for a walk', i:'directions_walk', l:'Walk'},
+  {s:'wait ten minutes', i:'schedule', l:'Wait'},
+];
+function sugChips(id){ return SUGGESTIONS.map(x=>`<button class="sugchip" data-a="plan-sug" data-id="${id}" data-s="${esc(x.s)}">${msvg(x.i,'ic16')}<span>${x.l}</span></button>`).join(''); }
+function planItem(t){ return `<div class="planitem">
+  <div class="planlabel">If I crave <b>${esc(t.label)}</b>, I'll…</div>
+  <input class="planinput" type="text" data-plan="${t.id}" value="${esc(t.plan||'')}" maxlength="120" placeholder="e.g. drink water and step outside" autocomplete="off">
+  <div class="sugrow">${sugChips(t.id)}</div>
+</div>`; }
 const PICK_ICONS = ['bolt','local_fire_department','eco','menu_book','sports_esports','headphones','local_drink','cookie','laptop_mac','directions_run','bedtime','chat_bubble','shopping_cart','fitness_center','local_pizza','savings','mood','favorite'];
 
 /* ============ storage ============ */
@@ -477,18 +536,21 @@ function render(){
 }
 
 /* ============ onboarding ============ */
+// original back-view surfer looking out at the water, drawn in the app palette
+function gazer(){ return `<img class="gazer figday" src="__PAUSE_FIGLIGHT__" alt=""><img class="gazer fignight" src="__PAUSE_FIGNIGHT__" alt="">`; }
 let ob = {step:0, name:'', pick:new Set()};
 function Onboard(){
   if(ob.step===0){
     return `<div class="home fade">
       <div class="hero hero-w">
-        <div class="hero-sun" style="left:50%;transform:translateX(-50%);top:36%;width:140px;height:140px"></div>
         ${heroWaves(210)}
         <div class="hero-copy">
           <img class="hero-mark" src="__PAUSE_SCRIPT__" alt="Pause">
-          <div class="hero-title">A craving<br>is a wave</div>
+          <div class="hero-eyebrow" style="margin-top:6px">Welcome, surfer</div>
+          <div class="hero-title" style="margin-top:14px">A craving<br>is a <span class="wv">wave</span></div>
         </div>
       </div>
+      ${gazer()}
       <div class="hsheet welcome-sheet">
         <p class="w-sub">It rises, then it passes.<br>Pause helps you wait it out.</p>
         <button class="btn btn-red" data-a="ob-next">Get started ${IC.arrow}</button>
@@ -498,12 +560,18 @@ function Onboard(){
   }
   let body='';
   if(ob.step===1){
-    body=`<div class="fade" style="margin-top:15vh">
-      <h1>What should we<br>call you?</h1>
-      <div style="margin-top:34px">
-        <input type="text" id="obName" placeholder="Your first name" maxlength="24" value="${esc(ob.name)}" autocomplete="off">
-      </div></div>`;
-  } else {
+    body=`<div class="fade ob-namebg">
+      <img class="ob-bg figday" src="__PAUSE_SURFER__" alt="">
+      <img class="ob-bg fignight scenetall" src="__PAUSE_NIGHTTALL__" alt="">
+      <div class="ob-purplefade"></div>
+      <div class="ob-namebg-top">
+        <h1>What should we<br>call you?</h1>
+        <div style="margin-top:26px">
+          <input type="text" id="obName" placeholder="Your first name" maxlength="24" value="${esc(ob.name)}" autocomplete="off">
+        </div>
+      </div>
+    </div>`;
+  } else if(ob.step===2){
     const tiles = S.types.map(t=>`<button class="tile ${ob.pick.has(t.id)?'on':''}" data-a="ob-pick" data-id="${t.id}">
       <span class="ic">${msvg(t.icon)}</span><span class="tile-l">${esc(t.label)}</span></button>`).join('');
     body=`<div class="fade" style="margin-top:8vh;padding-bottom:120px">
@@ -512,12 +580,18 @@ function Onboard(){
       <div class="tiles">${tiles}
         <button class="tile dashed" data-a="add-type"><span class="ic" style="color:var(--mute2)">${msvg('add')}</span><span class="tile-l" style="font-weight:500;color:var(--mute)">Add your own</span></button>
       </div></div>`;
+  } else {
+    const picked = S.types.filter(t=>ob.pick.has(t.id));
+    body=`<div class="fade" style="margin-top:6vh;padding-bottom:140px">
+      <h1>Make a quick plan</h1>
+      <p class="body grey" style="margin-top:10px;margin-bottom:26px">Decide now what you'll do when a craving hits. You can skip this.</p>
+      ${picked.map(t=>planItem(t)).join('')}</div>`;
   }
   const canGo = ob.step!==1 || ob.name.trim();
   const canFin = ob.step!==2 || ob.pick.size;
-  const lbl = ob.step===0?'Get started':ob.step===1?'Continue':`Start with ${ob.pick.size||'…'}`;
+  const lbl = ob.step===1?'Continue':ob.step===2?'Continue':'Enter Pause';
   return `<div class="screen">
-    <div style="position:absolute;top:22px;left:22px;right:22px" class="steps">${[0,1,2].map(i=>`<div class="${i<=ob.step?'on':''}"></div>`).join('')}</div>
+    <div style="position:absolute;top:22px;left:22px;right:22px" class="steps">${[1,2,3].map(i=>`<div class="${i<=ob.step?'on':''}"></div>`).join('')}</div>
     ${body}
     <div style="position:fixed;bottom:0;left:0;right:0;max-width:var(--maxw);margin:0 auto;padding:14px 22px 26px;${ob.step===0?'':'background:linear-gradient(to top,var(--white) 72%,transparent)'}">
       ${ob.step===0?`<div style="text-align:center;margin-bottom:14px"><button class="btn-text" data-a="go-privacy" style="font-size:11px;letter-spacing:.06em">Your privacy</button></div>`:''}
@@ -530,6 +604,8 @@ function Onboard(){
 }
 
 /* ============ home ============ */
+// the orb is a warm sun by day and a pale moon in the evening, so it doesn't feel off at night
+function orbCls(){ const h=new Date().getHours(); return (h<7||h>=18)?' moon':''; }
 // the sun-and-waves hero, reused across screens; the surface undulates in place (like the pause water)
 function heroWavePath(W,H,surf,amp,t,spd,phase){
   const k=2*Math.PI/W*1.35;
@@ -546,7 +622,7 @@ function heroWaves(h){
 }
 let heroRAF=null;
 function heroDraw(){
-  const t=Date.now()/1000;
+  const t=Date.now()/1000*0.85;               // 15% slower, gentler undulation
   document.querySelectorAll('.herowave').forEach(svg=>{
     const H=+svg.dataset.h||120, W=480;
     const b=svg.querySelector('.hb'), f=svg.querySelector('.hf');
@@ -569,13 +645,11 @@ const MOTIF={
 function statTile(cls,val,label,motif){ return `<div class="stat ${cls}"><div class="n">${val}</div><div class="k">${label}</div>${motif}</div>`; }
 // slim hero used across the top-level screens
 function navHero(title){ return `<div class="hero" style="height:168px">
-  <div class="hero-sun" style="right:28px;top:calc(env(safe-area-inset-top,0) + 24px);width:50px;height:50px"></div>
   ${heroWaves(84)}
   <div class="d-head"><div class="d-name" style="font-size:29px">${title}</div></div>
 </div>`; }
 // taller hero for the two result screens
 function resultHero(titleHTML,tf){ return `<div class="hero" style="height:248px">
-  <div class="hero-sun" style="right:30px;top:calc(env(safe-area-inset-top,0) + 28px);width:56px;height:56px"></div>
   ${heroWaves(120)}
   <div class="d-head"><div class="d-name" style="font-size:${tf||36}px">${titleHTML}</div></div>
 </div>`; }
@@ -594,7 +668,7 @@ function Home(){
 
   return `<div class="home fade">
     <div class="hero hero-d">
-      <div class="hero-sun" style="right:34px;top:calc(env(safe-area-inset-top,0) + 30px);width:64px;height:64px"></div>
+      <div class="hero-sun${orbCls()}" style="right:34px;top:calc(env(safe-area-inset-top,0) + 30px);width:64px;height:64px"></div>
       ${heroWaves(130)}
       <div class="hero-toggles">
         <button data-a="home-sound" id="homesound" aria-label="Sound" style="color:${S.sound?'#FAFAFA':'#8f86ad'}">${msvg(S.sound?'volume_up':'volume_off','nav24')}</button>
@@ -839,14 +913,16 @@ function PrivacyView(){
       <span class="label ink" style="letter-spacing:.16em">Privacy</span><span style="width:24px"></span>
     </div>
     <h1 style="margin-top:22px">Your privacy</h1>
-    <p class="lede grey" style="margin-top:12px">Everything you put into Pause stays on your device. There's no account, and no server holding your entries.</p>
-    ${pSection('What Pause keeps, and where', `It saves your first name, your list of cravings, and a record of each pause on this device, using your browser's own storage. Pákó never receives a copy.`)}
-    ${pSection('What it does not do', `No account, no server storing your entries, and no analytics or third-party trackers inside the tool. Nothing you type is sent anywhere on its own.`)}
-    ${pSection('Hosting', `Pause is hosted on Netlify at pause.pako.health. To open the page, your browser requests it from Netlify, so Netlify can see standard technical details such as your IP address in its logs. That happens as the page loads, before you type anything, and it never includes what you enter into Pause.`)}
-    ${pSection('Sharing your data', `You can export your history or share a summary from Settings. That copy is made on your device, and it only goes somewhere if you choose to send it.`)}
-    ${pSection('Your control', `You can erase your name, your list, and your full history at any time from Settings. Clearing your browser data removes it too. Once erased, it cannot be recovered, because there is no backup anywhere.`)}
-    ${pSection('Not medical care', `Pause is a self-help tool, not therapy or medical treatment. If you are struggling, or worried about yourself, please reach out to a health professional or someone you trust.`)}
-    <p class="body grey" style="font-size:12px;margin-top:26px">Questions about your privacy can reach the Pákó team through pako.health.</p>
+    <p class="lede grey" style="margin-top:12px">Pause keeps everything on your device. There's no account, no server storing your entries, and no analytics or third-party trackers. What you type stays in your own browser, and it only ever leaves if you choose to send it.</p>
+    ${pSection('What Pause stores, and where', `It saves your first name (shown only on your home screen), the list of cravings you're working on, and a record of each pause: the craving, how strong it felt before and after, how long you waited, any trigger you choose to add, and whether the craving passed or you acted on it. All of it lives in your browser's own local storage, on the device you're using. Pákó never receives it and keeps no copy.`)}
+    ${pSection('What Pause never does', `It never creates an account or asks you to log in. It never sends your entries to a server. It carries no analytics, advertising, or third-party tracking. It never asks for your email. And it never sells or shares your data, because it never receives your data in the first place. Once the page loads its font and icons, it doesn't call out to the internet again.`)}
+    ${pSection('Hosting', `Pause is a static page hosted on Netlify at pause.pako.health, with no server-side functions, so the tool itself keeps no log of what you do. To deliver the page, Netlify's network handles your browser's request and can see standard technical details such as your IP address and the time of your visit, the same as any website you open. This happens as the page loads, before you type anything, and it never includes what you enter. There's no analytics on this page, which is why there's no cookie banner.`)}
+    ${pSection('Sharing your own data', `Pause lets you export a copy of your history or share a short summary, for example to give to a coach or a doctor. That copy is made on your device, and it only goes somewhere if you send it. The choice is entirely yours.`)}
+    ${pSection('Sensitive information', `Some of what Pause helps with is deeply personal. That is exactly why it is built to keep everything on your device and out of anyone else's hands, including ours. Remember that anyone with access to your device could open Pause, so use a device lock if privacy at home matters to you.`)}
+    ${pSection('Your control', `You are in control of everything Pause holds. You can erase your name, your list, and your entire history at any time from the Settings screen, and clearing your browser's data for this site removes it too. Once erased, it cannot be recovered, because there is no backup anywhere.`)}
+    ${pSection('Not medical care', `Pause is a self-help tool, not therapy or medical treatment, and it does not give medical advice. If you are struggling, or worried about yourself, please reach out to a health professional or someone you trust.`)}
+    ${pSection('Your rights', `Depending on where you live, data protection laws such as the Nigeria Data Protection Act and the EU GDPR give you rights over your personal information. Because Pause keeps your entries on your own device and Pákó does not hold them, you can exercise most of these rights yourself, using the erase and export controls in the tool.`)}
+    <p class="body grey" style="font-size:12px;margin-top:26px">Last updated 8 August 2026. Questions about this page or about Pause? Reach the Pákó team through pako.health.</p>
   </div>`;
 }
 
@@ -862,12 +938,11 @@ function Me(){
       <span class="label ink" style="margin-bottom:8px">Your name</span>
       <input type="text" id="meName" value="${esc(S.name)}" maxlength="24" placeholder="Your name" autocomplete="off">
     </div>
-    <div style="margin-top:30px">
-      <span class="label ink" style="margin-bottom:12px;display:block">Appearance</span>
-      <div class="seg" style="max-width:260px">
-        <button data-a="theme" data-v="light" class="${S.theme!=='dark'?'on':''}">Light</button>
-        <button data-a="theme" data-v="dark" class="${S.theme==='dark'?'on':''}">Dark</button>
-      </div>
+    <div style="margin-top:30px;display:flex;align-items:center;justify-content:space-between">
+      <span class="label ink">Dark mode</span>
+      <button class="themesw ${S.theme==='dark'?'on':''}" data-a="theme-toggle" aria-label="Toggle dark mode">
+        <span class="knob">${S.theme==='dark'?msvg('dark_mode','ic16'):msvg('light_mode','ic16')}</span>
+      </button>
     </div>
 
     <div style="margin-top:30px">
@@ -879,23 +954,22 @@ function Me(){
 
     <div style="margin-top:30px">
       <span class="label ink" style="margin-bottom:8px;display:block">If-then plans</span>
-      <p class="body grey" style="font-size:12.5px;margin-bottom:16px">Deciding in advance makes it easier to follow through.</p>
-      ${S.types.map(t=>`<div style="margin-bottom:14px">
-        <span style="display:block;font-size:12px;font-weight:600;color:var(--mute);margin-bottom:5px">If I crave ${esc(t.label)}, I will…</span>
-        <input type="text" data-plan="${t.id}" value="${esc(t.plan||'')}" maxlength="120" placeholder="e.g. drink water and step outside" autocomplete="off">
-      </div>`).join('')}
+      <p class="body grey" style="font-size:13px;margin-bottom:18px">Deciding in advance makes it easier to follow through.</p>
+      ${S.types.map(t=>planItem(t)).join('')}
     </div>
 
     <div style="margin-top:30px">
       <span class="label ink" style="margin-bottom:12px;display:block">Your data</span>
-      <button class="btn btn-ghost btn-sm" data-a="share-sum" style="margin-bottom:8px">Share a summary</button>
-      <button class="btn btn-ghost btn-sm" data-a="export-csv">Download my history</button>
+      <div class="iconrow">
+        <button class="icontab" data-a="share-sum">${msvg('share','nav24')}<span>Share summary</span></button>
+        <button class="icontab" data-a="export-csv">${msvg('download','nav24')}<span>Download</span></button>
+      </div>
       <p class="body grey" style="font-size:12px;margin-top:10px">The copy is made on your device and only leaves it if you send it.</p>
     </div>
 
     <div class="card" style="margin-top:28px;background:var(--grey);border:none">
       <span class="label ink" style="margin-bottom:6px;display:inline-flex;align-items:center;gap:6px">${msvg('lock','ic16')} Private by design</span>
-      <p class="body grey" style="font-size:13px">Pause runs entirely in your browser. A web host delivers the app to your device once, then it works on its own. There's no account, and no server ever receives what you enter. Everything you log stays in this browser, on your device, and clearing your browser data erases it.</p>
+      <p class="body grey" style="font-size:13px">Pause runs entirely in your browser, with no account and no server. Everything you log stays on your device.</p>
       <button class="btn-text" data-a="go-privacy" style="margin-top:12px;font-size:11px;letter-spacing:.08em">Read the full privacy notice</button>
     </div>
 
@@ -903,7 +977,7 @@ function Me(){
       <span class="label ink" style="margin-bottom:6px;display:inline-flex;align-items:center;gap:6px">${msvg('favorite','ic16')} If you need more than a pause</span>
       <p class="body grey" style="font-size:13px">Pause can help you ride out a craving, but it isn't therapy or medical care. If you're worried about yourself, please talk to someone you trust or a professional.</p>
     </div>
-    <button class="tlink grey" data-a="wipe-ask" style="margin-top:18px">Erase everything</button>
+    <button class="erasebtn" data-a="wipe-ask" style="margin-top:18px">${msvg('delete','ic16')} Erase everything</button>
     <div id="wipebox" class="hidden card" style="margin-top:2px;background:var(--redtint);border:none">
       <p class="body" style="font-size:14px;margin-bottom:12px">This erases your whole history and settings on this device. It can't be undone.</p>
       <div style="display:flex;gap:10px">
@@ -1116,29 +1190,44 @@ function welcomeInit(){
 }
 
 /* recorded sea, a seamless 30s loop playing across the whole app; louder on home, quieter elsewhere */
-let SEA=null, audioUnlocked=false, seaEl=null, seaFadeTimer=null;
+let SEA=null, audioUnlocked=false, seaCtx=null, seaBuf=null, seaSrc=null, seaGain=null;
 const SEA_LOOP='__PAUSE_WAVES__';                        // 30s crossfaded ocean loop, inlined at build
-const SEA_HOME=0.2, SEA_ELSE=0.2;                        // even volume across the whole app
+const SEA_HOME=0.14, SEA_ELSE=0.14;                      // even, gentle volume across the whole app
 function seaLevel(){ return S.view==='home' ? SEA_HOME : SEA_ELSE; }
-function seaFade(to,ms,done){
-  if(!seaEl) return;
-  if(seaFadeTimer){ clearInterval(seaFadeTimer); seaFadeTimer=null; }
-  const from=seaEl.volume, steps=Math.max(1,Math.round(ms/50)); let k=0;
-  seaFadeTimer=setInterval(()=>{ k++; seaEl.volume=Math.min(1,Math.max(0, from+(to-from)*k/steps));
-    if(k>=steps){ clearInterval(seaFadeTimer); seaFadeTimer=null; if(done) done(); } },50);
+function seaFadeGain(to,secs){
+  if(!seaGain||!seaCtx) return;
+  try{ const t=seaCtx.currentTime; seaGain.gain.cancelScheduledValues(t); seaGain.gain.setValueAtTime(seaGain.gain.value,t); seaGain.gain.linearRampToValueAtTime(to,t+secs); }catch(e){}
+}
+function seaDecode(cb){
+  if(seaBuf){ cb(seaBuf); return; }
+  try{
+    const b=atob(SEA_LOOP.split(',')[1]); const u8=new Uint8Array(b.length);
+    for(let i=0;i<b.length;i++) u8[i]=b.charCodeAt(i);
+    seaCtx.decodeAudioData(u8.buffer, buf=>{ seaBuf=buf; cb(buf); }, ()=>cb(null));
+  }catch(e){ cb(null); }
 }
 function seaStart(){
-  if(!S.sound || SEA) return;
-  try{
-    if(!seaEl){ seaEl=new Audio(SEA_LOOP); seaEl.loop=true; seaEl.preload='auto'; seaEl.setAttribute('playsinline',''); }
-    seaEl.volume=0; const p=seaEl.play(); if(p&&p.catch) p.catch(()=>{});   // media element: plays through the iOS ring switch
-    SEA=true; seaFade(seaLevel(), 2600);                                     // gentle swell in
-  }catch(e){ SEA=null; }
+  if(!S.sound || SEA) return; SEA=true;
+  primeAudioSession();                                                       // silent media element holds the iOS playback session
+  try{ if(!seaCtx) seaCtx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ SEA=null; return; }
+  const rz=()=>{ try{ if(seaCtx.state!=='running'&&seaCtx.resume) seaCtx.resume(); }catch(e){} }; rz(); setTimeout(rz,200);
+  seaDecode(buf=>{
+    if(!SEA||!buf) return;
+    try{
+      seaGain=seaCtx.createGain(); seaGain.gain.value=0; seaGain.connect(seaCtx.destination);
+      seaSrc=seaCtx.createBufferSource(); seaSrc.buffer=buf; seaSrc.loop=true;   // sample-accurate, gapless loop
+      seaSrc.connect(seaGain); seaSrc.start();
+      seaFadeGain(seaLevel(), 2.6);                                             // gentle swell in
+    }catch(e){}
+  });
 }
-function seaLevelSet(){ if(SEA) seaFade(seaLevel(), 800); }                  // duck to the level for the current screen
+function seaLevelSet(){ if(SEA) seaFadeGain(seaLevel(), 0.8); }              // duck to the level for the current screen
 function seaStop(){
   if(!SEA) return; SEA=null;
-  seaFade(0, 600, ()=>{ try{ seaEl.pause(); }catch(e){} });
+  seaFadeGain(0, 0.6);
+  const src=seaSrc, g=seaGain; seaSrc=null; seaGain=null;
+  setTimeout(()=>{ try{ src&&src.stop(); }catch(e){} try{ g&&g.disconnect(); }catch(e){} }, 700);
+  try{ if(silentEl){ silentEl.pause(); silentEl.currentTime=0; } }catch(e){}
 }
 // start the sea if it should play, otherwise just set the level for this screen
 function seaSync(){ if(S.sound && audioUnlocked){ if(!SEA) seaStart(); else seaLevelSet(); } }
@@ -1248,15 +1337,19 @@ app.addEventListener('click',e=>{
       break; }
     case'ob-back': ob.step--; render(); break;
     case'ob-next':
-      if(ob.step<2){ ob.step++; render(); }
+      if(ob.step<3){ ob.step++; render(); }
       else{
         const picked=S.types.filter(t=>ob.pick.has(t.id));
         S.name=ob.name.trim()||'there';
-        S.types=picked.length?picked.concat(S.types.filter(t=>!ob.pick.has(t.id)&&false)):S.types; // keep only picked
-        S.types = picked.length?picked:S.types;
+        if(picked.length) S.types=picked;                 // keep only the cravings they chose
         S.onboarded=true; S.view='home'; save(); render();
       }
       break;
+    case'plan-sug':{
+      const inp=document.querySelector('input[data-plan="'+id+'"]');
+      if(inp){ const s=el.dataset.s; inp.value = inp.value.trim() ? inp.value.trim()+' and '+s : s;
+        const t=typeOf(id); if(t){ t.plan=inp.value; save(); } }
+      break; }
     case'add-type': addTypeModal(); break;
     case'export-csv': download('pause-history.csv', buildCSV(), 'text/csv'); break;
     case'share-sum':{ const tx=summaryText();
