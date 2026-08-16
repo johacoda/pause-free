@@ -1280,8 +1280,13 @@ function welcomeInit(){
 /* recorded sea, a seamless 30s loop playing across the whole app; louder on home, quieter elsewhere */
 let SEA=null, audioUnlocked=false, seaCtx=null, seaBuf=null, seaSrc=null, seaGain=null;
 const SEA_LOOP='__PAUSE_WAVES__';                        // 30s crossfaded ocean loop, inlined at build
-const SEA_HOME=0.14, SEA_ELSE=0.14;                      // even, gentle volume across the whole app
-function seaLevel(){ return S.view==='home' ? SEA_HOME : SEA_ELSE; }
+const SEA_BASE=0.14;                                     // gentle base level across the app
+// the sea recedes as you go deeper into a pause: half on entering, half again on the far side
+function seaLevel(){
+  if(S.view==='pause') return SEA_BASE/2;                // -half when the pause begins
+  if(S.view==='passed' || S.view==='acted') return SEA_BASE/4;   // -another half after it ends
+  return SEA_BASE;
+}
 function seaFadeGain(to,secs){
   if(!seaGain||!seaCtx) return;
   try{ const t=seaCtx.currentTime; seaGain.gain.cancelScheduledValues(t); seaGain.gain.setValueAtTime(seaGain.gain.value,t); seaGain.gain.linearRampToValueAtTime(to,t+secs); }catch(e){}
