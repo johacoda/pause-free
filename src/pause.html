@@ -510,15 +510,15 @@ function niceDate(d){
 }
 
 /* records the active pause as a session */
-function recordPause(outcome, elapsedOverride){
+function recordPause(outcome, via){
   const p=S.pause; if(!p) return;
-  const elapsed = outcome==='passed' ? p.len : (elapsedOverride ?? (p.len - leftOf(p.endTime)));
+  const elapsed = outcome==='passed' ? p.len : (p.len - leftOf(p.endTime));
   S.sessions.unshift({
     id:'s'+Date.now().toString(36),
     date:iso(), t:hm(), hour:new Date().getHours(),
     type:p.typeId, cause:p.cause||null,
     s0:p.s0, s1:(p.s1!=null?p.s1:p.s0),
-    len:p.len, elapsed, outcome,
+    len:p.len, elapsed, outcome, via:via||'timer',   // 'tap' = they said it passed; 'timer' = the clock ran out
   });
   S.sessions = S.sessions.slice(0,200);
   S.pause = null;
@@ -719,8 +719,8 @@ function navHero(title){ return `<div class="hero" style="height:168px">
   <div class="d-head"><div class="d-name" style="font-size:29px">${title}</div></div>
 </div>`; }
 // taller hero for the two result screens
-function resultHero(titleHTML,tf){ return `<div class="hero" style="height:248px">
-  ${heroWaves(120)}
+function resultHero(titleHTML,tf,waveH){ return `<div class="hero" style="height:248px">
+  ${heroWaves(waveH||120)}
   <div class="d-head"><div class="d-name" style="font-size:${tf||36}px">${titleHTML}</div></div>
 </div>`; }
 function Home(){
@@ -753,7 +753,7 @@ function Home(){
     <div class="hsheet">
       <div class="stats">
         ${statTile('s1', calmDays(), 'Steady days', MOTIF.steady)}
-        ${statTile('s2', passed, 'Waves passed', MOTIF.passed)}
+        ${statTile('s2', passed, 'Waves ridden', MOTIF.passed)}
         ${statTile('s3', S.sessions.length, 'Pauses taken', MOTIF.taken)}
       </div>
       <div style="margin-top:24px">
@@ -869,23 +869,40 @@ function causeReflect(){
 
 /* ============ passed ============ */
 function Passed(){
-  const last=S.sessions[0]; const ty=last?typeOf(last.type):null;
-  const drop = last ? last.s0 - last.s1 : 0;
-  const dropTxt = drop>0 ? `It went from ${last.s0} to ${last.s1} out of 10.`
-    : drop===0 ? `It held at ${last.s0} out of 10.`
-    : `It rose from ${last.s0} to ${last.s1} out of 10.`;
+  const last=S.sessions[0]; if(!last) return Home();
+  const drop = last.s0 - last.s1;
+  const tapped = last.via==='tap';                       // they told us it passed
+  const strongDrop = drop>=3 || last.s1<=2;              // rating says it clearly eased
+  // the hero reflects what actually happened, so it never over-claims
+  let title, tf, waveH, body, primary;
+  if(tapped || strongDrop){
+    title='The wave<br>passed'; tf=38; waveH=92;
+    body = drop>=1 ? `It eased from ${last.s0} to ${last.s1} out of 10.`
+                   : `You stayed with it.`;
+    primary = `<button class="btn btn-red" data-a="go-patterns" style="margin-bottom:10px">See your patterns ${IC.arrow}</button>`;
+  } else if(drop>=1){
+    title='The wave is<br>settling'; tf=33; waveH=122;
+    body = `It eased from ${last.s0} to ${last.s1} out of 10. It's settling.`;
+    primary = `<button class="btn btn-red" data-a="go-patterns" style="margin-bottom:10px">See your patterns ${IC.arrow}</button>`;
+  } else {
+    title='You rode it<br>out'; tf=37; waveH=152;
+    body = drop===0
+      ? `It held at ${last.s0} out of 10. And you stayed with it.`
+      : `It rose from ${last.s0} to ${last.s1} out of 10. It takes a bit longer sometimes.`;
+    primary = `<button class="btn btn-red" data-a="begin" style="margin-bottom:10px">Pause again ${IC.arrow}</button>`;
+  }
   return `<div class="home fade">
-    ${resultHero('The wave<br>passed',38)}
+    ${resultHero(title,tf,waveH)}
     <div class="hsheet">
-      <p class="body grey" style="max-width:24em">${dropTxt}</p>
+      <p class="body grey" style="max-width:24em">${body}</p>
       <div class="stats" style="margin-top:18px">
         ${statTile('s1', calmDays(), 'Steady days', MOTIF.steady)}
-        ${statTile('s3', (last?Math.round(last.len/60):0), 'Min waited', MOTIF.taken)}
-        ${statTile('s2', S.sessions.filter(x=>x.outcome==='passed').length, 'Waves passed', MOTIF.passed)}
+        ${statTile('s3', Math.round(last.len/60), 'Min waited', MOTIF.taken)}
+        ${statTile('s2', S.sessions.filter(x=>x.outcome==='passed').length, 'Waves ridden', MOTIF.passed)}
       </div>
       ${causeReflect()}
       <div style="flex:1;min-height:20px"></div>
-      <button class="btn btn-red" data-a="go-patterns" style="margin-bottom:10px">See your patterns ${IC.arrow}</button>
+      ${primary}
       <button class="tlink grey" data-a="go-home" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">Back home</button>
     </div>
   </div>`;
@@ -963,7 +980,7 @@ function Patterns(){
     <div class="hsheet">
       <div class="stats">
         ${statTile('s1', calmDays(), 'Steady days', MOTIF.steady)}
-        ${statTile('s2', S.sessions.filter(x=>x.outcome==='passed').length, 'Waves passed', MOTIF.passed)}
+        ${statTile('s2', S.sessions.filter(x=>x.outcome==='passed').length, 'Waves ridden', MOTIF.passed)}
         ${statTile('s3', (avgDrop!=null?avgDrop:'–'), 'Avg drop', MOTIF.taken)}
       </div>
       <div style="margin-top:28px">
@@ -1495,7 +1512,7 @@ app.addEventListener('click',e=>{
     case'pz-s1':{const v=+el.dataset.v; S.pause.s1=v;
       document.getElementById('s1val').textContent=v;
       document.querySelectorAll('.scale.calm>button').forEach((b,i)=>b.classList.toggle('on',i<v)); save(); break;}
-    case'pz-passed': recordPause('passed'); go('passed'); break;
+    case'pz-passed': recordPause('passed','tap'); go('passed'); break;
     case'pz-acted':{ recordPause('acted'); go('acted'); break; }
     case'pz-quit': S.pause=null; save(); go('home'); break;
     case'sound-toggle':{
