@@ -512,6 +512,7 @@ function niceDate(d){
 /* records the active pause as a session */
 function recordPause(outcome, via){
   const p=S.pause; if(!p) return;
+  seaSettled=true;                        // the sea stays at its settled level for the rest of the session
   const elapsed = outcome==='passed' ? p.len : (p.len - leftOf(p.endTime));
   S.sessions.unshift({
     id:'s'+Date.now().toString(36),
@@ -587,7 +588,7 @@ function render(){
   if(S.view==='pause') runPause();
   seaSync();                                  // sea plays across the app, quieter off the home screen
   if(document.querySelector('.herowave')) heroStart(); else heroStop();
-  if(document.querySelector('.hero-welcome')) welcomeInit();
+  if(document.querySelector('.hero-welcome')){ welcomeInit(); if(!document.getElementById('splash')) welcomeFall(); }
   if(document.getElementById('rotline')) rotStart(); else rotStop();
 }
 /* gentle rotating affirmation on the welcome headline */
@@ -616,7 +617,7 @@ function gazer(){ return `<img class="gazer figday" src="__PAUSE_FIGLIGHT__" alt
 let ob = {step:0, name:'', pick:new Set()};
 function Onboard(){
   if(ob.step===0){
-    return `<div class="home fade">
+    return `<div class="home">
       <div class="hero hero-w hero-welcome">
         <div class="hero-copy">
           <img class="hero-mark" src="__PAUSE_SCRIPT__" alt="Pause">
@@ -1253,20 +1254,23 @@ function waterDraw(prog){
 
 /* welcome screen: the water starts just below the header copy and rapidly falls to its
    resting level, then keeps the gentle undulation. The drama previews the pause metaphor. */
-let wcCv=null, wcCtx=null, wcW=0, wcH=0, wcRAF=null;
+let wcCv=null, wcCtx=null, wcW=0, wcH=0, wcRAF=null, wcLift=0;
 function welcomeStop(){ if(wcRAF){cancelAnimationFrame(wcRAF);wcRAF=null} if(wcCv){wcCv.remove();wcCv=null;wcCtx=null;} }
+function reduceMotion(){ return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+// Create and warm the water canvas. Called at render, so on first load it happens BEHIND the splash:
+// the canvas exists, is promoted to its own compositor layer, and sits high, ready to fall. Nothing is
+// recreated at the moment the splash lifts, which is what used to drop frames on slower devices.
 function welcomeInit(){
   welcomeStop();
   const hero=document.querySelector('.hero-welcome'); if(!hero) return;
   const dpr=Math.min(window.devicePixelRatio||1,2);
   const heroW=hero.clientWidth, heroH=hero.clientHeight;
   const restF=heroH*0.72, restB=restF-44;             // resting surfaces (front lower, back a touch higher)
-  const lift0=restF-heroH*0.30;                        // start: surface sits just below the header copy
-  // the canvas only ever paints a steady undulation at the resting level; the fall is a compositor-
-  // driven transform (below), so the descent stays smooth even if a paint frame is dropped.
+  const lift0=restF-heroH*0.30; wcLift=lift0;          // start: surface sits just below the header copy
   const cH=heroH+lift0;                                // extend below the hero so the lift never exposes a gap
+  const reduce=reduceMotion();
   const cv=document.createElement('canvas'); cv.id='wcwater';
-  cv.style.cssText=`position:absolute;left:0;top:0;width:100%;height:${cH}px;z-index:1;pointer-events:none;will-change:transform;transform:translateY(${-lift0}px)`;
+  cv.style.cssText=`position:absolute;left:0;top:0;width:100%;height:${cH}px;z-index:1;pointer-events:none;will-change:transform;transform:translateY(${reduce?0:-lift0}px)`;
   hero.insertBefore(cv, hero.firstChild);
   wcW=heroW; wcH=cH;
   cv.width=Math.round(heroW*dpr); cv.height=Math.round(cH*dpr);
@@ -1275,7 +1279,7 @@ function welcomeInit(){
   const draw=()=>{
     if(!wcCtx) return; const W=wcW,H=wcH; wcCtx.clearRect(0,0,W,H);
     const t=Date.now()/1000, k=2*Math.PI/W*1.35;
-    // back layer (fainter, higher), then front layer for depth — the app's purple, matching the hero
+    // back layer (fainter, higher), then front layer for depth - the app's purple, matching the hero
     waterLayer(wcCtx,W,H,restB,t,ampB,k,0.9,0,'rgba(156,147,184,.34)');
     const g=wcCtx.createLinearGradient(0,restF,0,H);
     g.addColorStop(0,'rgba(109,98,153,.58)'); g.addColorStop(1,'rgba(88,78,133,.72)');
@@ -1287,21 +1291,32 @@ function welcomeInit(){
     wcRAF=requestAnimationFrame(draw);
   };
   draw();
-  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(reduce){ cv.style.transform='translateY(0)'; return; }
-  // smoothstep-like ease across a deliberate 5-second descent, handed to the compositor
-  cv.animate([{transform:`translateY(${-lift0}px)`},{transform:'translateY(0)'}],
-    {duration:5000, easing:'cubic-bezier(.45,.05,.55,.95)', fill:'both'});
+}
+// Trigger the 5s descent. Waits two frames so the reveal paint lands first, then hands the whole
+// motion to the compositor. Runs once per mount; the canvas is already warm from welcomeInit.
+function welcomeFall(){
+  const cv=wcCv; if(!cv) return;
+  if(reduceMotion()){ cv.style.transform='translateY(0)'; return; }
+  if(cv.dataset.fell) return; cv.dataset.fell='1';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    if(!wcCv) return;
+    wcCv.animate([{transform:`translateY(${-wcLift}px)`},{transform:'translateY(0)'}],
+      {duration:5000, easing:'cubic-bezier(.45,.05,.55,.95)', fill:'both'});
+  }));
 }
 
 /* recorded sea, a seamless 30s loop playing across the whole app; louder on home, quieter elsewhere */
 let SEA=null, audioUnlocked=false, seaCtx=null, seaBuf=null, seaSrc=null, seaGain=null;
 const SEA_LOOP='__PAUSE_WAVES__';                        // 30s crossfaded ocean loop, inlined at build
 const SEA_BASE=0.14;                                     // gentle base level across the app
-// the sea recedes as you go deeper into a pause: half on entering, half again on the far side
+// The sea recedes as you go through your first pause: half on entering, and once that pause is
+// done it settles to a quarter and stays there for the rest of the app session. It never climbs
+// back up on leaving, and never ducks further on later pauses. seaSettled is runtime-only, so it
+// resets when the app is reopened.
+let seaSettled=false;
 function seaLevel(){
-  if(S.view==='pause') return SEA_BASE/2;                // -half when the pause begins
-  if(S.view==='passed' || S.view==='acted') return SEA_BASE/4;   // -another half after it ends
+  if(seaSettled) return SEA_BASE/4;                      // fixed calm level once the first pause is behind them
+  if(S.view==='pause') return SEA_BASE/2;                // -half during the first pause
   return SEA_BASE;
 }
 function seaFadeGain(to,secs){
@@ -1514,7 +1529,7 @@ app.addEventListener('click',e=>{
       document.querySelectorAll('.scale.calm>button').forEach((b,i)=>b.classList.toggle('on',i<v)); save(); break;}
     case'pz-passed': recordPause('passed','tap'); go('passed'); break;
     case'pz-acted':{ recordPause('acted'); go('acted'); break; }
-    case'pz-quit': S.pause=null; save(); go('home'); break;
+    case'pz-quit': S.pause=null; seaSettled=true; save(); go('home'); break;
     case'sound-toggle':{
       S.sound=!S.sound; save();
       const sb=document.getElementById('soundbtn');
@@ -1549,7 +1564,7 @@ document.addEventListener('pointerdown', function unlockAudio(){
 
 // brief logo splash, then reveal the app (skipped when installed: the OS already showed one)
 if(document.documentElement.classList.contains('app-installed')){ const sp=document.getElementById('splash'); if(sp) sp.remove(); }
-else setTimeout(()=>{ const sp=document.getElementById('splash'); if(sp){ sp.classList.add('gone'); setTimeout(()=>{ sp.remove(); if(document.querySelector('.hero-welcome')) welcomeInit(); },550); } }, 1150);
+else setTimeout(()=>{ const sp=document.getElementById('splash'); if(sp){ sp.classList.add('gone'); setTimeout(()=>{ sp.remove(); if(document.querySelector('.hero-welcome')) welcomeFall(); },550); } }, 1150);
 </script>
 </body>
 </html>
