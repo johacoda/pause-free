@@ -621,7 +621,7 @@ function Onboard(){
       <div class="hero hero-w hero-welcome">
         <div class="hero-copy">
           <img class="hero-mark" src="__PAUSE_SCRIPT__" alt="Pause">
-          <div class="hero-eyebrow" style="margin-top:6px">Welcome, surfer</div>
+          <div class="hero-eyebrow" style="margin-top:6px">Welcome</div>
           <div class="hero-title" style="margin-top:14px">A craving<br><span id="rotline" class="rotline">is a <span class="wv">wave</span></span></div>
         </div>
       </div>
@@ -636,7 +636,7 @@ function Onboard(){
   if(ob.step===1){
     body=`<div class="fade ob-namebg">
       <div class="ob-namebg-top">
-        <h1>What should we<br>call you?</h1>
+        <h1>What's your<br>name?</h1>
         <div style="margin-top:26px">
           <input type="text" id="obName" placeholder="Your first name" maxlength="24" value="${esc(ob.name)}" autocomplete="off">
         </div>
@@ -1091,7 +1091,7 @@ function statLine(items){
   return `<div class="statline">${items.map(x=>`<div><span class="sk">${x.k}</span><div class="sv">${x.v}${x.u?`<small>${x.u}</small>`:''}</div></div>`).join('')}</div>`;
 }
 function Nav(active){
-  const t=[['home','Home','home'],['waves','Waves','waves'],['chart','Patterns','patterns'],['user','Me','me']];
+  const t=[['home','Home','home'],['waves','Waves','waves'],['chart','Patterns','patterns'],['user','You','me']];
   return `<div class="nav">${t.map(([ic,l,v])=>`<button class="${v===active?'on':''}" data-a="nav" data-v="${v}">${IC[ic]}<span>${l}</span></button>`).join('')}</div>`;
 }
 
