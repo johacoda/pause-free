@@ -444,7 +444,16 @@ function fresh(){
   };
 }
 let S = fresh();
-(function boot(){
+// Runtime-only: the sea settles to a fixed calm level after the first pause and stays there for the
+// rest of the app session (resets on reopen). Declared here, before boot(), because boot() can call
+// recordPause() for an already-expired pause, which assigns seaSettled — accessing it any later would
+// be a temporal-dead-zone crash on open.
+let seaSettled=false;
+// boot() is defined here but invoked at the very end of the script (just before the first render),
+// after every const/let helper it transitively uses (pad, iso, hm, recordPause, ...) has been
+// initialized. Running it inline here would hit those lexical bindings in their temporal dead zone
+// whenever the app opens onto an already-expired pause.
+function boot(){
   const saved = loadRaw();
   if(saved){
     S = Object.assign(fresh(), saved);
@@ -458,7 +467,7 @@ let S = fresh();
   }
   if(!S.theme) S.theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
   applyTheme(); save();
-})();
+}
 function applyTheme(){
   document.documentElement.classList.toggle('dark', S.theme==='dark');
   const m=document.querySelector('meta[name=theme-color]'); if(m) m.setAttribute('content', S.theme==='dark'?'#1b1813':'#FAFAFA');
@@ -1311,9 +1320,8 @@ const SEA_LOOP='__PAUSE_WAVES__';                        // 30s crossfaded ocean
 const SEA_BASE=0.14;                                     // gentle base level across the app
 // The sea recedes as you go through your first pause: half on entering, and once that pause is
 // done it settles to a quarter and stays there for the rest of the app session. It never climbs
-// back up on leaving, and never ducks further on later pauses. seaSettled is runtime-only, so it
-// resets when the app is reopened.
-let seaSettled=false;
+// back up on leaving, and never ducks further on later pauses. (seaSettled is declared up top, before
+// boot(), so an expired-pause boot can safely assign it.)
 function seaLevel(){
   if(seaSettled) return SEA_BASE/4;                      // fixed calm level once the first pause is behind them
   if(S.view==='pause') return SEA_BASE/2;                // -half during the first pause
@@ -1554,6 +1562,7 @@ app.addEventListener('click',e=>{
   }
 });
 
+boot();      // load saved state and resolve the opening view — safe here, all helpers are initialized
 render();
 
 // audio can't play until the first touch; arm it so the arrival chime and waves begin then
