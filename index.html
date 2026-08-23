@@ -1002,26 +1002,26 @@ function Patterns(){
     if(drop>=0.5){
       const strong=passedRated.filter(x=>x.s0>=8);
       const strongNote = strong.length>=3
-        ? `Even your strong ones, the 8s and 9s, settle to around ${Math.round(strong.reduce((a,x)=>a+x.s1,0)/strong.length)} if you stay with them.`
-        : `Across ${passedRated.length} waves you rode out. Staying with it is what does it.`;
+        ? `Even 8s and 9s settle near ${Math.round(strong.reduce((a,x)=>a+x.s1,0)/strong.length)}.`
+        : `That's ${passedRated.length} waves you rode out.`;
       proof=`<div class="proof">
         <div class="plab">When you wait</div>
-        <div class="pbig">Your cravings fall from <b>${bef.toFixed(1)}</b> to <b>${aft.toFixed(1)}</b> out of 10, on average.</div>
+        <div class="pbig">Cravings fall from <b>${bef.toFixed(1)}</b> to <b>${aft.toFixed(1)}</b>.</div>
         <div class="pnote">${strongNote}</div>
       </div>`;
     } else {
       proof=`<div class="proof">
         <div class="plab">When you wait</div>
-        <div class="pbig">Your cravings are holding around <b>${bef.toFixed(1)}</b> out of 10 so far.</div>
-        <div class="pnote">Staying with them is the skill. Keep logging and watch the drop grow.</div>
+        <div class="pbig">Cravings holding near <b>${bef.toFixed(1)}</b>.</div>
+        <div class="pnote">Stay with them. The drop comes.</div>
       </div>`;
     }
   } else {
     const left=MIN_INSIGHT-passedRated.length;
     proof=`<div class="proof">
       <div class="plab">When you wait</div>
-      <div class="pbig">Keep going and we'll show you how far your waves fall.</div>
-      <div class="pnote">Ride out about ${left} more, rating the craving before and after, and your average drop shows up here.</div>
+      <div class="pbig">How far do your waves fall?</div>
+      <div class="pnote">Ride out ${left} more to find out.</div>
     </div>`;
   }
 
@@ -1030,12 +1030,12 @@ function Patterns(){
   const trigStats=Object.entries(byT).map(([c,g])=>({c,n:g.n,pct:Math.round(g.p/g.n*100)})).sort((a,b)=>b.pct-a.pct);
   const strongBlock = (enough && trigStats.length)
     ? `<span class="label ink" style="display:block">Where you're strong</span>
-       <p class="pcap" style="margin-top:4px;margin-bottom:8px">How often you ride it out, by what set it off.</p>
+       <p class="pcap" style="margin-top:4px;margin-bottom:8px">How often you ride it out.</p>
        ${trigStats.map(t=>`<div class="trig">
          <div class="tt"><span>${esc(t.c)}</span><span class="grey tnum" style="font-size:13px">${t.pct}%</span></div>
          <div class="trigbar"><div style="width:${t.pct}%"></div></div></div>`).join('')}`
     : `<span class="label ink" style="display:block">Where you're strong</span>
-       <div class="locknote">${LOCK_SVG}<span>Log about ${Math.max(1,MIN_INSIGHT-n)} more wave${Math.max(1,MIN_INSIGHT-n)===1?'':'s'}, adding what set each off, to see which triggers you beat.</span></div>`;
+       <div class="locknote">${LOCK_SVG}<span>Log ${Math.max(1,MIN_INSIGHT-n)} more to see this.</span></div>`;
 
   // --- Danger windows: when cravings hit, and when they win ---
   const pods=['Morning','Afternoon','Evening','Night'];
@@ -1049,14 +1049,14 @@ function Patterns(){
   // riskiest window = highest acted-rate among pods with enough data
   const risky=pods.filter(p=>pod[p].n>=3).map(p=>({p,r:pod[p].acted/pod[p].n})).sort((a,b)=>b.r-a.r)[0];
   const dangerCap = enough
-    ? (risky && risky.r>0 ? `Most of your waves land in the ${peak.toLowerCase()}. ${risky.p} is when they most often win.` : `Most of your waves land in the ${peak.toLowerCase()}.`)
+    ? (risky && risky.r>0 ? `Most hit in the ${peak.toLowerCase()}. ${risky.p} is when they win.` : `Most hit in the ${peak.toLowerCase()}.`)
     : '';
   const dangerBlock = enough
     ? `<span class="label ink" style="margin-bottom:6px;display:block">Your danger windows</span>
        <div class="pod" style="margin-top:6px">${podRows}</div>
        ${dangerCap?`<p class="pcap">${dangerCap}</p>`:''}`
     : `<span class="label ink" style="display:block">Your danger windows</span>
-       <div class="locknote">${LOCK_SVG}<span>A few more waves and we'll spot the hours you're most at risk.</span></div>`;
+       <div class="locknote">${LOCK_SVG}<span>Log more to map your risky hours.</span></div>`;
 
   // --- Trend: last six weeks, pass rate ---
   let trendBlock='';
@@ -1071,7 +1071,7 @@ function Patterns(){
     const poly=pts.map((v,i)=>`${6+i*288/5},${58-v/mx*46}`).join(' ');
     trendBlock=`<div style="margin-top:28px">
       <span class="label ink" style="display:block">The last six weeks</span>
-      <p class="pcap" style="margin-top:4px">Share of waves you rode out. A dip is just a week, not a verdict.</p>
+      <p class="pcap" style="margin-top:4px">Waves you rode out, by week. A dip's just weather.</p>
       <svg class="spark" viewBox="0 0 300 64" preserveAspectRatio="none"><polyline points="${poly}" fill="none" stroke="var(--act)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>`;
   }
