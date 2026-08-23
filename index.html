@@ -1110,7 +1110,7 @@ function Patterns(){
       const tbars=byPct.map(t=>`<div class="trig">
         <div class="tt"><span>${esc(t.c)}</span><span class="grey tnum" style="font-size:13px">${t.pct}%</span></div>
         <div class="trigbar"><div style="width:${t.pct}%"></div></div></div>`).join('');
-      ins.push({score:bestBeat.p, html:ftile('bolt',esc(bestBeat.c),`It passes ${bestBeat.pct}% of the time.`,{k:'strong',detail:tbars})});
+      ins.push({score:bestBeat.p, html:ftile('bolt',esc(bestBeat.c),`This is your top trigger.`,{k:'strong',detail:tbars})});
     }
     const podRows=pods.map(p=>`<div class="podrow"><span class="pl">${p}</span>
       <div class="podbar"><div style="width:${pod[p].n/maxPod*100}%;background:${p===peak&&pod[peak].n>0?'var(--act)':'var(--purple)'}"></div></div>
@@ -1119,7 +1119,7 @@ function Patterns(){
     ins.push({score:pod[peak].n, html:ftile('schedule',peak,`That's when most of your urges hit.`,{k:'windows',detail:`<div class="pod">${podRows}</div>${riskCap}`})});
     ins.sort((a,b)=>b.score-a.score);
     ins.forEach(it=>parts.push(it.html));
-    if(easeMin!=null) parts.push(ftile('self_improvement',`${easeMin} min`,`That's how fast it usually passes.`));
+    if(easeMin!=null) parts.push(ftile('self_improvement',`${easeMin} min`,`That's how fast your waves pass.`));
   } else {
     parts.push(`<div class="ftile"><div class="frow"><span class="fic">${msvg('lock','fbig')}</span>
       <span class="ftext"><span class="fval" style="font-size:18px">Keep logging</span><span class="fcap">Deeper patterns unlock after ${Math.max(1,MIN_INSIGHT-n)} more.</span></span></div></div>`);
