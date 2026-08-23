@@ -628,15 +628,20 @@ function go(v){ S.view=v; save(); render(); }
 
 const VIEWS = {onboard:Onboard, home:Home, begin:Begin, pause:PauseView, passed:Passed, acted:Acted, waves:Waves, patterns:Patterns, me:Me, privacy:PrivacyView};
 let privReturn='me';
+let lastView=null;
 function render(){
   stop();
   waterStop();
   welcomeStop();
   if(S.view!=='pause') soundStop();
-  app.scrollTop=0;
+  // Keep the scroll position on an in-place re-render (e.g. expanding a tile);
+  // only jump to the top when the view actually changes (navigation).
+  const prevY = app.scrollTop, sameView = (S.view===lastView);
   document.documentElement.classList.toggle('pausing', S.view==='pause');
   app.innerHTML = `<div class="safe"></div>` + (VIEWS[S.view]||Home)();
   wire();
+  app.scrollTop = sameView ? prevY : 0;
+  lastView = S.view;
   if(S.view==='pause') runPause();
   seaSync();                                  // sea plays across the app, quieter off the home screen
   if(document.querySelector('.herowave')) heroStart(); else heroStop();
