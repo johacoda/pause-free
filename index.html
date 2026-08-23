@@ -991,24 +991,37 @@ function Patterns(){
   const passedRated=s.filter(x=>x.outcome==='passed'&&x.s0!=null&&x.s1!=null);
 
   // --- Proof hero: the wave falls ---
+  // Only make the numeric claim once there's a real sample (MIN_INSIGHT rated,
+  // passed waves) and only say it "falls" when it actually did. A one-session
+  // "6.0 to 6.0, the wave really does fall" is worse than saying nothing.
   let proof;
-  if(passedRated.length){
+  if(passedRated.length>=MIN_INSIGHT){
     const bef=(passedRated.reduce((a,x)=>a+x.s0,0)/passedRated.length);
     const aft=(passedRated.reduce((a,x)=>a+x.s1,0)/passedRated.length);
-    const strong=passedRated.filter(x=>x.s0>=8);
-    const strongNote = strong.length>=2
-      ? `Even your strong ones, the 8s and 9s, settle to around ${Math.round(strong.reduce((a,x)=>a+x.s1,0)/strong.length)} if you stay with them.`
-      : `Across ${passedRated.length} wave${passedRated.length===1?'':'s'} you rode out. The wave really does fall.`;
-    proof=`<div class="proof">
-      <div class="plab">When you wait</div>
-      <div class="pbig">Your cravings fall from <b>${bef.toFixed(1)}</b> to <b>${aft.toFixed(1)}</b> out of 10, on average.</div>
-      <div class="pnote">${strongNote}</div>
-    </div>`;
+    const drop=bef-aft;
+    if(drop>=0.5){
+      const strong=passedRated.filter(x=>x.s0>=8);
+      const strongNote = strong.length>=3
+        ? `Even your strong ones, the 8s and 9s, settle to around ${Math.round(strong.reduce((a,x)=>a+x.s1,0)/strong.length)} if you stay with them.`
+        : `Across ${passedRated.length} waves you rode out. Staying with it is what does it.`;
+      proof=`<div class="proof">
+        <div class="plab">When you wait</div>
+        <div class="pbig">Your cravings fall from <b>${bef.toFixed(1)}</b> to <b>${aft.toFixed(1)}</b> out of 10, on average.</div>
+        <div class="pnote">${strongNote}</div>
+      </div>`;
+    } else {
+      proof=`<div class="proof">
+        <div class="plab">When you wait</div>
+        <div class="pbig">Your cravings are holding around <b>${bef.toFixed(1)}</b> out of 10 so far.</div>
+        <div class="pnote">Staying with them is the skill. Keep logging and watch the drop grow.</div>
+      </div>`;
+    }
   } else {
+    const left=MIN_INSIGHT-passedRated.length;
     proof=`<div class="proof">
       <div class="plab">When you wait</div>
-      <div class="pbig">Ride out a few waves and we'll show you how far they fall.</div>
-      <div class="pnote">Rate the craving before and after, and the drop shows up here.</div>
+      <div class="pbig">Keep going and we'll show you how far your waves fall.</div>
+      <div class="pnote">Ride out about ${left} more, rating the craving before and after, and your average drop shows up here.</div>
     </div>`;
   }
 
