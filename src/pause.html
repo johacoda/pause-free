@@ -351,6 +351,7 @@
   .fchev{flex:none;color:var(--mute2);line-height:0}
   .fchev .ms{width:22px;height:22px;transition:transform .2s ease}
   .fchev.open .ms{transform:rotate(180deg)}
+  .fhint{font-size:11.5px;font-weight:700;letter-spacing:.02em;color:var(--act);margin-top:5px;display:block}
   .fdetail{margin-top:15px;padding-top:15px;border-top:1px solid var(--faint)}
   .pcap{font-size:12.5px;line-height:1.5;color:var(--mute);margin-top:12px}
   .spark{width:100%;height:56px;display:block}
@@ -1020,7 +1021,7 @@ function ftile(icon,val,cap,o){o=o||{};
   const detail=(o.k&&patOpen[o.k]&&o.detail)?`<div class="fdetail">${o.detail}</div>`:'';
   return `<${tag} class="ftile${o.k?' itap':''}"${attrs}>
     <div class="frow"><span class="fic">${msvg(icon,'fbig')}</span>
-    <span class="ftext"><span class="fval">${val}</span><span class="fcap">${cap}</span></span>${chev}</div>
+    <span class="ftext"><span class="fval">${val}</span><span class="fcap">${cap}</span>${(o.k&&o.hint&&!patOpen[o.k])?`<span class="fhint">${o.hint}</span>`:''}</span>${chev}</div>
     ${detail}</${tag}>`;
 }
 
@@ -1110,13 +1111,13 @@ function Patterns(){
       const tbars=byPct.map(t=>`<div class="trig">
         <div class="tt"><span>${esc(t.c)}</span><span class="grey tnum" style="font-size:13px">${t.pct}%</span></div>
         <div class="trigbar"><div style="width:${t.pct}%"></div></div></div>`).join('');
-      ins.push({score:bestBeat.p, html:ftile('bolt',esc(bestBeat.c),`This is your top trigger.`,{k:'strong',detail:tbars})});
+      ins.push({score:bestBeat.p, html:ftile('bolt',esc(bestBeat.c),`This is your top trigger.`,{k:'strong',hint:'Tap to see your win rate',detail:tbars})});
     }
     const podRows=pods.map(p=>`<div class="podrow"><span class="pl">${p}</span>
       <div class="podbar"><div style="width:${pod[p].n/maxPod*100}%;background:${p===peak&&pod[peak].n>0?'var(--act)':'var(--purple)'}"></div></div>
       <span class="pc tnum">${pod[p].n}</span></div>`).join('');
     const riskCap=(risky && risky.r>0)?`<p class="pcap">${risky.p} is when they most often win.</p>`:'';
-    ins.push({score:pod[peak].n, html:ftile('schedule',peak,`That's when most of your urges hit.`,{k:'windows',detail:`<div class="pod">${podRows}</div>${riskCap}`})});
+    ins.push({score:pod[peak].n, html:ftile('schedule',peak,`That's when most of your urges hit.`,{k:'windows',hint:'Tap for the daily breakdown',detail:`<div class="pod">${podRows}</div>${riskCap}`})});
     ins.sort((a,b)=>b.score-a.score);
     ins.forEach(it=>parts.push(it.html));
     if(easeMin!=null) parts.push(ftile('self_improvement',`${easeMin} min`,`That's how fast your waves pass.`));
