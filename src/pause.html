@@ -354,6 +354,29 @@
   .fdetail{margin-top:15px;padding-top:15px;border-top:1px solid var(--faint)}
   .pcap{font-size:12.5px;line-height:1.5;color:var(--mute);margin-top:12px}
   .spark{width:100%;height:56px;display:block}
+  /* borrowed: overview + daily breakdown + week-vs-week cards */
+  .pcard{background:var(--t3);border-radius:16px;padding:16px 16px;margin-top:10px}
+  .pcard-h{display:flex;justify-content:space-between;align-items:baseline}
+  .pcard-h .ttl{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+  .ov{display:flex;gap:26px;margin-top:12px}
+  .ov .n{font-size:23px;font-weight:800;color:var(--ink);letter-spacing:-.02em;line-height:1}
+  .ov .k{font-size:12px;color:var(--mute);margin-top:4px}
+  .legend{display:flex;gap:16px;margin-top:14px}
+  .legend span{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--mute)}
+  .legend i{width:9px;height:9px;border-radius:2px;display:inline-block}
+  .dbars{display:flex;align-items:flex-end;gap:8px;height:96px;margin-top:12px}
+  .dcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;height:100%;justify-content:flex-end}
+  .dstack{width:100%;display:flex;flex-direction:column;border-radius:5px 5px 3px 3px;overflow:hidden;min-height:4px}
+  .dstack .seg-a{background:var(--act)}
+  .dstack .seg-p{background:var(--purple)}
+  .dcol .dl{font-size:10px;color:var(--mute);font-weight:600}
+  .wvw{display:flex;margin-top:12px}
+  .wvw>div{flex:1}
+  .wvw>div+div{border-left:1px solid var(--faint);padding-left:16px}
+  .wvw .wk{font-size:12px;color:var(--mute)}
+  .wvw .wn{font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-top:4px;line-height:1}
+  .wvw .k{font-size:12px;color:var(--mute);margin-top:4px}
+  .wvw-note{font-size:13px;color:var(--ink);margin-top:14px;line-height:1.4;border-top:1px solid var(--faint);padding-top:12px}
 
   /* nav */
   .nav{display:flex;justify-content:space-around;padding:11px 16px calc(12px + env(safe-area-inset-bottom,0));
@@ -1025,54 +1048,87 @@ function Patterns(){
     const w=p.map(x=>x.elapsed!=null?x.elapsed:x.len).filter(v=>v!=null).sort((a,b)=>a-b);
     if(!w.length)return null; const m=w[Math.floor(w.length/2)]; return Math.max(1,Math.round(m/60));})();
 
-  const haveStrong = enough && trigArr.length>0;
+  // last 7 days (for the daily breakdown + week overview)
+  const days=[];
+  for(let i=6;i>=0;i--){ const d=new Date(); d.setHours(12,0,0,0); d.setDate(d.getDate()-i);
+    days.push({key:d.toISOString().slice(0,10), dl:(i===0?'Today':['Su','Mo','Tu','We','Th','Fr','Sa'][d.getDay()]), passed:0, acted:0}); }
+  s.forEach(x=>{ const day=days.find(d=>d.key===x.date); if(day){ if(x.outcome==='passed')day.passed++; else if(x.outcome==='acted')day.acted++; } });
+  const wkTotal=days.reduce((a,d)=>a+d.passed+d.acted,0);
+  const wkPct=wkTotal?Math.round(days.reduce((a,d)=>a+d.passed,0)/wkTotal*100):0;
+  const maxDay=Math.max(1,...days.map(d=>d.passed+d.acted));
 
-  // --- Full-width insight tiles (below the three stat tiles) ---
-  const tiles=[];
+  // this week vs last week
+  const win=(a,b)=>{const now=Date.now(),lo=now-a*864e5,hi=now-b*864e5;
+    const r=s.filter(x=>{const t=Date.parse(x.date+'T12:00:00'); return t>lo&&t<=hi;});
+    const p=r.filter(x=>x.outcome==='passed').length; return {n:r.length,pct:r.length?Math.round(p/r.length*100):0};};
+  const thisWk=win(7,0), lastWk=win(14,7);
+  let wvwNote;
+  if(lastWk.n===0) wvwNote=`Your first week of logging. Keep going.`;
+  else if(thisWk.pct>lastWk.pct+5) wvwNote=`You're riding out more than last week.`;
+  else if(thisWk.pct<lastWk.pct-5) wvwNote=`A tougher week than last. That happens.`;
+  else wvwNote=`Holding steady with last week.`;
+
+  const parts=[];
+
+  // three iconic tiles (kept)
+  parts.push(`<div class="stats">
+    ${statTile('s1', calmDays(), 'Steady days', MOTIF.steady)}
+    ${statTile('s2', passedCount, 'Waves ridden', MOTIF.passed)}
+    ${statTile('s3', (avgDrop!=null?avgDrop:'–'), 'Avg drop', MOTIF.taken)}
+  </div>`);
+
+  // Last 7 days: overview + daily breakdown
+  if(wkTotal>0){
+    const bars=days.map(d=>{const tot=d.passed+d.acted;
+      const stack= !tot ? `<div class="dstack" style="height:4px;background:var(--faint)"></div>`
+        : `<div class="dstack" style="height:${Math.max(10,tot/maxDay*100)}%">${d.acted?`<div class="seg-a" style="flex:${d.acted}"></div>`:''}${d.passed?`<div class="seg-p" style="flex:${d.passed}"></div>`:''}</div>`;
+      return `<div class="dcol">${stack}<div class="dl">${d.dl}</div></div>`;}).join('');
+    parts.push(`<div class="pcard">
+      <div class="pcard-h"><span class="ttl">Last 7 days</span></div>
+      <div class="ov"><div><div class="n">${wkTotal}</div><div class="k">Waves</div></div><div><div class="n">${wkPct}%</div><div class="k">Rode out</div></div></div>
+      <div class="legend"><span><i style="background:var(--purple)"></i>Rode out</span><span><i style="background:var(--act)"></i>Acted</span></div>
+      <div class="dbars">${bars}</div>
+    </div>`);
+  }
+
+  // This week vs last week
+  if(thisWk.n>0 || lastWk.n>0){
+    parts.push(`<div class="pcard">
+      <div class="pcard-h"><span class="ttl">This week vs last week</span></div>
+      <div class="wvw">
+        <div><div class="wk">This week</div><div class="wn">${thisWk.n}</div><div class="k">waves · ${thisWk.pct}% rode out</div></div>
+        <div><div class="wk">Last week</div><div class="wn">${lastWk.n}</div><div class="k">waves · ${lastWk.pct}% rode out</div></div>
+      </div>
+      <div class="wvw-note">${wvwNote}</div>
+    </div>`);
+  }
+
+  // Deeper insight tiles (strongest / danger / time-to-ease)
   if(enough){
     const ins=[];
-    if(haveStrong){
-      const bars=byPct.map(t=>`<div class="trig">
+    if(trigArr.length){
+      const tbars=byPct.map(t=>`<div class="trig">
         <div class="tt"><span>${esc(t.c)}</span><span class="grey tnum" style="font-size:13px">${t.pct}%</span></div>
         <div class="trigbar"><div style="width:${t.pct}%"></div></div></div>`).join('');
-      ins.push({score:bestBeat.p, html:ftile('bolt',esc(bestBeat.c),`${bestBeat.pct}% ridden out`,{k:'strong',detail:bars})});
+      ins.push({score:bestBeat.p, html:ftile('bolt',esc(bestBeat.c),`${bestBeat.pct}% ridden out`,{k:'strong',detail:tbars})});
     }
-    {
-      const podRows=pods.map(p=>`<div class="podrow"><span class="pl">${p}</span>
-        <div class="podbar"><div style="width:${pod[p].n/maxPod*100}%;background:${p===peak&&pod[peak].n>0?'var(--act)':'var(--purple)'}"></div></div>
-        <span class="pc tnum">${pod[p].n}</span></div>`).join('');
-      const cap=(risky && risky.r>0)?`<p class="pcap">${risky.p} is when they most often win.</p>`:'';
-      ins.push({score:pod[peak].n, html:ftile('schedule',peak,'When most of your urges hit',{k:'windows',detail:`<div class="pod">${podRows}</div>${cap}`})});
-    }
+    const podRows=pods.map(p=>`<div class="podrow"><span class="pl">${p}</span>
+      <div class="podbar"><div style="width:${pod[p].n/maxPod*100}%;background:${p===peak&&pod[peak].n>0?'var(--act)':'var(--purple)'}"></div></div>
+      <span class="pc tnum">${pod[p].n}</span></div>`).join('');
+    const riskCap=(risky && risky.r>0)?`<p class="pcap">${risky.p} is when they most often win.</p>`:'';
+    ins.push({score:pod[peak].n, html:ftile('schedule',peak,'When most of your urges hit',{k:'windows',detail:`<div class="pod">${podRows}</div>${riskCap}`})});
     ins.sort((a,b)=>b.score-a.score);
-    ins.forEach(it=>tiles.push(it.html));
-    if(easeMin!=null) tiles.push(ftile('self_improvement',`${easeMin} min`,'Usual time to ease'));
-    // trend
-    const now=Date.now(); const wk=7*864e5; const pts=[];
-    for(let i=5;i>=0;i--){ const end=now-i*wk,start=end-wk;
-      const r=s.filter(x=>{const t=Date.parse(x.date+'T12:00:00'); return t>start&&t<=end;});
-      const p=r.filter(x=>x.outcome==='passed').length;
-      pts.push(r.length?Math.round(p/r.length*100):0);
-    }
-    const mx=Math.max(1,...pts);
-    const poly=pts.map((v,i)=>`${6+i*288/5},${50-v/mx*38}`).join(' ');
-    tiles.push(`<div class="ftile"><div class="frow"><span class="fic">${msvg('monitoring','fbig')}</span>
-      <span class="ftext"><span class="fcap" style="margin-top:0">How often you ride them out, by week</span></span></div>
-      <svg class="spark" viewBox="0 0 300 56" preserveAspectRatio="none" style="margin-top:10px"><polyline points="${poly}" fill="none" stroke="var(--act)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`);
+    ins.forEach(it=>parts.push(it.html));
+    if(easeMin!=null) parts.push(ftile('self_improvement',`${easeMin} min`,'Usual time to ease'));
   } else {
-    tiles.push(`<div class="ftile"><div class="frow"><span class="fic">${msvg('lock','fbig')}</span>
-      <span class="ftext"><span class="fval" style="font-size:18px">Keep logging</span><span class="fcap">Your patterns unlock after ${Math.max(1,MIN_INSIGHT-n)} more.</span></span></div></div>`);
+    parts.push(`<div class="ftile"><div class="frow"><span class="fic">${msvg('lock','fbig')}</span>
+      <span class="ftext"><span class="fval" style="font-size:18px">Keep logging</span><span class="fcap">Deeper patterns unlock after ${Math.max(1,MIN_INSIGHT-n)} more.</span></span></div></div>`);
   }
 
   return `<div class="home">
     ${navHero('Your patterns')}
     <div class="hsheet">
-      <div class="stats">
-        ${statTile('s1', calmDays(), 'Steady days', MOTIF.steady)}
-        ${statTile('s2', passedCount, 'Waves ridden', MOTIF.passed)}
-        ${statTile('s3', (avgDrop!=null?avgDrop:'–'), 'Avg drop', MOTIF.taken)}
-      </div>
-      <div style="margin-top:10px">${tiles.join('')}</div>
+      ${parts.join('')}
       <div style="flex:1;min-height:20px"></div>
     </div>
     ${Nav('patterns')}
