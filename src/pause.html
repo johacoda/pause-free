@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="__PAUSE_APPICON__">
 <link rel="manifest" href="/site.webmanifest">
 <meta property="og:title" content="Pause by Pákó">
-<meta property="og:description" content="Ride out a craving instead of fighting it. Nothing leaves your device.">
+<meta property="og:description" content="Let a craving pass instead of fighting it. Nothing leaves your device.">
 <meta property="og:image" content="https://pause.pako.health/og-image.png?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -18,7 +18,7 @@
 <meta property="og:url" content="https://pause.pako.health">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Pause by Pákó">
-<meta name="twitter:description" content="Ride out a craving instead of fighting it. Nothing leaves your device.">
+<meta name="twitter:description" content="Let a craving pass instead of fighting it. Nothing leaves your device.">
 <meta name="twitter:image" content="https://pause.pako.health/og-image.png?v=2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="description" content="Pause by Pákó. A craving is a wave. Watch it rise and pass. Everything stays on your device.">
@@ -677,7 +677,7 @@ function Onboard(){
         </div>
       </div>
       <div class="hsheet welcome-sheet">
-        <p class="w-sub">Learn to ride it out</p>
+        <p class="w-sub">Watch it rise and pass</p>
         <button class="btn btn-red" data-a="ob-next">Get started ${IC.arrow}</button>
         <button class="btn-text" data-a="go-privacy" style="margin-top:16px;font-size:11px;letter-spacing:.08em">Your privacy</button>
       </div>
@@ -805,7 +805,7 @@ function Home(){
     <div class="hsheet">
       <div class="stats">
         ${statTile('s1', calmDays(), 'Steady days', MOTIF.steady)}
-        ${statTile('s2', passed, 'Waves ridden', MOTIF.passed)}
+        ${statTile('s2', passed, 'Waves passed', MOTIF.passed)}
         ${statTile('s3', S.sessions.length, 'Pauses taken', MOTIF.taken)}
       </div>
       <div style="margin-top:24px">
@@ -937,7 +937,7 @@ function Passed(){
     body = `It eased from ${last.s0} to ${last.s1} out of 10. It's settling.`;
     primary = `<button class="btn btn-red" data-a="go-patterns" style="margin-bottom:10px">See your patterns ${IC.arrow}</button>`;
   } else {
-    title='You rode it<br>out'; tf=37; waveH=152;
+    title='You got<br>through it'; tf=37; waveH=152;
     body = drop===0
       ? `It held at ${last.s0} out of 10. And you stayed with it.`
       : `It rose from ${last.s0} to ${last.s1} out of 10. It takes a bit longer sometimes.`;
@@ -950,7 +950,7 @@ function Passed(){
       <div class="stats" style="margin-top:18px">
         ${statTile('s1', calmDays(), 'Steady days', MOTIF.steady)}
         ${statTile('s3', Math.round(last.len/60), 'Min waited', MOTIF.taken)}
-        ${statTile('s2', S.sessions.filter(x=>x.outcome==='passed').length, 'Waves ridden', MOTIF.passed)}
+        ${statTile('s2', S.sessions.filter(x=>x.outcome==='passed').length, 'Waves passed', MOTIF.passed)}
       </div>
       ${causeReflect()}
       <div style="flex:1;min-height:20px"></div>
@@ -1064,7 +1064,7 @@ function Patterns(){
   const thisWk=win(7,0), lastWk=win(14,7);
   let wvwNote;
   if(lastWk.n===0) wvwNote=`Your first week of logging. Keep going.`;
-  else if(thisWk.pct>lastWk.pct+5) wvwNote=`You're riding out more than last week.`;
+  else if(thisWk.pct>lastWk.pct+5) wvwNote=`More passed than last week.`;
   else if(thisWk.pct<lastWk.pct-5) wvwNote=`A tougher week than last. That happens.`;
   else wvwNote=`Holding steady with last week.`;
 
@@ -1073,7 +1073,7 @@ function Patterns(){
   // three iconic tiles (kept)
   parts.push(`<div class="stats">
     ${statTile('s1', calmDays(), 'Steady days', MOTIF.steady)}
-    ${statTile('s2', passedCount, 'Waves ridden', MOTIF.passed)}
+    ${statTile('s2', passedCount, 'Waves passed', MOTIF.passed)}
     ${statTile('s3', (avgDrop!=null?avgDrop:'–'), 'Avg drop', MOTIF.taken)}
   </div>`);
 
@@ -1085,8 +1085,8 @@ function Patterns(){
       return `<div class="dcol">${stack}<div class="dl">${d.dl}</div></div>`;}).join('');
     parts.push(`<div class="pcard">
       <div class="pcard-h"><span class="ttl">Last 7 days</span></div>
-      <div class="ov"><div><div class="n">${wkTotal}</div><div class="k">Waves</div></div><div><div class="n">${wkPct}%</div><div class="k">Rode out</div></div></div>
-      <div class="legend"><span><i style="background:var(--purple)"></i>Rode out</span><span><i style="background:var(--act)"></i>Acted</span></div>
+      <div class="ov"><div><div class="n">${wkTotal}</div><div class="k">Waves</div></div><div><div class="n">${wkPct}%</div><div class="k">Passed</div></div></div>
+      <div class="legend"><span><i style="background:var(--purple)"></i>Passed</span><span><i style="background:var(--act)"></i>Acted</span></div>
       <div class="dbars">${bars}</div>
     </div>`);
   }
@@ -1096,8 +1096,8 @@ function Patterns(){
     parts.push(`<div class="pcard">
       <div class="pcard-h"><span class="ttl">This week vs last week</span></div>
       <div class="wvw">
-        <div><div class="wk">This week</div><div class="wn">${thisWk.n}</div><div class="k">waves · ${thisWk.pct}% rode out</div></div>
-        <div><div class="wk">Last week</div><div class="wn">${lastWk.n}</div><div class="k">waves · ${lastWk.pct}% rode out</div></div>
+        <div><div class="wk">This week</div><div class="wn">${thisWk.n}</div><div class="k">waves · ${thisWk.pct}% passed</div></div>
+        <div><div class="wk">Last week</div><div class="wn">${lastWk.n}</div><div class="k">waves · ${lastWk.pct}% passed</div></div>
       </div>
       <div class="wvw-note">${wvwNote}</div>
     </div>`);
@@ -1110,7 +1110,7 @@ function Patterns(){
       const tbars=byPct.map(t=>`<div class="trig">
         <div class="tt"><span>${esc(t.c)}</span><span class="grey tnum" style="font-size:13px">${t.pct}%</span></div>
         <div class="trigbar"><div style="width:${t.pct}%"></div></div></div>`).join('');
-      ins.push({score:bestBeat.p, html:ftile('bolt',esc(bestBeat.c),`You ride it out ${bestBeat.pct}% of the time.`,{k:'strong',detail:tbars})});
+      ins.push({score:bestBeat.p, html:ftile('bolt',esc(bestBeat.c),`It passes ${bestBeat.pct}% of the time.`,{k:'strong',detail:tbars})});
     }
     const podRows=pods.map(p=>`<div class="podrow"><span class="pl">${p}</span>
       <div class="podbar"><div style="width:${pod[p].n/maxPod*100}%;background:${p===peak&&pod[peak].n>0?'var(--act)':'var(--purple)'}"></div></div>
@@ -1206,7 +1206,7 @@ function Me(){
 
     <div class="card" style="margin-top:14px;background:var(--grey);border:none">
       <span class="label ink" style="margin-bottom:6px;display:inline-flex;align-items:center;gap:6px">${msvg('favorite','ic16')} If you need more than a pause</span>
-      <p class="body grey" style="font-size:13px"><em>Pause</em> can help you ride out a craving, but it isn't therapy or medical care. If you're worried about your health or safety, please talk to a professional.</p>
+      <p class="body grey" style="font-size:13px"><em>Pause</em> can help you let a craving pass, but it isn't therapy or medical care. If you're worried about your health or safety, please talk to a professional.</p>
     </div>
     <button class="erasebtn" data-a="wipe-ask" style="margin-top:18px">${msvg('delete','ic16')} Erase everything</button>
     <div id="wipebox" class="hidden card" style="margin-top:2px;background:var(--redtint);border:none">
