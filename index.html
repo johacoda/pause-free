@@ -339,6 +339,17 @@
   .trigbar{height:4px;background:var(--grey);border-radius:2px}
   .trigbar>div{height:100%;background:var(--act);border-radius:2px}
 
+  /* patterns: proof panel + helpers */
+  .proof{background:var(--t2);border-radius:18px;padding:20px 18px;margin-top:2px}
+  .proof .plab{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+  .proof .pbig{font-size:22px;font-weight:800;letter-spacing:-.01em;line-height:1.28;color:var(--ink);margin-top:10px}
+  .proof .pbig b{color:var(--act)}
+  .proof .pnote{font-size:13px;line-height:1.5;color:var(--mute);margin-top:12px}
+  .pcap{font-size:12.5px;line-height:1.5;color:var(--mute);margin-top:12px}
+  .locknote{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:var(--mute);margin-top:12px;line-height:1.45}
+  .locknote svg{flex:none;margin-top:1px;opacity:.7}
+  .spark{width:100%;height:64px;display:block;margin-top:10px}
+
   /* nav */
   .nav{display:flex;justify-content:space-around;padding:11px 16px calc(12px + env(safe-area-inset-bottom,0));
     border-top:1px solid rgba(255,255,255,.4);background:rgba(250,250,250,.72);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%)}
@@ -970,40 +981,104 @@ function Waves(){
 }
 
 /* ============ patterns ============ */
+const MIN_INSIGHT = 5;  // a pattern only shows once there's enough behind it
+const LOCK_SVG = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>`;
+
 function Patterns(){
   const s=S.sessions;
+  const n=s.length;
+  const enough=n>=MIN_INSIGHT;
+  const passedRated=s.filter(x=>x.outcome==='passed'&&x.s0!=null&&x.s1!=null);
+
+  // --- Proof hero: the wave falls ---
+  let proof;
+  if(passedRated.length){
+    const bef=(passedRated.reduce((a,x)=>a+x.s0,0)/passedRated.length);
+    const aft=(passedRated.reduce((a,x)=>a+x.s1,0)/passedRated.length);
+    const strong=passedRated.filter(x=>x.s0>=8);
+    const strongNote = strong.length>=2
+      ? `Even your strong ones, the 8s and 9s, settle to around ${Math.round(strong.reduce((a,x)=>a+x.s1,0)/strong.length)} if you stay with them.`
+      : `Across ${passedRated.length} wave${passedRated.length===1?'':'s'} you rode out. The wave really does fall.`;
+    proof=`<div class="proof">
+      <div class="plab">When you wait</div>
+      <div class="pbig">Your cravings fall from <b>${bef.toFixed(1)}</b> to <b>${aft.toFixed(1)}</b> out of 10, on average.</div>
+      <div class="pnote">${strongNote}</div>
+    </div>`;
+  } else {
+    proof=`<div class="proof">
+      <div class="plab">When you wait</div>
+      <div class="pbig">Ride out a few waves and we'll show you how far they fall.</div>
+      <div class="pnote">Rate the craving before and after, and the drop shows up here.</div>
+    </div>`;
+  }
+
+  // --- Where you're strong: pass rate by trigger ---
+  const byT={}; s.forEach(x=>{ if(!x.cause)return; const g=byT[x.cause]||(byT[x.cause]={n:0,p:0}); g.n++; if(x.outcome==='passed')g.p++; });
+  const trigStats=Object.entries(byT).map(([c,g])=>({c,n:g.n,pct:Math.round(g.p/g.n*100)})).sort((a,b)=>b.pct-a.pct);
+  const strongBlock = (enough && trigStats.length)
+    ? `<span class="label ink" style="display:block">Where you're strong</span>
+       <p class="pcap" style="margin-top:4px;margin-bottom:8px">How often you ride it out, by what set it off.</p>
+       ${trigStats.map(t=>`<div class="trig">
+         <div class="tt"><span>${esc(t.c)}</span><span class="grey tnum" style="font-size:13px">${t.pct}%</span></div>
+         <div class="trigbar"><div style="width:${t.pct}%"></div></div></div>`).join('')}`
+    : `<span class="label ink" style="display:block">Where you're strong</span>
+       <div class="locknote">${LOCK_SVG}<span>Log about ${Math.max(1,MIN_INSIGHT-n)} more wave${Math.max(1,MIN_INSIGHT-n)===1?'':'s'}, adding what set each off, to see which triggers you beat.</span></div>`;
+
+  // --- Danger windows: when cravings hit, and when they win ---
   const pods=['Morning','Afternoon','Evening','Night'];
-  const podCount={Morning:0,Afternoon:0,Evening:0,Night:0};
-  s.forEach(x=>{ podCount[partOfDay(x.hour!=null?x.hour:12)]++; });
-  const maxPod=Math.max(1,...Object.values(podCount));
+  const pod={}; pods.forEach(p=>pod[p]={n:0,acted:0});
+  s.forEach(x=>{ const p=partOfDay(x.hour!=null?x.hour:12); pod[p].n++; if(x.outcome==='acted')pod[p].acted++; });
+  const maxPod=Math.max(1,...pods.map(p=>pod[p].n));
+  const peak=pods.reduce((a,p)=>pod[p].n>pod[a].n?p:a,'Morning');
   const podRows=pods.map(p=>`<div class="podrow"><span class="pl">${p}</span>
-    <div class="podbar"><div style="width:${podCount[p]/maxPod*100}%"></div></div>
-    <span class="pc tnum">${podCount[p]}</span></div>`).join('');
-  const cc={}; let ct=0; s.forEach(x=>{if(!x.cause)return;cc[x.cause]=(cc[x.cause]||0)+1;ct++});
-  const top=Object.entries(cc).map(([c,n])=>({c,n,pct:Math.round(n/ct*100)})).sort((a,b)=>b.n-a.n).slice(0,5);
-  const trigs= top.length? top.map(t=>`<div class="trig">
-    <div class="tt"><span>${esc(t.c)}</span><span class="grey tnum" style="font-size:13px">${t.pct}%</span></div>
-    <div class="trigbar"><div style="width:${t.pct}%"></div></div></div>`).join('')
-    : `<p class="body grey">Add what set a craving off during a pause, and your top triggers will show up here.</p>`;
-  const avgDrop = (()=>{const p=s.filter(x=>x.outcome==='passed'&&x.s0!=null&&x.s1!=null);
-    if(!p.length)return null; return (p.reduce((a,x)=>a+(x.s0-x.s1),0)/p.length).toFixed(1);})();
+    <div class="podbar"><div style="width:${pod[p].n/maxPod*100}%;background:${p===peak&&pod[peak].n>0?'var(--act)':'var(--purple)'}"></div></div>
+    <span class="pc tnum">${pod[p].n}</span></div>`).join('');
+  // riskiest window = highest acted-rate among pods with enough data
+  const risky=pods.filter(p=>pod[p].n>=3).map(p=>({p,r:pod[p].acted/pod[p].n})).sort((a,b)=>b.r-a.r)[0];
+  const dangerCap = enough
+    ? (risky && risky.r>0 ? `Most of your waves land in the ${peak.toLowerCase()}. ${risky.p} is when they most often win.` : `Most of your waves land in the ${peak.toLowerCase()}.`)
+    : '';
+  const dangerBlock = enough
+    ? `<span class="label ink" style="margin-bottom:6px;display:block">Your danger windows</span>
+       <div class="pod" style="margin-top:6px">${podRows}</div>
+       ${dangerCap?`<p class="pcap">${dangerCap}</p>`:''}`
+    : `<span class="label ink" style="display:block">Your danger windows</span>
+       <div class="locknote">${LOCK_SVG}<span>A few more waves and we'll spot the hours you're most at risk.</span></div>`;
+
+  // --- Trend: last six weeks, pass rate ---
+  let trendBlock='';
+  if(enough){
+    const now=Date.now(); const wk=7*864e5; const pts=[];
+    for(let i=5;i>=0;i--){ const end=now-i*wk, start=end-wk;
+      const r=s.filter(x=>{const t=Date.parse(x.date+'T12:00:00'); return t>start&&t<=end;});
+      const p=r.filter(x=>x.outcome==='passed').length;
+      pts.push(r.length? Math.round(p/r.length*100):0);
+    }
+    const mx=Math.max(1,...pts);
+    const poly=pts.map((v,i)=>`${6+i*288/5},${58-v/mx*46}`).join(' ');
+    trendBlock=`<div style="margin-top:28px">
+      <span class="label ink" style="display:block">The last six weeks</span>
+      <p class="pcap" style="margin-top:4px">Share of waves you rode out. A dip is just a week, not a verdict.</p>
+      <svg class="spark" viewBox="0 0 300 64" preserveAspectRatio="none"><polyline points="${poly}" fill="none" stroke="var(--act)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>`;
+  }
+
+  const easeMin=(()=>{const p=passedRated.length?passedRated:s.filter(x=>x.outcome==='passed');
+    const w=p.map(x=>x.elapsed!=null?x.elapsed:x.len).filter(v=>v!=null).sort((a,b)=>a-b);
+    if(!w.length)return null; const m=w[Math.floor(w.length/2)]; return Math.max(1,Math.round(m/60));})();
 
   return `<div class="home">
     ${navHero('Your patterns')}
     <div class="hsheet">
-      <div class="stats">
+      ${proof}
+      <div class="stats" style="margin-top:16px">
         ${statTile('s1', calmDays(), 'Steady days', MOTIF.steady)}
         ${statTile('s2', S.sessions.filter(x=>x.outcome==='passed').length, 'Waves ridden', MOTIF.passed)}
-        ${statTile('s3', (avgDrop!=null?avgDrop:'–'), 'Avg drop', MOTIF.taken)}
+        ${statTile('s3', (easeMin!=null?easeMin:'–'), (easeMin!=null?'Min to ease':'Time to ease'), MOTIF.taken)}
       </div>
-      <div style="margin-top:28px">
-        <span class="label ink" style="margin-bottom:14px">Time of day</span>
-        <div class="pod" style="margin-top:6px">${podRows}</div>
-      </div>
-      <div style="margin-top:28px">
-        <span class="label ink" style="margin-bottom:14px;display:block">Top triggers</span>
-        ${trigs}
-      </div>
+      <div style="margin-top:28px">${strongBlock}</div>
+      <div style="margin-top:28px">${dangerBlock}</div>
+      ${trendBlock}
       <div style="flex:1;min-height:20px"></div>
     </div>
     ${Nav('patterns')}
