@@ -1545,6 +1545,36 @@ function fillRange(el){ const mn=+el.min,mx=+el.max,v=+el.value; const p=(v-mn)/
 /* radial, drag-to-set time dial (1–20 min) */
 let dialSetMin=null;
 function syncLenChips(sec){ document.querySelectorAll('[data-a=bg-len]').forEach(x=>x.classList.toggle('on',+x.dataset.s===sec)); }
+// a soft, understated mechanical "tick" as the dial passes each minute, like winding a clock.
+// its own tiny AudioContext, created on first use (during the drag gesture, so it unlocks fine).
+let uiCtx=null;
+function uiTick(){
+  if(!S.sound) return;                       // respect the app's sound toggle
+  try{
+    if(!uiCtx) uiCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(uiCtx.state!=='running' && uiCtx.resume) uiCtx.resume();
+    const ctx=uiCtx, t=ctx.currentTime;
+    const out=ctx.createGain(); out.gain.value=0.5; out.connect(ctx.destination);
+    // click transient: a very short noise burst through a band-pass, quick decay
+    const buf=ctx.createBuffer(1, Math.ceil(ctx.sampleRate*0.03), ctx.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
+    const src=ctx.createBufferSource(); src.buffer=buf;
+    const bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=2100+(Math.random()*200-100); bp.Q.value=0.9;
+    const g=ctx.createGain();
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.exponentialRampToValueAtTime(0.06,t+0.004);   // fast, soft attack; low peak
+    g.gain.exponentialRampToValueAtTime(0.0001,t+0.04);  // quick decay
+    src.connect(bp); bp.connect(g); g.connect(out); src.start(t); src.stop(t+0.05);
+    // tiny wooden body so it reads as a mechanical tick, not a hiss
+    const o=ctx.createOscillator(); o.type='sine'; o.frequency.value=185;
+    const og=ctx.createGain();
+    og.gain.setValueAtTime(0.0001,t);
+    og.gain.exponentialRampToValueAtTime(0.03,t+0.004);
+    og.gain.exponentialRampToValueAtTime(0.0001,t+0.05);
+    o.connect(og); og.connect(out); o.start(t); o.stop(t+0.06);
+  }catch(e){}
+}
 function initDial(){
   dialSetMin=null;
   const svg=document.getElementById('dial'); if(!svg) return;
@@ -1559,6 +1589,7 @@ function initDial(){
     handle.setAttribute('cx',(cx+R*Math.cos(a)).toFixed(1));
     handle.setAttribute('cy',(cy+R*Math.sin(a)).toFixed(1));
     syncLenChips(m*60);
+    if(lastM!==null && m!==lastM) uiTick();   // one soft tick each time a new minute passes
     lastM=m;
   }
   dialSetMin=setMin;
