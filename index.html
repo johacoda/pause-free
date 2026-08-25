@@ -559,7 +559,7 @@ function planItem(t){ return `<div class="planitem">
   <input class="planinput" type="text" data-plan="${t.id}" value="${esc(t.plan||'')}" maxlength="120" placeholder="e.g. drink water and step outside" autocomplete="off">
   <div class="sugrow">${sugChips(t.id)}</div>
 </div>`; }
-const PICK_ICONS = ['bolt','local_fire_department','eco','menu_book','sports_esports','headphones','local_drink','cookie','laptop_mac','directions_run','bedtime','chat_bubble','shopping_cart','fitness_center','local_pizza','savings','mood','favorite'];
+const PICK_ICONS = ['bolt','eco','menu_book','sports_esports','headphones','local_drink','cookie','laptop_mac','directions_run','bedtime','chat_bubble','shopping_cart','fitness_center','local_pizza','savings','mood','favorite'];
 
 /* ============ storage ============ */
 const KEY = 'pako-pause/v1';
@@ -631,6 +631,19 @@ function pauseMsgAt(elapsed, lead){
 }
 function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function greet(){ const h=new Date().getHours(); return h<12?'Good morning':h<17?'Good afternoon':h<22?'Good evening':'You’re up late'; }
+// true while the most recent thing that happened was a slip, within the last day or so
+function recentSlip(){
+  if(!S.sessions.length) return false;
+  const last=S.sessions[0];
+  if(last.outcome!=='acted') return false;
+  const day=86400000, d=new Date(last.date+'T00:00:00');
+  const n=new Date(), today=new Date(n.getFullYear(),n.getMonth(),n.getDate());
+  return (today-d)/day<=1;
+}
+// the line under the greeting; softens for a day or two after a slip, then returns to the default
+function heroSub(){
+  return recentSlip() ? 'A slip is a wave, not the tide.' : 'Every craving passes if you give it time.';
+}
 function partOfDay(h){ return h<5?'Night':h<12?'Morning':h<17?'Afternoon':h<22?'Evening':'Night'; }
 
 function calmDays(){
@@ -684,7 +697,7 @@ function Milestones(){
   const best=bestRun(), streak=calmDays();
   function track(id,icon,title,marks,unit,earnedBy,current,tierFn){
     const next=marks.find(m=>m>earnedBy);
-    const cd = next ? `${next-current} ${plu(unit,next-current)} to ${next}` : 'All earned';
+    const cd = next ? `${next-current} more steady ${plu(unit,next-current)}` : 'All earned';
     const nodes=marks.map(m=>{
       let state='future',size=50,frac=1;
       if(m<=earnedBy){state='earned';size=54;}
@@ -721,13 +734,13 @@ function msWire(){
 // small next-milestone nudge for the home screen — nothing until the first milestone is earned
 function homeMilestone(){
   const best=bestRun(), streak=calmDays(), next=DAY_MARKS.find(m=>m>best);
-  if(best<1 || !next) return '';
+  if(best<1 || !next || recentSlip()) return '';
   const d=next-streak, frac=Math.max(0.04,Math.min(0.98,streak/next));
   return `<div style="margin-top:22px">
     <span class="label ink" style="margin-bottom:10px;display:block">Milestones</span>
     <button class="mstrip" data-a="nav" data-v="milestones">
       ${msMedal(next,'day','next',msTierDay(next),50,frac)}
-      <span class="mstx"><span class="t">${d} ${plu('day',d)} to your ${next}-day mark</span><span class="mbar"><span style="width:${(frac*100).toFixed(0)}%"></span></span></span>
+      <span class="mstx"><span class="t">${d} more steady ${plu('day',d)}</span><span class="mbar"><span style="width:${(frac*100).toFixed(0)}%"></span></span></span>
       <span class="mchev">${IC.arrow}</span></button>
   </div>`;
 }
@@ -752,7 +765,7 @@ function hourLine(rows){
   let line=''; for(let h=0;h<24;h++){ line+=(h?' L':'M')+x(h).toFixed(1)+','+y(sm[h]).toFixed(1); }
   const area=`M${x(0).toFixed(1)},${(H-15).toFixed(1)} `+sm.map((v,h)=>`L${x(h).toFixed(1)},${y(v).toFixed(1)}`).join(' ')+` L${x(23).toFixed(1)},${(H-15).toFixed(1)} Z`;
   let pk=0; for(let h=1;h<24;h++) if(sm[h]>sm[pk]) pk=h;
-  const labs=[[0,'12a'],[6,'6a'],[12,'12p'],[18,'6p']].map(t=>`<text x="${x(t[0]).toFixed(1)}" y="${H-2}" font-size="9" fill="#9a93aa" font-family="Plus Jakarta Sans" text-anchor="${t[0]===0?'start':'middle'}">${t[1]}</text>`).join('');
+  const labs=[[0,'12am'],[6,'6am'],[12,'12pm'],[18,'6pm']].map(t=>`<text x="${x(t[0]).toFixed(1)}" y="${H-2}" font-size="9.5" fill="#9a93aa" font-family="Plus Jakarta Sans" text-anchor="${t[0]===0?'start':'middle'}">${t[1]}</text>`).join('');
   return `<svg class="hourline" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
     <defs><linearGradient id="hlg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--purple)" stop-opacity="0.26"/><stop offset="100%" stop-color="var(--purple)" stop-opacity="0.02"/></linearGradient></defs>
     <path d="${area}" fill="url(#hlg)"/>
@@ -833,7 +846,7 @@ const IC = {
   close: msvg('close','nav24'),
   lock:  msvg('lock','ic16'),
   add:   msvg('add'),
-  ms:    msvg('local_fire_department'),
+  ms:    msvg('eco'),
 };
 
 /* ============ render ============ */
@@ -1022,7 +1035,7 @@ function Home(){
       <div class="d-head">
         <div class="d-hi">${greet()}</div>
         <div class="d-name">${esc(first)}</div>
-        <div class="d-sub">Every craving passes if you give it time.</div>
+        <div class="d-sub">${heroSub()}</div>
       </div>
     </div>
     <div class="hsheet">
@@ -1253,17 +1266,17 @@ function trigSheet(cause){
   const bars=pods.map(x=>`<div class="ptc ${x===peak&&pod[peak]>0?'peak':''}"><div class="ptb" style="height:${Math.max(6,pod[x]/maxPod*100)}%"></div><div class="l">${x}</div></div>`).join('');
   const el=document.createElement('div');
   el.innerHTML=`<div class="scrim on" data-a="ts-close" style="z-index:50"></div>
-    <div class="sheet tsheet on" style="z-index:51"><div class="grab"></div>
+    <div class="sheet tsheet on" style="z-index:51">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
         <h2 style="font-size:22px">${esc(cause)}</h2>
         <button data-a="ts-close" class="grey">${IC.close}</button></div>
       <div class="thero"><div class="big">${pct}%</div><div class="cap">You get through it ${pct}% of the time. That's ${p} of the ${n} time${n===1?'':'s'} it hit.</div></div>
       <div style="margin-top:14px">
         <div class="tdrow"><span class="di">${msvg('schedule')}</span><span class="dl">Hits most often</span><span class="dv">${peak}</span></div>
-        ${strength!=null?`<div class="tdrow"><span class="di">${msvg('local_fire_department')}</span><span class="dl">Usually feels like</span><span class="dv">${strength} / 10</span></div>`:''}
+        ${strength!=null?`<div class="tdrow"><span class="di">${msvg('waves')}</span><span class="dl">Usually feels like</span><span class="dv">${strength} / 10</span></div>`:''}
         ${settle!=null?`<div class="tdrow"><span class="di">${msvg('self_improvement')}</span><span class="dl">Settles in about</span><span class="dv">${settle} min</span></div>`:''}
       </div>
-      <div style="font-size:13px;font-weight:700;color:var(--ink);margin:20px 0 0">When it hits, by time of day</div>
+      <div style="font-size:15px;font-weight:700;color:var(--ink);margin:20px 0 0">When it hits</div>
       ${hourLine(rows)}
     </div>`;
   document.getElementById('frame').appendChild(el);
