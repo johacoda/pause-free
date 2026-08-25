@@ -373,7 +373,7 @@
   .pkpi .k{font-size:13px;color:var(--mute);margin-top:6px}
   .pbdh{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
   .pbdh .t{font-size:13.5px;font-weight:700;color:var(--ink)}
-  .pchart{position:relative;margin-top:12px}
+  .pchart{position:relative;margin-top:20px}
   .pgl{position:absolute;left:16px;right:0;height:1px;background:var(--faint)}
   .pgn{position:absolute;left:0;transform:translateY(-50%);font-size:10px;color:var(--mute2);font-variant-numeric:tabular-nums}
   .pplot{position:absolute;left:16px;right:0;top:0;display:flex;align-items:flex-end;gap:8px}
@@ -413,6 +413,40 @@
   .tdrow .di .ms{width:22px;height:22px}
   .tdrow .dl{flex:1;font-size:14.5px;color:var(--mute)}
   .tdrow .dv{font-size:15px;font-weight:800;color:var(--ink)}
+  /* ===== Milestones ===== */
+  .mcard{background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.7);border-radius:18px;padding:16px 0 14px;margin-top:14px}
+  .dark .mcard{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1)}
+  .mcard:first-child{margin-top:2px}
+  .mhead{display:flex;align-items:center;gap:10px;padding:0 18px}
+  .mhead .mi{color:var(--act);flex:none;display:flex;line-height:0}
+  .mhead .mi .ms{width:22px;height:22px}
+  .mhead .mt{font-size:16px;font-weight:800;color:var(--purple);letter-spacing:-.01em}
+  .mhead .mcd{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--mute)}
+  .journey{position:relative;overflow-x:auto;scrollbar-width:none;padding:12px 34px 6px}
+  .journey::-webkit-scrollbar{display:none}
+  .journey .rail{position:absolute;top:58px;height:4px;background:var(--faint);border-radius:3px;z-index:0}
+  .journey .raildone{position:absolute;top:58px;height:4px;background:var(--act);border-radius:3px;z-index:0}
+  .stations{position:relative;z-index:1;display:flex;align-items:center;gap:16px;height:92px;width:max-content}
+  .node{flex:none;position:relative}
+  .node.earned{filter:drop-shadow(0 3px 8px rgba(192,57,43,.24))}
+  .node.earned.t1{filter:drop-shadow(0 3px 8px rgba(87,74,125,.28))}
+  .node.earned.t2{filter:drop-shadow(0 3px 8px rgba(60,49,88,.3))}
+  .node.earned.t3{filter:drop-shadow(0 3px 10px rgba(198,145,40,.4))}
+  .node.next{filter:drop-shadow(0 5px 14px rgba(192,57,43,.26))}
+  .node .nlock{position:absolute;right:-2px;bottom:-2px;width:20px;height:20px;border-radius:50%;background:var(--grey);border:2px solid var(--white);display:flex;align-items:center;justify-content:center;color:var(--mute2)}
+  .node .nlock .ms{width:11px;height:11px}
+  .mstrip{display:flex;align-items:center;gap:14px;width:100%;background:none;border:none;font-family:inherit;text-align:left;cursor:pointer;padding:0}
+  .mstrip .node{filter:none}
+  .mstx{flex:1;min-width:0}
+  .mstx .t{display:block;font-size:15px;font-weight:700;color:var(--ink)}
+  .mbar{display:block;height:6px;border-radius:4px;background:var(--faint);overflow:hidden;margin-top:9px}
+  .mbar>span{display:block;height:100%;background:var(--act);border-radius:4px}
+  .mchev{color:var(--mute2);flex:none;display:flex}
+  .mearned{display:flex;align-items:center;gap:13px;background:var(--redtint);border-radius:14px;padding:12px 14px;margin-bottom:16px}
+  .mearned .node{filter:none}
+  .mel{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--act)}
+  .mev{font-size:16px;font-weight:800;color:var(--ink);margin-top:2px}
+  .hourline{width:100%;height:auto;display:block;margin-top:14px}
   .spark{width:100%;height:56px;display:block}
   /* borrowed: overview + daily breakdown + week-vs-week cards */
   .pcard{background:var(--t3);border-radius:16px;padding:16px 16px;margin-top:10px}
@@ -621,6 +655,114 @@ function bestRun(){
   best=Math.max(best, Math.floor((today-slips[slips.length-1])/day));
   return Math.max(0,best);
 }
+/* ============ milestones ============ */
+const DAY_MARKS=[1,3,7,14,30,60,90,180,365];
+const WAVE_MARKS=[1,10,25,50,100,250];
+const MS_GRAD=[['#e58a5f','#c0392b'],['#8f83b3','#574a7d'],['#5b4f82','#372f4f'],['#eccb6a','#c6912a']];
+function passedTotal(){ return S.sessions.filter(x=>x.outcome==='passed').length; }
+function msTierDay(v){ return v<=7?0:v<=30?1:v<=90?2:3; }
+function msTierWave(v){ return v<=10?0:v<=25?1:v<=50?2:3; }
+function plu(u,n){ return n===1?u:u+'s'; }
+// a milestone badge: a tiered wave-medallion. earned = filled + glow, next = progress ring, future = grey + lock.
+function msMedal(v,unit,state,tier,size,frac){
+  const c=MS_GRAD[tier], c1=c[0], c2=c[1], id='ms'+unit+v+state;
+  const ulab=plu(unit,v).toUpperCase();
+  const num=(fa,fb)=>`<text x="50" y="46" text-anchor="middle" font-family="Plus Jakarta Sans" font-weight="800" font-size="30" fill="${fa}">${v}</text><text x="50" y="63" text-anchor="middle" font-family="Plus Jakarta Sans" font-weight="700" font-size="10" letter-spacing="1" fill="${fb}">${ulab}</text>`;
+  let svg;
+  if(state==='future'){
+    svg=`<svg width="${size}" height="${size}" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#e4e2e8"/>${num('#b4b0bb','#b4b0bb')}</svg>`;
+  } else if(state==='next'){
+    const C=2*Math.PI*46, off=C*(1-Math.max(0.05,Math.min(0.97,frac||0)));
+    svg=`<svg width="${size}" height="${size}" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#fff" stroke="#f0e2df" stroke-width="6"/><circle cx="50" cy="50" r="46" fill="none" stroke="${c2}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 50 50)"/>${num(c2,c2)}</svg>`;
+  } else {
+    svg=`<svg width="${size}" height="${size}" viewBox="0 0 100 100"><defs><radialGradient id="${id}" cx="42%" cy="34%" r="72%"><stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/></radialGradient></defs><circle cx="50" cy="50" r="46" fill="url(#${id})"/><circle cx="50" cy="50" r="46" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="2"/><path d="M8,60 Q28,52 50,60 T92,60 L92,92 L8,92 Z" fill="#fff" opacity="0.16"/>${num('#fff','rgba(255,255,255,0.9)')}</svg>`;
+  }
+  const lock = state==='future'?`<span class="nlock">${msvg('lock')}</span>`:'';
+  return `<div class="node ${state} t${tier}" style="width:${size}px;height:${size}px"${state==='next'?' data-next':''}>${svg}${lock}</div>`;
+}
+function Milestones(){
+  const best=bestRun(), streak=calmDays(), wp=passedTotal();
+  function track(id,icon,title,marks,unit,earnedBy,current,tierFn){
+    const next=marks.find(m=>m>earnedBy);
+    const cd = next ? `${next-current} ${plu(unit,next-current)} to ${next}` : 'All earned';
+    const nodes=marks.map(m=>{
+      let state='future',size=50,frac=1;
+      if(m<=earnedBy){state='earned';size=54;}
+      else if(m===next){state='next';size=76;frac=current/m;}
+      return msMedal(m,unit,state,tierFn(m),size,frac);
+    }).join('');
+    return `<div class="mcard">
+      <div class="mhead"><span class="mi">${msvg(icon)}</span><span class="mt">${title}</span><span class="mcd">${cd}</span></div>
+      <div class="journey" data-ms="${id}"><div class="rail"></div><div class="raildone"></div><div class="stations">${nodes}</div></div>
+    </div>`;
+  }
+  return `<div class="home">
+    ${navHero('Milestones')}
+    <div class="hsheet">
+      ${track('days','eco','Days steady',DAY_MARKS,'day',best,streak,msTierDay)}
+      ${track('waves','waves','Waves passed',WAVE_MARKS,'wave',wp,wp,msTierWave)}
+      <div style="flex:1;min-height:20px"></div>
+    </div>
+    ${Nav('milestones')}
+  </div>`;
+}
+// after render, size the rails and scroll each track to its next milestone
+function msWire(){
+  document.querySelectorAll('.journey[data-ms]').forEach(j=>{
+    const st=j.querySelector('.stations'); if(!st||!st.children.length) return;
+    const rail=j.querySelector('.rail'), done=j.querySelector('.raildone');
+    const nodes=st.children, first=nodes[0], last=nodes[nodes.length-1];
+    const nx=st.querySelector('[data-next]')||last;
+    const cx=e=>e.offsetLeft+e.offsetWidth/2;
+    rail.style.left=cx(first)+'px'; rail.style.width=Math.max(0,cx(last)-cx(first))+'px';
+    done.style.left=cx(first)+'px'; done.style.width=Math.max(0,cx(nx)-cx(first))+'px';
+    j.scrollLeft=Math.max(0, nx.offsetLeft - j.clientWidth/2 + nx.offsetWidth/2);
+  });
+}
+// small next-milestone nudge for the home screen
+function homeMilestone(){
+  const best=bestRun(), streak=calmDays(), next=DAY_MARKS.find(m=>m>best);
+  if(!next) return '';
+  const d=next-streak, frac=Math.max(0.04,Math.min(0.98,streak/next));
+  return `<button class="mstrip" data-a="nav" data-v="milestones">
+    ${msMedal(next,'day','next',msTierDay(next),50,frac)}
+    <span class="mstx"><span class="t">${d} ${plu('day',d)} to your ${next}-day mark</span><span class="mbar"><span style="width:${(frac*100).toFixed(0)}%"></span></span></span>
+    <span class="mchev">${IC.arrow}</span></button>`;
+}
+// a milestone newly reached by the pass just recorded, for the result screen (null if none)
+function justEarned(){
+  const wp=passedTotal();
+  if(WAVE_MARKS.indexOf(wp)>-1) return {v:wp,unit:'wave',tier:msTierWave(wp),tail:'passed'};
+  const cd=calmDays();
+  if(DAY_MARKS.indexOf(cd)>-1 && bestRun()===cd) return {v:cd,unit:'day',tier:msTierDay(cd),tail:'steady'};
+  return null;
+}
+
+/* ============ hourly line: urges by time of day ============ */
+function hourCounts(rows){
+  const c=new Array(24).fill(0);
+  rows.forEach(x=>{ let h=x.hour; if(h==null){ const t=(x.t||'').split(':'); h=t.length?+t[0]:12; } if(h>=0&&h<24) c[h]++; });
+  return c;
+}
+function hourLine(rows){
+  const raw=hourCounts(rows), k=[1,2,3,2,1];
+  const sm=raw.map((_,i)=>{ let s=0,w=0; for(let j=-2;j<=2;j++){ const idx=i+j; if(idx>=0&&idx<24){ s+=raw[idx]*k[j+2]; w+=k[j+2]; } } return w?s/w:0; });
+  const max=Math.max(0.0001,...sm), W=300,H=92,pad=6;
+  const x=h=>pad+h/23*(W-2*pad), y=v=>H-15-(v/max)*(H-30);
+  let line=''; for(let h=0;h<24;h++){ line+=(h?' L':'M')+x(h).toFixed(1)+','+y(sm[h]).toFixed(1); }
+  const area=`M${x(0).toFixed(1)},${(H-15).toFixed(1)} `+sm.map((v,h)=>`L${x(h).toFixed(1)},${y(v).toFixed(1)}`).join(' ')+` L${x(23).toFixed(1)},${(H-15).toFixed(1)} Z`;
+  let pk=0; for(let h=1;h<24;h++) if(sm[h]>sm[pk]) pk=h;
+  const labs=[[0,'12a'],[6,'6a'],[12,'12p'],[18,'6p']].map(t=>`<text x="${x(t[0]).toFixed(1)}" y="${H-2}" font-size="9" fill="#9a93aa" font-family="Plus Jakarta Sans" text-anchor="${t[0]===0?'start':'middle'}">${t[1]}</text>`).join('');
+  return `<svg class="hourline" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+    <defs><linearGradient id="hlg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--purple)" stop-opacity="0.26"/><stop offset="100%" stop-color="var(--purple)" stop-opacity="0.02"/></linearGradient></defs>
+    <path d="${area}" fill="url(#hlg)"/>
+    <path d="${line}" fill="none" stroke="var(--purple)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${x(pk).toFixed(1)}" cy="${y(sm[pk]).toFixed(1)}" r="4.5" fill="var(--act)"/>
+    ${labs}
+  </svg>`;
+}
+
+
 function passRate(list){ list=list||S.sessions; if(!list.length)return 0;
   return Math.round(list.filter(x=>x.outcome==='passed').length / list.length * 100); }
 function niceDate(d){
@@ -691,6 +833,7 @@ const IC = {
   close: msvg('close','nav24'),
   lock:  msvg('lock','ic16'),
   add:   msvg('add'),
+  ms:    msvg('local_fire_department'),
 };
 
 /* ============ render ============ */
@@ -699,7 +842,7 @@ let clockInt=null, breathInt=null, pauseRAF=null;
 function stop(){ if(clockInt){clearInterval(clockInt);clockInt=null} if(breathInt){clearInterval(breathInt);breathInt=null} if(pauseRAF){cancelAnimationFrame(pauseRAF);pauseRAF=null} }
 function go(v){ S.view=v; save(); render(); }
 
-const VIEWS = {onboard:Onboard, home:Home, begin:Begin, pause:PauseView, passed:Passed, acted:Acted, waves:Waves, patterns:Patterns, me:Me, privacy:PrivacyView};
+const VIEWS = {onboard:Onboard, home:Home, begin:Begin, pause:PauseView, passed:Passed, acted:Acted, waves:Waves, patterns:Patterns, me:Me, privacy:PrivacyView, milestones:Milestones};
 let privReturn='me';
 let lastView=null;
 function render(){
@@ -720,6 +863,7 @@ function render(){
   if(document.querySelector('.herowave')) heroStart(); else heroStop();
   if(document.querySelector('.hero-welcome')){ welcomeInit(); if(!document.getElementById('splash')) welcomeFall(); }
   if(document.getElementById('rotline')) rotStart(); else rotStop();
+  if(document.querySelector('.journey[data-ms]')) msWire();
 }
 /* gentle rotating affirmation on the welcome headline */
 const CRAVE_LINES = ['is a <span class="wv">wave</span>','will pass',"isn't you"];
@@ -887,6 +1031,10 @@ function Home(){
         ${statTile('s2', passed, 'Waves passed', MOTIF.passed)}
         ${statTile('s3', bestRun(), 'Best run', MOTIF.taken)}
       </div>
+      <div style="margin-top:22px">
+        <span class="label ink" style="margin-bottom:10px;display:block">Milestones</span>
+        ${homeMilestone()}
+      </div>
       <div style="margin-top:24px">
         <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
           <span class="label ink">Recent waves</span>
@@ -1010,11 +1158,11 @@ function Passed(){
     title='The wave<br>passed'; tf=38; waveH=92;
     body = drop>=1 ? `It eased from ${last.s0} to ${last.s1} out of 10.`
                    : `You stayed with it.`;
-    primary = `<button class="btn btn-red" data-a="go-patterns" style="margin-bottom:10px">See your patterns ${IC.arrow}</button>`;
+    primary = `<button class="btn btn-red" data-a="go-patterns" style="margin-bottom:10px">See your insights ${IC.arrow}</button>`;
   } else if(drop>=1){
     title='The wave is<br>settling'; tf=33; waveH=122;
     body = `It eased from ${last.s0} to ${last.s1} out of 10. It's settling.`;
-    primary = `<button class="btn btn-red" data-a="go-patterns" style="margin-bottom:10px">See your patterns ${IC.arrow}</button>`;
+    primary = `<button class="btn btn-red" data-a="go-patterns" style="margin-bottom:10px">See your insights ${IC.arrow}</button>`;
   } else {
     title='You got<br>through it'; tf=37; waveH=152;
     body = drop===0
@@ -1022,9 +1170,11 @@ function Passed(){
       : `It rose from ${last.s0} to ${last.s1} out of 10. It takes a bit longer sometimes.`;
     primary = `<button class="btn btn-red" data-a="begin" style="margin-bottom:10px">Pause again ${IC.arrow}</button>`;
   }
+  const earned=justEarned();
   return `<div class="home fade">
     ${resultHero(title,tf,waveH)}
     <div class="hsheet">
+      ${earned?`<div class="mearned">${msMedal(earned.v,earned.unit,'earned',earned.tier,46,1)}<div><div class="mel">New milestone</div><div class="mev">${earned.v} ${plu(earned.unit,earned.v)} ${earned.tail}</div></div></div>`:''}
       <p class="body grey" style="max-width:24em">${body}</p>
       <div class="stats" style="margin-top:18px">
         ${statTile('s1', calmDays(), 'Steady days', MOTIF.steady)}
@@ -1117,7 +1267,7 @@ function trigSheet(cause){
         ${settle!=null?`<div class="tdrow"><span class="di">${msvg('self_improvement')}</span><span class="dl">Settles in about</span><span class="dv">${settle} min</span></div>`:''}
       </div>
       <div style="font-size:13px;font-weight:700;color:var(--ink);margin:20px 0 0">When it hits, by time of day</div>
-      <div class="ptod">${bars}</div>
+      ${hourLine(rows)}
     </div>`;
   document.getElementById('frame').appendChild(el);
   el.addEventListener('click',ev=>{ if(ev.target.closest('[data-a=ts-close]')) el.remove(); });
@@ -1131,7 +1281,7 @@ function Patterns(){
 
   if(!n){
     parts.push(`<div class="pcard"><div class="pins"><span class="ic">${msvg('monitoring')}</span>
-      <span class="tx"><span class="t">Nothing yet</span><span class="s">Your patterns show up here after your first pause.</span></span></div></div>`);
+      <span class="tx"><span class="t">Nothing yet</span><span class="s">Your insights show up here after your first pause.</span></span></div></div>`);
     return `<div class="home">${navHero('Insights')}<div class="hsheet">${parts.join('')}<div style="flex:1;min-height:20px"></div></div>${Nav('patterns')}</div>`;
   }
 
@@ -1152,7 +1302,8 @@ function Patterns(){
   const totPassed=buckets.reduce((a,b)=>a+b.p,0);
   const passPct=totWaves?Math.round(totPassed/totWaves*100):0;
   const rawMax=Math.max(1,...buckets.map(b=>b.p+b.a));
-  const maxY=patPeriod==='week'?Math.max(3,rawMax):rawMax;
+  let maxY=patPeriod==='week'?Math.max(3,rawMax):rawMax;
+  if(rawMax>=maxY) maxY=rawMax+Math.max(1,Math.round(rawMax*0.15));  // headroom so the tallest bar never reaches the legend
   const ticks=[]; if(maxY<=6){ for(let v=maxY;v>=0;v--)ticks.push(v); } else { for(let j=4;j>=0;j--)ticks.push(Math.round(maxY*j/4)); }
   const plotH=130;
   const gl=ticks.map(v=>{const top=((1-v/maxY)*plotH).toFixed(1); return `<div class="pgl" style="top:${top}px"></div><div class="pgn" style="top:${top}px">${v}</div>`;}).join('');
@@ -1184,7 +1335,7 @@ function Patterns(){
     parts.push(`<div class="pcard">
       <div class="pins"><span class="ic">${msvg('schedule')}</span>
         <span class="tx"><span class="t">${peak}</span><span class="s">That's when most of your urges hit.</span></span></div>
-      <div class="ptod">${todBars}</div></div>`);
+      ${hourLine(s)}</div>`);
 
     /* triggers, ranked by how often they come up */
     const byT={}; s.forEach(x=>{ if(!x.cause)return; const g=byT[x.cause]||(byT[x.cause]={n:0,p:0}); g.n++; if(x.outcome==='passed')g.p++; });
@@ -1308,7 +1459,7 @@ function statLine(items){
   return `<div class="statline">${items.map(x=>`<div><span class="sk">${x.k}</span><div class="sv">${x.v}${x.u?`<small>${x.u}</small>`:''}</div></div>`).join('')}</div>`;
 }
 function Nav(active){
-  const t=[['home','Home','home'],['waves','Waves','waves'],['chart','Insights','patterns'],['user','You','me']];
+  const t=[['home','Home','home'],['waves','Waves','waves'],['chart','Insights','patterns'],['ms','Milestones','milestones'],['user','You','me']];
   return `<div class="nav">${t.map(([ic,l,v])=>`<button class="${v===active?'on':''}" data-a="nav" data-v="${v}">${IC[ic]}<span>${l}</span></button>`).join('')}</div>`;
 }
 
