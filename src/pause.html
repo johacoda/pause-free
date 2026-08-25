@@ -454,6 +454,7 @@
   .spark{width:100%;height:56px;display:block}
   /* borrowed: overview + daily breakdown + week-vs-week cards */
   .pcard{background:var(--t3);border-radius:16px;padding:16px 16px;margin-top:10px}
+  .mscard .journey{margin:6px -16px 0;padding:10px 30px 2px}
   .pcard-h{display:flex;justify-content:space-between;align-items:baseline}
   .pcard-h .ttl{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
   .ov{display:flex;gap:26px;margin-top:12px}
@@ -698,29 +699,21 @@ function msMedal(v,unit,state,tier,size,frac){
   const lock = state==='future'?`<span class="nlock">${msvg('lock')}</span>`:'';
   return `<div class="node ${state} t${tier}" style="width:${size}px;height:${size}px"${state==='next'?' data-next':''}>${svg}${lock}</div>`;
 }
-function Milestones(){
+// the milestone journey, rendered as a card inside Insights (second card, under Overview)
+function msInsightCard(){
   const best=bestRun(), streak=calmDays();
-  function track(id,icon,title,marks,unit,earnedBy,current,tierFn){
-    const next=marks.find(m=>m>earnedBy);
-    const cd = next ? `${next-current} more steady ${plu(unit,next-current)}` : 'All earned';
-    const nodes=marks.map(m=>{
-      let state='future',size=50,frac=1;
-      if(m<=earnedBy){state='earned';size=54;}
-      else if(m===next){state='next';size=76;frac=current/m;}
-      return msMedal(m,unit,state,tierFn(m),size,frac);
-    }).join('');
-    return `<div class="mcard">
-      <div class="mhead"><span class="mi">${msvg(icon)}</span><span class="mt">${title}</span><span class="mcd">${cd}</span></div>
-      <div class="journey" data-ms="${id}"><div class="rail"></div><div class="raildone"></div><div class="stations">${nodes}</div></div>
-    </div>`;
-  }
-  const body = best<1
-    ? `<div class="pcard"><div class="pins"><span class="ic">${msvg('eco')}</span><span class="tx"><span class="t">Your first milestone</span><span class="s">One steady day. You're on your way to it.</span></span></div></div>`
-    : track('days','eco','Days steady',DAY_MARKS,'day',best,streak,msTierDay);
-  return `<div class="home">
-    ${navHero('Milestones')}
-    <div class="hsheet">${body}<div style="flex:1;min-height:20px"></div></div>
-    ${Nav('milestones')}
+  if(best<1) return `<div class="pcard"><div class="pins"><span class="ic">${msvg('eco')}</span><span class="tx"><span class="t">Your first milestone</span><span class="s">One steady day. You're on your way to it.</span></span></div></div>`;
+  const next=DAY_MARKS.find(m=>m>best);
+  const cd = next ? `${next-streak} more steady ${plu('day',next-streak)}` : 'All earned';
+  const nodes=DAY_MARKS.map(m=>{
+    let state='future',size=50,frac=1;
+    if(m<=best){state='earned';size=54;}
+    else if(m===next){state='next';size=76;frac=streak/m;}
+    return msMedal(m,'day',state,msTierDay(m),size,frac);
+  }).join('');
+  return `<div class="pcard mscard">
+    <div class="mhead" style="padding:0"><span class="mi">${msvg('eco')}</span><span class="mt">Days steady</span><span class="mcd">${cd}</span></div>
+    <div class="journey" data-ms="days"><div class="rail"></div><div class="raildone"></div><div class="stations">${nodes}</div></div>
   </div>`;
 }
 // after render, size the rails and scroll each track to its next milestone
@@ -743,7 +736,7 @@ function homeMilestone(){
   const d=next-streak, frac=Math.max(0.04,Math.min(0.98,streak/next));
   return `<div style="margin-top:22px">
     <span class="label ink" style="margin-bottom:10px;display:block">Milestones</span>
-    <button class="mstrip" data-a="nav" data-v="milestones">
+    <button class="mstrip" data-a="nav" data-v="patterns">
       ${msMedal(next,'day','next',msTierDay(next),50,frac)}
       <span class="mstx"><span class="t">${d} more steady ${plu('day',d)}</span><span class="mbar"><span style="width:${(frac*100).toFixed(0)}%"></span></span></span>
       <span class="mchev">${IC.arrow}</span></button>
@@ -860,7 +853,7 @@ let clockInt=null, breathInt=null, pauseRAF=null;
 function stop(){ if(clockInt){clearInterval(clockInt);clockInt=null} if(breathInt){clearInterval(breathInt);breathInt=null} if(pauseRAF){cancelAnimationFrame(pauseRAF);pauseRAF=null} }
 function go(v){ S.view=v; save(); render(); }
 
-const VIEWS = {onboard:Onboard, home:Home, begin:Begin, pause:PauseView, passed:Passed, acted:Acted, waves:Waves, patterns:Patterns, me:Me, privacy:PrivacyView, milestones:Milestones};
+const VIEWS = {onboard:Onboard, home:Home, begin:Begin, pause:PauseView, passed:Passed, acted:Acted, waves:Waves, patterns:Patterns, me:Me, privacy:PrivacyView};
 let privReturn='me';
 let lastView=null;
 function render(){
@@ -1344,6 +1337,8 @@ function Patterns(){
     <div class="pchart" style="height:${plotH+22}px">${gl}<div class="pplot" style="height:${plotH}px">${cols}</div></div>
   </div>`);
 
+  parts.push(msInsightCard());
+
   if(enough){
     /* time of day, all-time */
     const pods=['Morning','Afternoon','Evening','Night']; const pod={}; pods.forEach(x=>pod[x]=0);
@@ -1478,7 +1473,7 @@ function statLine(items){
   return `<div class="statline">${items.map(x=>`<div><span class="sk">${x.k}</span><div class="sv">${x.v}${x.u?`<small>${x.u}</small>`:''}</div></div>`).join('')}</div>`;
 }
 function Nav(active){
-  const t=[['home','Home','home'],['waves','Waves','waves'],['chart','Insights','patterns'],['ms','Milestones','milestones'],['user','You','me']];
+  const t=[['home','Home','home'],['waves','Waves','waves'],['chart','Insights','patterns'],['user','You','me']];
   return `<div class="nav">${t.map(([ic,l,v])=>`<button class="${v===active?'on':''}" data-a="nav" data-v="${v}">${IC[ic]}<span>${l}</span></button>`).join('')}</div>`;
 }
 
