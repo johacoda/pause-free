@@ -473,9 +473,9 @@
   .wvw-note{font-size:13px;color:var(--ink);margin-top:14px;line-height:1.4;border-top:1px solid var(--faint);padding-top:12px}
 
   /* nav */
-  .nav{display:flex;justify-content:space-around;padding:11px 16px calc(12px + env(safe-area-inset-bottom,0));
-    border-top:1px solid rgba(255,255,255,.4);background:rgba(250,250,250,.72);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%)}
-  .dark .nav{background:rgba(27,24,19,.7);border-top-color:rgba(255,255,255,.1)}
+  .nav{position:sticky;bottom:0;z-index:5;display:flex;justify-content:space-around;padding:11px 16px calc(12px + env(safe-area-inset-bottom,0));
+    border-top:1px solid rgba(255,255,255,.4);background:rgba(250,250,250,.9);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%)}
+  .dark .nav{background:rgba(27,24,19,.9);border-top-color:rgba(255,255,255,.1)}
   .nav button{display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.35;padding:2px 12px;transition:opacity .15s}
   .nav button.on{opacity:1;color:var(--actx)}
   .nav svg{width:21px;height:21px}
@@ -681,7 +681,7 @@ function msMedal(v,unit,state,tier,size,frac){
   return `<div class="node ${state} t${tier}" style="width:${size}px;height:${size}px"${state==='next'?' data-next':''}>${svg}${lock}</div>`;
 }
 function Milestones(){
-  const best=bestRun(), streak=calmDays(), wp=passedTotal();
+  const best=bestRun(), streak=calmDays();
   function track(id,icon,title,marks,unit,earnedBy,current,tierFn){
     const next=marks.find(m=>m>earnedBy);
     const cd = next ? `${next-current} ${plu(unit,next-current)} to ${next}` : 'All earned';
@@ -696,13 +696,12 @@ function Milestones(){
       <div class="journey" data-ms="${id}"><div class="rail"></div><div class="raildone"></div><div class="stations">${nodes}</div></div>
     </div>`;
   }
+  const body = best<1
+    ? `<div class="pcard"><div class="pins"><span class="ic">${msvg('eco')}</span><span class="tx"><span class="t">Your first milestone</span><span class="s">One steady day. You're on your way to it.</span></span></div></div>`
+    : track('days','eco','Days steady',DAY_MARKS,'day',best,streak,msTierDay);
   return `<div class="home">
     ${navHero('Milestones')}
-    <div class="hsheet">
-      ${track('days','eco','Days steady',DAY_MARKS,'day',best,streak,msTierDay)}
-      ${track('waves','waves','Waves passed',WAVE_MARKS,'wave',wp,wp,msTierWave)}
-      <div style="flex:1;min-height:20px"></div>
-    </div>
+    <div class="hsheet">${body}<div style="flex:1;min-height:20px"></div></div>
     ${Nav('milestones')}
   </div>`;
 }
@@ -719,20 +718,21 @@ function msWire(){
     j.scrollLeft=Math.max(0, nx.offsetLeft - j.clientWidth/2 + nx.offsetWidth/2);
   });
 }
-// small next-milestone nudge for the home screen
+// small next-milestone nudge for the home screen — nothing until the first milestone is earned
 function homeMilestone(){
   const best=bestRun(), streak=calmDays(), next=DAY_MARKS.find(m=>m>best);
-  if(!next) return '';
+  if(best<1 || !next) return '';
   const d=next-streak, frac=Math.max(0.04,Math.min(0.98,streak/next));
-  return `<button class="mstrip" data-a="nav" data-v="milestones">
-    ${msMedal(next,'day','next',msTierDay(next),50,frac)}
-    <span class="mstx"><span class="t">${d} ${plu('day',d)} to your ${next}-day mark</span><span class="mbar"><span style="width:${(frac*100).toFixed(0)}%"></span></span></span>
-    <span class="mchev">${IC.arrow}</span></button>`;
+  return `<div style="margin-top:22px">
+    <span class="label ink" style="margin-bottom:10px;display:block">Milestones</span>
+    <button class="mstrip" data-a="nav" data-v="milestones">
+      ${msMedal(next,'day','next',msTierDay(next),50,frac)}
+      <span class="mstx"><span class="t">${d} ${plu('day',d)} to your ${next}-day mark</span><span class="mbar"><span style="width:${(frac*100).toFixed(0)}%"></span></span></span>
+      <span class="mchev">${IC.arrow}</span></button>
+  </div>`;
 }
 // a milestone newly reached by the pass just recorded, for the result screen (null if none)
 function justEarned(){
-  const wp=passedTotal();
-  if(WAVE_MARKS.indexOf(wp)>-1) return {v:wp,unit:'wave',tier:msTierWave(wp),tail:'passed'};
   const cd=calmDays();
   if(DAY_MARKS.indexOf(cd)>-1 && bestRun()===cd) return {v:cd,unit:'day',tier:msTierDay(cd),tail:'steady'};
   return null;
@@ -1031,10 +1031,7 @@ function Home(){
         ${statTile('s2', passed, 'Waves passed', MOTIF.passed)}
         ${statTile('s3', bestRun(), 'Best run', MOTIF.taken)}
       </div>
-      <div style="margin-top:22px">
-        <span class="label ink" style="margin-bottom:10px;display:block">Milestones</span>
-        ${homeMilestone()}
-      </div>
+      ${homeMilestone()}
       <div style="margin-top:24px">
         <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
           <span class="label ink">Recent waves</span>
