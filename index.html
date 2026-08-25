@@ -28,7 +28,7 @@
   :root{
     --red:#c0392b; --ink:#0D0D0B; --white:#FAFAFA; --grey:#F2F2F0;
     --purple:#3c3158; --faint:rgba(13,13,11,0.08); --faint2:rgba(13,13,11,0.12);
-    --redtint:#f6e6e4; --page:#E9E9E6; --accent-lt:rgba(60,49,88,.06);
+    --redtint:#f6e6e4; --slip:rgba(13,13,11,.2); --page:#E9E9E6; --accent-lt:rgba(60,49,88,.06);
     --act:#c0392b; --actx:#c0392b;
     --mute:rgba(13,13,11,.6); --mute2:rgba(13,13,11,.42); --mute3:rgba(13,13,11,.28);
     --t1:#efeaf3; --t2:#f7e9e4; --t3:#eae7f0; --m1:#6d6299; --m2:#c0392b; --m3:#3c3158;
@@ -38,7 +38,7 @@
   .dark{
     --red:#d84b31; --ink:#F3EFE8; --white:#1b1813; --grey:#282320;
     --purple:#9c93b8; --faint:rgba(243,239,232,0.10); --faint2:rgba(243,239,232,0.17);
-    --redtint:#241f33; --page:#0f0d0a; --accent-lt:rgba(156,147,184,.14);
+    --redtint:#241f33; --slip:rgba(243,239,232,.26); --page:#0f0d0a; --accent-lt:rgba(156,147,184,.14);
     --act:#6d6299; --actx:#a79dc6;
     --mute:rgba(243,239,232,.62); --mute2:rgba(243,239,232,.42); --mute3:rgba(243,239,232,.3);
     --t1:rgba(156,147,184,.13); --t2:rgba(216,120,90,.15); --t3:rgba(156,147,184,.08); --m1:#9c93b8; --m2:#d84b31; --m3:#9c93b8;
@@ -141,7 +141,7 @@
   .hero-toggles{position:absolute;top:calc(env(safe-area-inset-top,0) + 12px);right:14px;display:flex;gap:2px;z-index:3}
   .hero-toggles button{width:38px;height:38px;display:flex;align-items:center;justify-content:center;color:#c9c1e0}
   .d-head{position:absolute;top:calc(env(safe-area-inset-top,0) + 40px);left:22px;right:22px;z-index:2}
-  .d-hi{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#c9c1e0}
+  .d-hi{font-size:14px;font-weight:600;letter-spacing:normal;color:#c9c1e0}
   .d-name{font-size:34px;font-weight:800;letter-spacing:-.02em;margin-top:6px;line-height:1;color:#FAFAFA}
   .d-sub{color:#c9c1e0;font-size:14px;margin-top:12px;max-width:17em;line-height:1.45}
   .hsheet{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;background:rgba(250,250,250,.72);-webkit-backdrop-filter:blur(20px) saturate(150%);backdrop-filter:blur(20px) saturate(150%);margin-top:-24px;border-radius:24px 24px 0 0;padding:22px 22px 0;box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
@@ -149,7 +149,7 @@
   .stats{display:flex;gap:9px}
   .stat{position:relative;flex:1;height:104px;border-radius:16px;overflow:hidden;padding:13px 11px}
   .stat .n{font-size:26px;font-weight:800;color:var(--ink);line-height:1;position:relative;z-index:2;font-variant-numeric:tabular-nums}
-  .stat .k{font-size:9.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--mute2);margin-top:6px;position:relative;z-index:2;white-space:nowrap}
+  .stat .k{font-size:11px;font-weight:600;letter-spacing:normal;color:var(--mute2);margin-top:6px;position:relative;z-index:2;white-space:nowrap}
   .stat svg{position:absolute;left:0;right:0;bottom:0;width:100%;height:44px;display:block}
   .stat.s1{background:var(--t1)} .stat.s2{background:var(--t2)} .stat.s3{background:var(--t3)}
   .hero-copy{position:absolute;top:calc(env(safe-area-inset-top,0) + 40px);left:26px;right:26px;text-align:center;z-index:2}
@@ -320,6 +320,10 @@
   .dot-pass{background:var(--actx)} .dot-act{background:var(--mute3)}
   .state{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
   .state.pass{color:var(--actx)} .state.act{color:var(--mute2)}
+  /* Home uses sentence-case labels; lowercase never gets wide tracking. Every other screen keeps its tracked uppercase. */
+  .homeview .label,.homeview .tlink,.homeview .state{text-transform:none;letter-spacing:normal}
+  .homeview .label{font-weight:600;font-size:12px}
+  .homeview .state{font-size:11px}
 
   /* stats mini */
   .statrow{display:flex}
@@ -354,6 +358,61 @@
   .fhint{font-size:11.5px;font-weight:700;letter-spacing:.02em;color:var(--act);margin-top:5px;display:block}
   .fdetail{margin-top:15px;padding-top:15px;border-top:1px solid var(--faint)}
   .pcap{font-size:12.5px;line-height:1.5;color:var(--mute);margin-top:12px}
+  /* ===== Patterns v2 ===== */
+  .ovhead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .ovhead .ttl{font-size:16px;font-weight:800;color:var(--purple);letter-spacing:-.01em}
+  .pseg{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;flex:none}
+  .pseg::-webkit-scrollbar{display:none}
+  .pseg button{flex:none;font-family:inherit;font-size:12.5px;font-weight:700;padding:6px 14px;border-radius:999px;background:var(--grey);color:var(--mute);border:none;cursor:pointer}
+  .pseg button.on{background:var(--purple);color:#fff}
+  .pkpis{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:13px}
+  .pkpi{border-radius:13px;padding:15px 16px;background:var(--grey)}
+  .pkpi.pass{background:var(--redtint)}
+  .pkpi .n{font-size:30px;font-weight:800;letter-spacing:-.02em;color:var(--ink);line-height:1;font-variant-numeric:tabular-nums}
+  .pkpi.pass .n{color:var(--act)}
+  .pkpi .k{font-size:13px;color:var(--mute);margin-top:6px}
+  .pbdh{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
+  .pbdh .t{font-size:13.5px;font-weight:700;color:var(--ink)}
+  .pchart{position:relative;margin-top:12px}
+  .pgl{position:absolute;left:16px;right:0;height:1px;background:var(--faint)}
+  .pgn{position:absolute;left:0;transform:translateY(-50%);font-size:10px;color:var(--mute2);font-variant-numeric:tabular-nums}
+  .pplot{position:absolute;left:16px;right:0;top:0;display:flex;align-items:flex-end;gap:8px}
+  .pcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;justify-content:flex-end}
+  .pbar{width:100%;max-width:26px;display:flex;flex-direction:column-reverse;gap:2px;min-height:3px}
+  .pbar .sp{background:var(--act);border-radius:0 0 4px 4px;min-height:3px}
+  .pbar .sa{background:var(--slip);border-radius:4px 4px 0 0;min-height:3px}
+  .pbar.allp .sp{border-radius:4px}
+  .pcol .cl{font-size:10.5px;color:var(--mute);font-weight:600}
+  .pcol.now .cl{color:var(--ink);font-weight:700}
+  .pins{display:flex;align-items:flex-start;gap:13px}
+  .pins .ic{color:var(--act);flex:none;margin-top:2px;line-height:0}
+  .pins .ic .ms{width:26px;height:26px}
+  .pins .tx{flex:1;min-width:0}
+  .pins .tx .t{display:block;font-size:17px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+  .pins .tx .s{display:block;font-size:13px;color:var(--mute);margin-top:2px;line-height:1.35}
+  .ptod{display:flex;align-items:flex-end;gap:10px;height:72px;margin-top:16px}
+  .ptc{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;height:100%;justify-content:flex-end}
+  .ptc .ptb{width:100%;background:var(--purple);opacity:.38;border-radius:4px;min-height:4px}
+  .ptc.peak .ptb{opacity:1}
+  .ptc .l{font-size:10.5px;color:var(--mute);font-weight:600}
+  .ptc.peak .l{color:var(--ink);font-weight:700}
+  .ptrow{display:flex;align-items:center;gap:12px;padding:13px 0;border:none;border-bottom:1px solid var(--faint);width:100%;background:none;text-align:left;font-family:inherit;cursor:pointer}
+  .ptrow:last-of-type{border-bottom:none}
+  .ptrow .tn{font-size:15px;font-weight:600;color:var(--ink);width:118px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ptrow .tk{flex:1;height:7px;border-radius:5px;background:var(--faint);overflow:hidden}
+  .ptrow .tk>div{height:100%;background:var(--act);border-radius:5px}
+  .ptrow .tv{font-size:13.5px;font-weight:800;color:var(--ink);width:42px;text-align:right;font-variant-numeric:tabular-nums}
+  .ptrow .cv{color:var(--mute2);display:flex}
+  .pshowall{width:100%;background:none;border:none;font-family:inherit;font-size:13px;font-weight:700;color:var(--act);padding:12px 0 2px;cursor:pointer;text-align:center}
+  .tsheet .thero{background:var(--redtint);border-radius:14px;padding:18px 16px}
+  .tsheet .thero .big{font-size:42px;font-weight:800;color:var(--act);letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+  .tsheet .thero .cap{font-size:14px;color:var(--ink);margin-top:8px;line-height:1.4}
+  .tdrow{display:flex;align-items:center;gap:14px;padding:15px 2px;border-bottom:1px solid var(--faint)}
+  .tdrow:last-of-type{border-bottom:none}
+  .tdrow .di{color:var(--purple);flex:none;line-height:0}
+  .tdrow .di .ms{width:22px;height:22px}
+  .tdrow .dl{flex:1;font-size:14.5px;color:var(--mute)}
+  .tdrow .dv{font-size:15px;font-weight:800;color:var(--ink)}
   .spark{width:100%;height:56px;display:block}
   /* borrowed: overview + daily breakdown + week-vs-week cards */
   .pcard{background:var(--t3);border-radius:16px;padding:16px 16px;margin-top:10px}
@@ -547,6 +606,20 @@ function calmDays(){
   const a = new Date(anchor+'T00:00:00');
   const n = new Date(); const mid = new Date(n.getFullYear(),n.getMonth(),n.getDate());
   return Math.max(0, Math.floor((mid-a)/86400000));
+}
+// longest steady run ever: the biggest gap between slips (and before the first / since the last).
+// never resets on a slip, so it stands as proof of what you've done even after a setback.
+function bestRun(){
+  if(!S.sessions.length) return 0;
+  const day=86400000, D=s=>new Date(s+'T00:00:00');
+  const n=new Date(), today=new Date(n.getFullYear(),n.getMonth(),n.getDate());
+  const start=D(S.sessions[S.sessions.length-1].date);
+  const slips=S.sessions.filter(x=>x.outcome==='acted').map(x=>D(x.date)).sort((a,b)=>a-b);
+  if(!slips.length) return Math.max(0, Math.floor((today-start)/day));
+  let best=Math.floor((slips[0]-start)/day);
+  for(let i=1;i<slips.length;i++) best=Math.max(best, Math.floor((slips[i]-slips[i-1])/day));
+  best=Math.max(best, Math.floor((today-slips[slips.length-1])/day));
+  return Math.max(0,best);
 }
 function passRate(list){ list=list||S.sessions; if(!list.length)return 0;
   return Math.round(list.filter(x=>x.outcome==='passed').length / list.length * 100); }
@@ -794,7 +867,7 @@ function Home(){
     </div>`;
   }).join('') || `<p class="body grey" style="padding:14px 0;border-top:1px solid var(--faint)">No waves yet. Your first pause will show up here.</p>`;
 
-  return `<div class="home fade">
+  return `<div class="home homeview fade">
     <div class="hero hero-d">
       <div class="hero-sun${orbCls()}" style="right:22px;top:calc(env(safe-area-inset-top,0) + 134px);width:64px;height:64px"></div>
       ${heroWaves(130)}
@@ -812,7 +885,7 @@ function Home(){
       <div class="stats">
         ${statTile('s1', calmDays(), 'Steady days', MOTIF.steady)}
         ${statTile('s2', passed, 'Waves passed', MOTIF.passed)}
-        ${statTile('s3', S.sessions.length, 'Pauses taken', MOTIF.taken)}
+        ${statTile('s3', bestRun(), 'Best run', MOTIF.taken)}
       </div>
       <div style="margin-top:24px">
         <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
@@ -955,8 +1028,8 @@ function Passed(){
       <p class="body grey" style="max-width:24em">${body}</p>
       <div class="stats" style="margin-top:18px">
         ${statTile('s1', calmDays(), 'Steady days', MOTIF.steady)}
-        ${statTile('s3', Math.round(last.len/60), 'Min waited', MOTIF.taken)}
         ${statTile('s2', S.sessions.filter(x=>x.outcome==='passed').length, 'Waves passed', MOTIF.passed)}
+        ${statTile('s3', bestRun(), 'Best run', MOTIF.taken)}
       </div>
       ${causeReflect()}
       <div style="flex:1;min-height:20px"></div>
@@ -1015,124 +1088,125 @@ function Waves(){
 }
 
 /* ============ patterns ============ */
-const MIN_INSIGHT = 5;  // a breakdown only shows once there's enough behind it
-let patOpen={strong:false,windows:false};
+const MIN_INSIGHT = 5;  // triggers/timing only appear once there's enough behind them
+let patPeriod='week', patShowAll=false;
 
-// Full-width insight tile with a big Material icon. Tappable ones expand in place.
-function ftile(icon,val,cap,o){o=o||{};
-  const tag=o.k?'button':'div';
-  const attrs=o.k?` data-a="pat-toggle" data-k="${o.k}"`:'';
-  const chev=o.k?`<span class="fchev${patOpen[o.k]?' open':''}">${msvg('expand_more')}</span>`:'';
-  const detail=(o.k&&patOpen[o.k]&&o.detail)?`<div class="fdetail">${o.detail}</div>`:'';
-  return `<${tag} class="ftile${o.k?' itap':''}"${attrs}>
-    <div class="frow"><span class="fic">${msvg(icon,'fbig')}</span>
-    <span class="ftext"><span class="fval">${val}</span><span class="fcap">${cap}</span>${(o.k&&o.hint&&!patOpen[o.k])?`<span class="fhint">${o.hint}</span>`:''}</span>${chev}</div>
-    ${detail}</${tag}>`;
+// slide-up detail for one trigger: win rate, when it hits, usual strength, how fast it settles
+function trigSheet(cause){
+  const rows=S.sessions.filter(x=>x.cause===cause);
+  const n=rows.length, p=rows.filter(x=>x.outcome==='passed').length, pct=n?Math.round(p/n*100):0;
+  const pods=['Morning','Afternoon','Evening','Night']; const pod={}; pods.forEach(x=>pod[x]=0);
+  rows.forEach(x=>{ pod[partOfDay(x.hour!=null?x.hour:12)]++; });
+  const maxPod=Math.max(1,...pods.map(x=>pod[x]));
+  const peak=pods.reduce((a,x)=>pod[x]>pod[a]?x:a,'Morning');
+  const s0s=rows.map(x=>x.s0).filter(v=>v!=null);
+  const strength=s0s.length?Math.round(s0s.reduce((a,b)=>a+b,0)/s0s.length):null;
+  const w=rows.filter(x=>x.outcome==='passed').map(x=>x.elapsed!=null?x.elapsed:x.len).filter(v=>v!=null).sort((a,b)=>a-b);
+  const settle=w.length?Math.max(1,Math.round(w[Math.floor(w.length/2)]/60)):null;
+  const bars=pods.map(x=>`<div class="ptc ${x===peak&&pod[peak]>0?'peak':''}"><div class="ptb" style="height:${Math.max(6,pod[x]/maxPod*100)}%"></div><div class="l">${x}</div></div>`).join('');
+  const el=document.createElement('div');
+  el.innerHTML=`<div class="scrim on" data-a="ts-close" style="z-index:50"></div>
+    <div class="sheet tsheet on" style="z-index:51"><div class="grab"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <h2 style="font-size:22px">${esc(cause)}</h2>
+        <button data-a="ts-close" class="grey">${IC.close}</button></div>
+      <div class="thero"><div class="big">${pct}%</div><div class="cap">You get through it ${pct}% of the time. That's ${p} of the ${n} time${n===1?'':'s'} it hit.</div></div>
+      <div style="margin-top:14px">
+        <div class="tdrow"><span class="di">${msvg('schedule')}</span><span class="dl">Hits most often</span><span class="dv">${peak}</span></div>
+        ${strength!=null?`<div class="tdrow"><span class="di">${msvg('local_fire_department')}</span><span class="dl">Usually feels like</span><span class="dv">${strength} / 10</span></div>`:''}
+        ${settle!=null?`<div class="tdrow"><span class="di">${msvg('self_improvement')}</span><span class="dl">Settles in about</span><span class="dv">${settle} min</span></div>`:''}
+      </div>
+      <div style="font-size:13px;font-weight:700;color:var(--ink);margin:20px 0 0">When it hits, by time of day</div>
+      <div class="ptod">${bars}</div>
+    </div>`;
+  document.getElementById('frame').appendChild(el);
+  el.addEventListener('click',ev=>{ if(ev.target.closest('[data-a=ts-close]')) el.remove(); });
 }
 
 function Patterns(){
   const s=S.sessions;
   const n=s.length;
   const enough=n>=MIN_INSIGHT;
-  const passedRated=s.filter(x=>x.outcome==='passed'&&x.s0!=null&&x.s1!=null);
-  const passedCount=s.filter(x=>x.outcome==='passed').length;
-  const avgDrop = passedRated.length ? (passedRated.reduce((a,x)=>a+(x.s0-x.s1),0)/passedRated.length).toFixed(1) : null;
-
-  // triggers
-  const byT={}; s.forEach(x=>{ if(!x.cause)return; const g=byT[x.cause]||(byT[x.cause]={n:0,p:0}); g.n++; if(x.outcome==='passed')g.p++; });
-  const trigArr=Object.entries(byT).map(([c,g])=>({c,n:g.n,p:g.p,pct:Math.round(g.p/g.n*100)}));
-  const byPct=[...trigArr].sort((a,b)=>b.pct-a.pct||b.n-a.n);
-  const bestBeat=[...trigArr].sort((a,b)=>b.p-a.p||b.pct-a.pct)[0];
-  // day parts
-  const pods=['Morning','Afternoon','Evening','Night'];
-  const pod={}; pods.forEach(p=>pod[p]={n:0,acted:0});
-  s.forEach(x=>{ const p=partOfDay(x.hour!=null?x.hour:12); pod[p].n++; if(x.outcome==='acted')pod[p].acted++; });
-  const maxPod=Math.max(1,...pods.map(p=>pod[p].n));
-  const peak=pods.reduce((a,p)=>pod[p].n>pod[a].n?p:a,'Morning');
-  const risky=pods.filter(p=>pod[p].n>=3).map(p=>({p,r:pod[p].acted/pod[p].n})).sort((a,b)=>b.r-a.r)[0];
-  const easeMin=(()=>{const p=passedRated.length?passedRated:s.filter(x=>x.outcome==='passed');
-    const w=p.map(x=>x.elapsed!=null?x.elapsed:x.len).filter(v=>v!=null).sort((a,b)=>a-b);
-    if(!w.length)return null; const m=w[Math.floor(w.length/2)]; return Math.max(1,Math.round(m/60));})();
-
-  // last 7 days (for the daily breakdown + week overview)
-  const days=[];
-  for(let i=6;i>=0;i--){ const d=new Date(); d.setHours(12,0,0,0); d.setDate(d.getDate()-i);
-    days.push({key:d.toISOString().slice(0,10), dl:(i===0?'Today':['Su','Mo','Tu','We','Th','Fr','Sa'][d.getDay()]), passed:0, acted:0}); }
-  s.forEach(x=>{ const day=days.find(d=>d.key===x.date); if(day){ if(x.outcome==='passed')day.passed++; else if(x.outcome==='acted')day.acted++; } });
-  const wkTotal=days.reduce((a,d)=>a+d.passed+d.acted,0);
-  const wkPct=wkTotal?Math.round(days.reduce((a,d)=>a+d.passed,0)/wkTotal*100):0;
-  const maxDay=Math.max(1,...days.map(d=>d.passed+d.acted));
-
-  // this week vs last week
-  const win=(a,b)=>{const now=Date.now(),lo=now-a*864e5,hi=now-b*864e5;
-    const r=s.filter(x=>{const t=Date.parse(x.date+'T12:00:00'); return t>lo&&t<=hi;});
-    const p=r.filter(x=>x.outcome==='passed').length; return {n:r.length,pct:r.length?Math.round(p/r.length*100):0};};
-  const thisWk=win(7,0), lastWk=win(14,7);
-  let wvwNote;
-  if(lastWk.n===0) wvwNote=`Your first week of logging. Keep going.`;
-  else if(thisWk.pct>lastWk.pct+5) wvwNote=`More passed than last week.`;
-  else if(thisWk.pct<lastWk.pct-5) wvwNote=`A tougher week than last. That happens.`;
-  else wvwNote=`Holding steady with last week.`;
-
   const parts=[];
 
-  // three iconic tiles (kept)
-  parts.push(`<div class="stats">
-    ${statTile('s1', calmDays(), 'Steady days', MOTIF.steady)}
-    ${statTile('s2', passedCount, 'Waves passed', MOTIF.passed)}
-    ${statTile('s3', (avgDrop!=null?avgDrop:'–'), 'Avg drop', MOTIF.taken)}
+  if(!n){
+    parts.push(`<div class="pcard"><div class="pins"><span class="ic">${msvg('monitoring')}</span>
+      <span class="tx"><span class="t">Nothing yet</span><span class="s">Your patterns show up here after your first pause.</span></span></div></div>`);
+    return `<div class="home">${navHero('Insights')}<div class="hsheet">${parts.join('')}<div style="flex:1;min-height:20px"></div></div>${Nav('patterns')}</div>`;
+  }
+
+  /* ---- Overview: Week / Month ---- */
+  const nowMid=(function(){const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();})();
+  const buckets=[];
+  if(patPeriod==='week'){
+    for(let i=6;i>=0;i--){ const d=new Date(); d.setHours(12,0,0,0); d.setDate(d.getDate()-i);
+      buckets.push({key:d.toISOString().slice(0,10), label:(i===0?'Today':['Su','Mo','Tu','We','Th','Fr','Sa'][d.getDay()]), p:0, a:0}); }
+    s.forEach(x=>{ const b=buckets.find(b=>b.key===x.date); if(b){ if(x.outcome==='passed')b.p++; else if(x.outcome==='acted')b.a++; } });
+  } else {
+    const wk={}; for(let i=0;i<5;i++) wk[i]={p:0,a:0};
+    s.forEach(x=>{ const t=Date.parse(x.date+'T12:00:00'); const da=Math.floor((nowMid-t)/864e5); const i=Math.floor(da/7);
+      if(da>=0&&i<5){ if(x.outcome==='passed')wk[i].p++; else if(x.outcome==='acted')wk[i].a++; } });
+    for(let i=4;i>=0;i--) buckets.push({label:(i===0?'This':i+'w'), p:wk[i].p, a:wk[i].a});
+  }
+  const totWaves=buckets.reduce((a,b)=>a+b.p+b.a,0);
+  const totPassed=buckets.reduce((a,b)=>a+b.p,0);
+  const passPct=totWaves?Math.round(totPassed/totWaves*100):0;
+  const rawMax=Math.max(1,...buckets.map(b=>b.p+b.a));
+  const maxY=patPeriod==='week'?Math.max(3,rawMax):rawMax;
+  const ticks=[]; if(maxY<=6){ for(let v=maxY;v>=0;v--)ticks.push(v); } else { for(let j=4;j>=0;j--)ticks.push(Math.round(maxY*j/4)); }
+  const plotH=130;
+  const gl=ticks.map(v=>{const top=((1-v/maxY)*plotH).toFixed(1); return `<div class="pgl" style="top:${top}px"></div><div class="pgn" style="top:${top}px">${v}</div>`;}).join('');
+  const cols=buckets.map((b,i)=>{const tot=b.p+b.a,h=(tot/maxY*plotH).toFixed(1),pp=tot?b.p/tot*100:0,ap=tot?b.a/tot*100:0;
+    return `<div class="pcol ${i===buckets.length-1?'now':''}"><div class="pbar ${b.a?'':'allp'}" style="height:${h}px">${b.a?`<div class="sa" style="height:${ap}%"></div>`:''}${b.p?`<div class="sp" style="height:${pp}%"></div>`:''}</div><div class="cl">${b.label}</div></div>`;}).join('');
+
+  parts.push(`<div class="pcard">
+    <div class="ovhead"><span class="ttl">Overview</span>
+      <div class="pseg">
+        <button class="${patPeriod==='week'?'on':''}" data-a="pat-period" data-p="week">Week</button>
+        <button class="${patPeriod==='month'?'on':''}" data-a="pat-period" data-p="month">Month</button>
+      </div></div>
+    <div class="pkpis">
+      <div class="pkpi"><div class="n">${totWaves}</div><div class="k">Waves</div></div>
+      <div class="pkpi pass"><div class="n">${passPct}%</div><div class="k">Passed</div></div>
+    </div>
+    <div class="pbdh"><span class="t">Breakdown</span>
+      <span class="legend"><span><i style="background:var(--act)"></i>Passed</span><span><i style="background:var(--slip)"></i>Acted</span></span></div>
+    <div class="pchart" style="height:${plotH+22}px">${gl}<div class="pplot" style="height:${plotH}px">${cols}</div></div>
   </div>`);
 
-  // Last 7 days: overview + daily breakdown
-  if(wkTotal>0){
-    const bars=days.map(d=>{const tot=d.passed+d.acted;
-      const stack= !tot ? `<div class="dstack" style="height:4px;background:var(--faint)"></div>`
-        : `<div class="dstack" style="height:${Math.max(10,tot/maxDay*100)}%">${d.acted?`<div class="seg-a" style="flex:${d.acted}"></div>`:''}${d.passed?`<div class="seg-p" style="flex:${d.passed}"></div>`:''}</div>`;
-      return `<div class="dcol">${stack}<div class="dl">${d.dl}</div></div>`;}).join('');
-    parts.push(`<div class="pcard">
-      <div class="pcard-h"><span class="ttl">Last 7 days</span></div>
-      <div class="ov"><div><div class="n">${wkTotal}</div><div class="k">Waves</div></div><div><div class="n">${wkPct}%</div><div class="k">Passed</div></div></div>
-      <div class="legend"><span><i style="background:var(--purple)"></i>Passed</span><span><i style="background:var(--act)"></i>Acted</span></div>
-      <div class="dbars">${bars}</div>
-    </div>`);
-  }
-
-  // This week vs last week
-  if(thisWk.n>0 || lastWk.n>0){
-    parts.push(`<div class="pcard">
-      <div class="pcard-h"><span class="ttl">This week vs last week</span></div>
-      <div class="wvw">
-        <div><div class="wk">This week</div><div class="wn">${thisWk.n}</div><div class="k">waves · ${thisWk.pct}% passed</div></div>
-        <div><div class="wk">Last week</div><div class="wn">${lastWk.n}</div><div class="k">waves · ${lastWk.pct}% passed</div></div>
-      </div>
-      <div class="wvw-note">${wvwNote}</div>
-    </div>`);
-  }
-
-  // Deeper insight tiles (strongest / danger / time-to-ease)
   if(enough){
-    const ins=[];
+    /* time of day, all-time */
+    const pods=['Morning','Afternoon','Evening','Night']; const pod={}; pods.forEach(x=>pod[x]=0);
+    s.forEach(x=>{ pod[partOfDay(x.hour!=null?x.hour:12)]++; });
+    const maxPod=Math.max(1,...pods.map(x=>pod[x]));
+    const peak=pods.reduce((a,x)=>pod[x]>pod[a]?x:a,'Morning');
+    const todBars=pods.map(x=>`<div class="ptc ${x===peak&&pod[peak]>0?'peak':''}"><div class="ptb" style="height:${Math.max(6,pod[x]/maxPod*100)}%"></div><div class="l">${x}</div></div>`).join('');
+    parts.push(`<div class="pcard">
+      <div class="pins"><span class="ic">${msvg('schedule')}</span>
+        <span class="tx"><span class="t">${peak}</span><span class="s">That's when most of your urges hit.</span></span></div>
+      <div class="ptod">${todBars}</div></div>`);
+
+    /* triggers, ranked by how often they come up */
+    const byT={}; s.forEach(x=>{ if(!x.cause)return; const g=byT[x.cause]||(byT[x.cause]={n:0,p:0}); g.n++; if(x.outcome==='passed')g.p++; });
+    const trigArr=Object.entries(byT).map(([c,g])=>({c,n:g.n,p:g.p,pct:Math.round(g.p/g.n*100)})).sort((a,b)=>b.n-a.n||b.pct-a.pct);
     if(trigArr.length){
-      const tbars=byPct.map(t=>`<div class="trig">
-        <div class="tt"><span>${esc(t.c)}</span><span class="grey tnum" style="font-size:13px">${t.pct}%</span></div>
-        <div class="trigbar"><div style="width:${t.pct}%"></div></div></div>`).join('');
-      ins.push({score:bestBeat.p, html:ftile('bolt',esc(bestBeat.c),`This is your top trigger.`,{k:'strong',hint:'Tap to see your win rate',detail:tbars})});
+      const shown=patShowAll?trigArr:trigArr.slice(0,5);
+      const trRows=shown.map(t=>`<button class="ptrow" data-a="pat-trig" data-c="${esc(t.c)}">
+        <span class="tn">${esc(t.c)}</span><span class="tk"><div style="width:${t.pct}%"></div></span>
+        <span class="tv">${t.pct}%</span><span class="cv">${msvg('arrow_forward','ic16')}</span></button>`).join('');
+      const showAll=(!patShowAll&&trigArr.length>5)?`<button class="pshowall" data-a="pat-showall">Show all ${trigArr.length}</button>`:'';
+      parts.push(`<div class="pcard">
+        <div class="pins" style="margin-bottom:4px"><span class="ic">${msvg('bolt')}</span>
+          <span class="tx"><span class="t">Your triggers</span><span class="s">Where you're strong, and where to watch.</span></span></div>
+        ${trRows}${showAll}</div>`);
     }
-    const podRows=pods.map(p=>`<div class="podrow"><span class="pl">${p}</span>
-      <div class="podbar"><div style="width:${pod[p].n/maxPod*100}%;background:${p===peak&&pod[peak].n>0?'var(--act)':'var(--purple)'}"></div></div>
-      <span class="pc tnum">${pod[p].n}</span></div>`).join('');
-    const riskCap=(risky && risky.r>0)?`<p class="pcap">${risky.p} is when they most often win.</p>`:'';
-    ins.push({score:pod[peak].n, html:ftile('schedule',peak,`That's when most of your urges hit.`,{k:'windows',hint:'Tap for the daily breakdown',detail:`<div class="pod">${podRows}</div>${riskCap}`})});
-    ins.sort((a,b)=>b.score-a.score);
-    ins.forEach(it=>parts.push(it.html));
-    if(easeMin!=null) parts.push(ftile('self_improvement',`${easeMin} min`,`That's how fast your waves pass.`));
   } else {
-    parts.push(`<div class="ftile"><div class="frow"><span class="fic">${msvg('lock','fbig')}</span>
-      <span class="ftext"><span class="fval" style="font-size:18px">Keep logging</span><span class="fcap">Deeper patterns unlock after ${Math.max(1,MIN_INSIGHT-n)} more.</span></span></div></div>`);
+    parts.push(`<div class="pcard"><div class="pins"><span class="ic">${msvg('lock')}</span>
+      <span class="tx"><span class="t">More coming</span><span class="s">Your triggers and timing unlock after ${Math.max(1,MIN_INSIGHT-n)} more.</span></span></div></div>`);
   }
 
   return `<div class="home">
-    ${navHero('Your patterns')}
+    ${navHero('Insights')}
     <div class="hsheet">
       ${parts.join('')}
       <div style="flex:1;min-height:20px"></div>
@@ -1234,7 +1308,7 @@ function statLine(items){
   return `<div class="statline">${items.map(x=>`<div><span class="sk">${x.k}</span><div class="sv">${x.v}${x.u?`<small>${x.u}</small>`:''}</div></div>`).join('')}</div>`;
 }
 function Nav(active){
-  const t=[['home','Home','home'],['waves','Waves','waves'],['chart','Patterns','patterns'],['user','You','me']];
+  const t=[['home','Home','home'],['waves','Waves','waves'],['chart','Insights','patterns'],['user','You','me']];
   return `<div class="nav">${t.map(([ic,l,v])=>`<button class="${v===active?'on':''}" data-a="nav" data-v="${v}">${IC[ic]}<span>${l}</span></button>`).join('')}</div>`;
 }
 
@@ -1679,7 +1753,9 @@ app.addEventListener('click',e=>{
     case'go-home': go('home'); break;
     case'go-waves': go('waves'); break;
     case'go-patterns': go('patterns'); break;
-    case'pat-toggle':{ const k=el.dataset.k; patOpen[k]=!patOpen[k]; render(); break; }
+    case'pat-period':{ patPeriod=el.dataset.p; render(); break; }
+    case'pat-showall': patShowAll=true; render(); break;
+    case'pat-trig': trigSheet(el.dataset.c); break;
     case'go-privacy': privReturn=S.view; go('privacy'); break;
     case'priv-back': go(privReturn||'me'); break;
 
