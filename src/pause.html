@@ -281,6 +281,10 @@
     border:1px solid var(--faint2);border-radius:10px;padding:13px 40px 13px 14px;-webkit-appearance:none;appearance:none;outline:none}
   .select:focus{border-color:var(--purple)}
   .select.placeholder{color:var(--mute2)}
+  .notebox{width:100%;margin-top:8px;font-family:inherit;font-size:15px;font-weight:500;color:var(--ink);background:var(--white);
+    border:1px solid var(--faint2);border-radius:10px;padding:12px 14px;line-height:1.45;resize:vertical;min-height:78px;outline:none}
+  .notebox:focus{border-color:var(--purple)}
+  .notebox::placeholder{color:var(--mute2);font-weight:400}
 
   /* duration segmented */
   .seg{display:flex;gap:8px}
@@ -471,6 +475,7 @@
   .wvw .wn{font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-top:4px;line-height:1}
   .wvw .k{font-size:12px;color:var(--mute);margin-top:4px}
   .wvw-note{font-size:13px;color:var(--ink);margin-top:14px;line-height:1.4;border-top:1px solid var(--faint);padding-top:12px}
+  .wnote{display:block;font-size:12.5px;color:var(--mute);margin-top:3px;line-height:1.35;font-style:italic}
 
   /* nav */
   .nav{position:sticky;bottom:0;z-index:5;display:flex;justify-content:space-around;padding:11px 16px calc(12px + env(safe-area-inset-bottom,0));
@@ -642,7 +647,7 @@ function recentSlip(){
 }
 // the line under the greeting; softens for a day or two after a slip, then returns to the default
 function heroSub(){
-  return recentSlip() ? 'A slip is a wave, not the tide.' : 'Every craving passes if you give it time.';
+  return recentSlip() ? 'A slip is one wave, not the tide.' : 'Every craving passes if you give it time.';
 }
 function partOfDay(h){ return h<5?'Night':h<12?'Morning':h<17?'Afternoon':h<22?'Evening':'Night'; }
 
@@ -809,9 +814,9 @@ function recordPause(outcome, via){
 /* ============ export (all local, user-initiated) ============ */
 function csvCell(v){ v=String(v==null?'':v); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
 function buildCSV(){
-  const head=['Date','Time','Craving','What set it off','Strength before','Strength after','Minutes waited','Outcome'];
+  const head=['Date','Time','Craving','What set it off','Strength before','Strength after','Minutes waited','Outcome','Notes'];
   const rows=S.sessions.map(x=>{const ty=typeOf(x.type);
-    return [x.date,x.t,ty?ty.label:x.type,x.cause||'',x.s0,x.s1,(x.elapsed/60).toFixed(1),x.outcome==='passed'?'Let it pass':'Acted on it'];});
+    return [x.date,x.t,ty?ty.label:x.type,x.cause||'',x.s0,x.s1,(x.elapsed/60).toFixed(1),x.outcome==='passed'?'Let it pass':'Acted on it',x.note||''];});
   return [head,...rows].map(r=>r.map(csvCell).join(',')).join('\n');
 }
 function summaryText(){
@@ -1139,20 +1144,24 @@ function PauseView(){
 }
 
 /* the trigger reflection now lives here, after the wave — it's easier to name what set it off once the craving has eased, and it keeps the pre-pause screen to just what you need to start */
-function causeReflect(){
+function causeReflect(slip){
   const last=S.sessions[0]; if(!last) return '';
   const inList = last.cause && CAUSES.includes(last.cause);
   const isOther = last.cause && !inList;
+  const q  = slip ? 'What pulled you under this time?' : 'What set it off?';
+  const ph = slip ? 'Type what pulled you under' : 'Type what set it off';
   const opts='<option value="" '+(last.cause?'':'selected')+'>Not sure</option>'
     + CAUSES.map(c=>`<option value="${esc(c)}" ${last.cause===c?'selected':''}>${esc(c)}</option>`).join('')
     + `<option value="__other__" ${isOther?'selected':''}>Something else…</option>`;
+  const notes = slip ? `<textarea id="pxnote" class="notebox" maxlength="600" placeholder="Want to say more about it? This stays on your device, just for you.">${esc(last.note||'')}</textarea>` : '';
   return `<div style="margin-top:20px">
-    <span class="label ink" style="display:block;margin-bottom:9px">What set it off? <span style="font-weight:400;color:var(--mute2);font-size:12px;text-transform:none;letter-spacing:0">optional</span></span>
+    <span class="label ink" style="display:block;margin-bottom:9px">${q} <span style="font-weight:400;color:var(--mute2);font-size:12px;text-transform:none;letter-spacing:0">optional</span></span>
     <div class="selectwrap" style="margin-top:0">
       <select class="select ${last.cause?'':'placeholder'}" id="pxcause">${opts}</select>
       <span class="chev">${msvg('expand_more')}</span>
     </div>
-    <input type="text" id="pxcauseother" class="select${isOther?'':' hidden'}" placeholder="Type what set it off" maxlength="40" value="${isOther?esc(last.cause):''}" style="margin-top:8px;padding-right:14px">
+    <input type="text" id="pxcauseother" class="select${isOther?'':' hidden'}" placeholder="${ph}" maxlength="40" value="${isOther?esc(last.cause):''}" style="margin-top:8px;padding-right:14px">
+    ${notes}
   </div>`;
 }
 
@@ -1206,7 +1215,7 @@ function Acted(){
     ${resultHero("You'll catch<br>the next one",34)}
     <div class="hsheet">
       <p class="body grey" style="max-width:23em">You waited ${last?clock(last.elapsed):'0:00'} before you acted.</p>
-      ${causeReflect()}
+      ${causeReflect(true)}
       <div style="flex:1;min-height:20px"></div>
       <button class="btn btn-red" data-a="begin" style="margin-bottom:10px">Try another pause ${IC.arrow}</button>
       <button class="tlink grey" data-a="go-home" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">Back home</button>
@@ -1228,7 +1237,7 @@ function Waves(){
       return `<div class="row">
         <span class="grey tnum" style="width:44px;font-size:12px">${x.t}</span>
         <span style="flex:1"><span style="font-size:15px">${ty?esc(ty.label):esc(x.type)}</span>
-          ${(x.cause||(x.s0!=null&&x.s1!=null))?`<span class="grey" style="display:block;font-size:12px">${x.cause?esc(x.cause):''}${(x.cause&&x.s0!=null)?' · ':''}${(x.s0!=null&&x.s1!=null)?`${x.s0}→${x.s1}`:''}</span>`:''}</span>
+          ${(x.cause||(x.s0!=null&&x.s1!=null))?`<span class="grey" style="display:block;font-size:12px">${x.cause?esc(x.cause):''}${(x.cause&&x.s0!=null)?' · ':''}${(x.s0!=null&&x.s1!=null)?`${x.s0}→${x.s1}`:''}</span>`:''}${x.note?`<span class="wnote">“${esc(x.note)}”</span>`:''}</span>
         <span class="state ${x.outcome==='passed'?'pass':'act'}">${x.outcome==='passed'?'Passed':'Acted'}</span></div>`}).join('');
     return `<div style="margin-top:22px">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px">
@@ -1868,6 +1877,8 @@ function wire(){
     save();
   });
   if(pco) pco.addEventListener('input',e=>{ const last=S.sessions[0]; if(last){ last.cause=e.target.value.trim()||null; save(); } });
+  const pnote=document.getElementById('pxnote');
+  if(pnote) pnote.addEventListener('input',e=>{ const last=S.sessions[0]; if(last){ last.note=e.target.value.trim()||null; save(); } });
   document.querySelectorAll('input[data-plan]').forEach(inp=>{
     inp.addEventListener('input',e=>{ const t=typeOf(e.target.dataset.plan); if(t){ t.plan=e.target.value.trim()||undefined; save(); } });
   });
