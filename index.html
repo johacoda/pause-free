@@ -694,7 +694,7 @@ function msMedal(v,unit,state,tier,size,frac){
     const C=2*Math.PI*46, off=C*(1-Math.max(0.05,Math.min(0.97,frac||0)));
     svg=`<svg width="${size}" height="${size}" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#fff" stroke="#f0e2df" stroke-width="6"/><circle cx="50" cy="50" r="46" fill="none" stroke="${c2}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 50 50)"/>${num(c2,c2)}</svg>`;
   } else {
-    svg=`<svg width="${size}" height="${size}" viewBox="0 0 100 100"><defs><radialGradient id="${id}" cx="42%" cy="34%" r="72%"><stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/></radialGradient></defs><circle cx="50" cy="50" r="46" fill="url(#${id})"/><circle cx="50" cy="50" r="46" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="2"/><path d="M8,60 Q28,52 50,60 T92,60 L92,92 L8,92 Z" fill="#fff" opacity="0.16"/>${num('#fff','rgba(255,255,255,0.9)')}</svg>`;
+    svg=`<svg width="${size}" height="${size}" viewBox="0 0 100 100"><defs><radialGradient id="${id}" cx="42%" cy="34%" r="72%"><stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/></radialGradient><clipPath id="clip${id}"><circle cx="50" cy="50" r="46"/></clipPath></defs><circle cx="50" cy="50" r="46" fill="url(#${id})"/><path d="M8,60 Q28,52 50,60 T92,60 L92,92 L8,92 Z" fill="#fff" opacity="0.16" clip-path="url(#clip${id})"/><circle cx="50" cy="50" r="46" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="2"/>${num('#fff','rgba(255,255,255,0.9)')}</svg>`;
   }
   const lock = state==='future'?`<span class="nlock">${msvg('lock')}</span>`:'';
   return `<div class="node ${state} t${tier}" style="width:${size}px;height:${size}px"${state==='next'?' data-next':''}>${svg}${lock}</div>`;
@@ -704,7 +704,8 @@ function msInsightCard(){
   const best=bestRun(), streak=calmDays();
   if(best<1) return `<div class="pcard"><div class="pins"><span class="ic">${msvg('eco')}</span><span class="tx"><span class="t">Your first milestone</span><span class="s">One steady day. You're on your way to it.</span></span></div></div>`;
   const next=DAY_MARKS.find(m=>m>best);
-  const cd = next ? `${next-streak} more steady ${plu('day',next-streak)}` : 'All earned';
+  const d=next?next-streak:0;
+  const cd = next ? `${d} steady ${plu('day',d)} to go` : 'All earned';
   const nodes=DAY_MARKS.map(m=>{
     let state='future',size=50,frac=1;
     if(m<=best){state='earned';size=54;}
@@ -712,7 +713,7 @@ function msInsightCard(){
     return msMedal(m,'day',state,msTierDay(m),size,frac);
   }).join('');
   return `<div class="pcard mscard">
-    <div class="mhead" style="padding:0"><span class="mi">${msvg('eco')}</span><span class="mt">Days steady</span><span class="mcd">${cd}</span></div>
+    <div class="mhead" style="padding:0"><span class="mi">${msvg('eco')}</span><span class="mt">Steady Badges</span><span class="mcd">${cd}</span></div>
     <div class="journey" data-ms="days"><div class="rail"></div><div class="raildone"></div><div class="stations">${nodes}</div></div>
   </div>`;
 }
@@ -738,7 +739,7 @@ function homeMilestone(){
     <span class="label ink" style="margin-bottom:10px;display:block">Milestones</span>
     <button class="mstrip" data-a="nav" data-v="patterns">
       ${msMedal(next,'day','next',msTierDay(next),50,frac)}
-      <span class="mstx"><span class="t">${d} more steady ${plu('day',d)}</span><span class="mbar"><span style="width:${(frac*100).toFixed(0)}%"></span></span></span>
+      <span class="mstx"><span class="t">${d} steady ${plu('day',d)} to go</span><span class="mbar"><span style="width:${(frac*100).toFixed(0)}%"></span></span></span>
       <span class="mchev">${IC.arrow}</span></button>
   </div>`;
 }
@@ -1305,10 +1306,17 @@ function Patterns(){
       buckets.push({key:d.toISOString().slice(0,10), label:(i===0?'Today':['Su','Mo','Tu','We','Th','Fr','Sa'][d.getDay()]), p:0, a:0}); }
     s.forEach(x=>{ const b=buckets.find(b=>b.key===x.date); if(b){ if(x.outcome==='passed')b.p++; else if(x.outcome==='acted')b.a++; } });
   } else {
-    const wk={}; for(let i=0;i<5;i++) wk[i]={p:0,a:0};
-    s.forEach(x=>{ const t=Date.parse(x.date+'T12:00:00'); const da=Math.floor((nowMid-t)/864e5); const i=Math.floor(da/7);
-      if(da>=0&&i<5){ if(x.outcome==='passed')wk[i].p++; else if(x.outcome==='acted')wk[i].a++; } });
-    for(let i=4;i>=0;i--) buckets.push({label:(i===0?'This':i+'w'), p:wk[i].p, a:wk[i].a});
+    // five Monday-aligned calendar weeks, labelled by the date each week starts (DD/MM)
+    const p2=n=>String(n).padStart(2,'0');
+    const kof=d=>d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());
+    const today=new Date(nowMid), dow=(today.getDay()+6)%7;
+    const thisMon=new Date(today); thisMon.setDate(today.getDate()-dow);
+    const weeks=[];
+    for(let i=4;i>=0;i--){ const st=new Date(thisMon); st.setDate(thisMon.getDate()-i*7);
+      weeks.push({key:kof(st), label:p2(st.getDate())+'/'+p2(st.getMonth()+1), p:0, a:0}); }
+    s.forEach(x=>{ const d=new Date(x.date+'T00:00:00'); const wd=(d.getDay()+6)%7; d.setDate(d.getDate()-wd);
+      const b=weeks.find(w=>w.key===kof(d)); if(b){ if(x.outcome==='passed')b.p++; else if(x.outcome==='acted')b.a++; } });
+    buckets.push(...weeks);
   }
   const totWaves=buckets.reduce((a,b)=>a+b.p+b.a,0);
   const totPassed=buckets.reduce((a,b)=>a+b.p,0);
