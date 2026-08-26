@@ -446,6 +446,27 @@
   .mbar{display:block;height:6px;border-radius:4px;background:var(--faint);overflow:hidden;margin-top:9px}
   .mbar>span{display:block;height:100%;background:var(--act);border-radius:4px}
   .mchev{color:var(--mute2);flex:none;display:flex}
+  /* daily check-in */
+  .cin{background:var(--grey);border-radius:16px;padding:15px 16px;display:flex;align-items:center;gap:12px;margin-bottom:18px}
+  .dark .cin{background:rgba(255,255,255,.06)}
+  .cin .ctx{flex:1;min-width:0}
+  .cin .ct{display:block;font-size:15px;font-weight:800;color:var(--ink)}
+  .cin .cs{display:block;font-size:12.5px;color:var(--mute);margin-top:2px}
+  .cin .cinbtn{width:auto;flex:none;padding:11px 16px;font-size:14px;margin:0}
+  .cin.done{cursor:pointer;border:none;width:100%;font-family:inherit;text-align:left;gap:10px}
+  .cin.done .mi{color:var(--act);flex:none;display:flex;line-height:0}
+  .cin.done .mi .ms{width:20px;height:20px}
+  .cin.done .ct{font-size:14px;font-weight:700}
+  /* money saved */
+  .moneystrip{display:flex;align-items:center;gap:13px;width:100%;background:none;border:none;font-family:inherit;text-align:left;padding:0;margin-top:20px}
+  .moneystrip .mi{color:var(--act);flex:none;display:flex;line-height:0}
+  .moneystrip .mi .ms{width:24px;height:24px}
+  .moneystrip .mtx{flex:1;min-width:0}
+  .moneystrip .mtx .t{display:block;font-size:15px;font-weight:800;color:var(--ink)}
+  .moneystrip .mtx .s{display:block;font-size:12.5px;color:var(--mute);margin-top:2px}
+  .moneystrip.setup{cursor:pointer}
+  .moneystrip .mchev{color:var(--mute2);flex:none;display:flex}
+  .costrow{display:flex;gap:10px;align-items:stretch}
   .mearned{display:flex;align-items:center;gap:13px;background:var(--redtint);border-radius:14px;padding:12px 14px;margin-bottom:16px}
   .mearned .node{filter:none}
   .mel{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--act)}
@@ -569,7 +590,7 @@ const PICK_ICONS = ['bolt','eco','menu_book','sports_esports','headphones','loca
 
 /* ============ storage ============ */
 const KEY = 'pako-pause/v1';
-const PERSIST = ['name','types','sessions','onboarded','pause','sound','theme'];
+const PERSIST = ['name','types','sessions','onboarded','pause','sound','theme','costPerDrink','currency','checkins'];
 let storageOK = true;
 function loadRaw(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ storageOK=false; return null; } }
 function save(){ if(!storageOK)return; try{ const o={}; PERSIST.forEach(k=>o[k]=S[k]); localStorage.setItem(KEY,JSON.stringify(o)); }catch(e){ storageOK=false; } }
@@ -583,6 +604,9 @@ function fresh(){
     draft:null,            // in-progress "begin" form
     sound:true,            // ambient sound, on by default; muting is remembered
     theme:null,            // 'light' | 'dark' (null = follow system)
+    costPerDrink:null,     // what one drink costs, for money-saved (null = not set)
+    currency:'₦',          // shown before the money-saved figure
+    checkins:[],           // ISO dates the person tapped the daily check-in
   };
 }
 let S = fresh();
@@ -673,6 +697,31 @@ function bestRun(){
   for(let i=1;i<slips.length;i++) best=Math.max(best, Math.floor((slips[i]-slips[i-1])/day));
   best=Math.max(best, Math.floor((today-slips[slips.length-1])/day));
   return Math.max(0,best);
+}
+
+/* ============ money saved & daily check-in ============ */
+// each wave you let pass is a drink you didn't buy, so money saved = passed waves x cost per drink
+function wavesPassed(){ return S.sessions.filter(x=>x.outcome==='passed').length; }
+function moneySaved(){ const c=+S.costPerDrink; return (c>0) ? c*wavesPassed() : 0; }
+function fmtMoney(n){ return (S.currency||'₦')+Math.round(n).toLocaleString('en-US'); }
+function checkedInToday(){ return Array.isArray(S.checkins) && S.checkins.indexOf(iso())>-1; }
+// a once-a-day intention tap; the calm reason to open the app on a day with no craving
+function homeCheckin(){
+  if(checkedInToday()) return `<button class="cin done" data-a="checkin-undo"><span class="mi">${msvg('eco')}</span><span class="ct">You've set today. One steady day.</span></button>`;
+  return `<div class="cin"><div class="ctx"><span class="ct">Today</span><span class="cs">A steady day starts with deciding on it.</span></div>
+    <button class="btn btn-red cinbtn" data-a="checkin">I'm steady today</button></div>`;
+}
+// money kept aside; a subtle setup prompt once there's something to show, the figure once cost is set
+function homeMoney(){
+  const waves=wavesPassed(), c=+S.costPerDrink;
+  if(!(c>0)){
+    if(waves<3) return '';
+    return `<button class="moneystrip setup" data-a="nav" data-v="me"><span class="mi">${msvg('savings')}</span>
+      <span class="mtx"><span class="t">See what you're saving</span><span class="s">Add what a drink costs you</span></span>
+      <span class="mchev">${IC.arrow}</span></button>`;
+  }
+  return `<div class="moneystrip"><span class="mi">${msvg('savings')}</span>
+    <span class="mtx"><span class="t">${fmtMoney(c*waves)} kept aside</span><span class="s">across ${waves} ${plu('wave',waves)} you let pass</span></span></div>`;
 }
 /* ============ milestones ============ */
 const DAY_MARKS=[1,3,7,14,30,60,90,180,365];
@@ -1038,11 +1087,13 @@ function Home(){
       </div>
     </div>
     <div class="hsheet">
+      ${homeCheckin()}
       <div class="stats">
         ${statTile('s1', calmDays(), 'Steady days', MOTIF.steady)}
         ${statTile('s2', passed, 'Waves passed', MOTIF.passed)}
         ${statTile('s3', bestRun(), 'Best run', MOTIF.taken)}
       </div>
+      ${homeMoney()}
       ${homeMilestone()}
       <div style="margin-top:24px">
         <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
@@ -1427,6 +1478,18 @@ function Me(){
       <button class="themesw ${S.theme==='dark'?'on':''}" data-a="theme-toggle" aria-label="Toggle dark mode">
         <span class="knob">${S.theme==='dark'?msvg('dark_mode','ic16'):msvg('light_mode','ic16')}</span>
       </button>
+    </div>
+
+    <div style="margin-top:30px">
+      <span class="label ink" style="margin-bottom:8px;display:block">What a drink costs you</span>
+      <p class="body grey" style="font-size:13px;margin-bottom:12px">Set this to see the money you keep with every wave you let pass.</p>
+      <div class="costrow">
+        <div class="selectwrap" style="margin-top:0;width:96px;flex:none">
+          <select class="select" id="meCurrency">${['₦','$','£','€','R'].map(c=>`<option value="${c}" ${(S.currency||'₦')===c?'selected':''}>${c}</option>`).join('')}</select>
+          <span class="chev">${msvg('expand_more')}</span>
+        </div>
+        <input type="number" inputmode="numeric" id="meCost" class="select" style="flex:1" min="0" step="1" placeholder="e.g. 2500" value="${S.costPerDrink!=null?S.costPerDrink:''}">
+      </div>
     </div>
 
     <div style="margin-top:30px">
@@ -1861,6 +1924,10 @@ function wire(){
   if(on) on.addEventListener('input',e=>{ob.name=e.target.value; const b=document.querySelector('[data-a=ob-next]'); if(b)b.disabled=!ob.name.trim();});
   const mn=document.getElementById('meName');
   if(mn) mn.addEventListener('input',e=>{S.name=e.target.value; save();});
+  const mcost=document.getElementById('meCost');
+  if(mcost) mcost.addEventListener('input',e=>{ const v=parseFloat(e.target.value); S.costPerDrink=(isFinite(v)&&v>0)?v:null; save(); });
+  const mcur=document.getElementById('meCurrency');
+  if(mcur) mcur.addEventListener('change',e=>{ S.currency=e.target.value||'₦'; save(); });
   const bs=document.getElementById('bgslider');
   if(bs){ fillRange(bs); bs.addEventListener('input',e=>{ draft().s0=+e.target.value; const v=document.getElementById('bgval'); if(v)v.textContent=e.target.value; fillRange(bs); }); }
   const ps=document.getElementById('pzslider');
@@ -1924,6 +1991,8 @@ app.addEventListener('click',e=>{
 
     /* nav */
     case'nav': go(el.dataset.v); break;
+    case'checkin':{ if(!Array.isArray(S.checkins)) S.checkins=[]; if(!checkedInToday()) S.checkins.push(iso()); S.checkins=S.checkins.slice(-400); save(); render(); break; }
+    case'checkin-undo':{ if(Array.isArray(S.checkins)) S.checkins=S.checkins.filter(d=>d!==iso()); save(); render(); break; }
     case'begin': S.draft=null; go('begin'); break;
     case'go-home': go('home'); break;
     case'go-waves': go('waves'); break;
