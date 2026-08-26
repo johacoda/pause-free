@@ -340,6 +340,8 @@
   /* Home uses sentence-case labels; lowercase never gets wide tracking. Every other screen keeps its tracked uppercase. */
   .homeview .label,.homeview .tlink,.homeview .state{text-transform:none;letter-spacing:normal}
   .homeview .label{font-weight:600;font-size:12px}
+  /* pre-pause prompts read as plain questions, not tracked labels */
+  .label.qz{text-transform:none;letter-spacing:normal;font-size:14px;font-weight:600;color:var(--ink)}
   .homeview .state{font-size:11px}
 
   /* stats mini */
@@ -1141,16 +1143,16 @@ function Begin(){
       <span class="label ink" style="letter-spacing:.16em">New pause</span><span style="width:24px"></span>
     </div>
 ${showPicker?`
-    <span class="label ink" style="display:block;margin-top:26px">What's the craving?</span>
+    <span class="label ink qz" style="display:block;margin-top:26px">What's the craving?</span>
     <div class="tiles" style="margin-top:12px">${tiles}</div>
 `:''}
     <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:${showPicker?28:26}px">
-      <span class="label ink">How strong is it right now?</span>
+      <span class="label ink qz">How strong is it right now?</span>
       <span class="tnum" style="font-size:14px;font-weight:800;color:var(--purple)"><span id="bgval">${d.s0}</span><span style="font-weight:600;color:var(--mute2)">/10</span></span>
     </div>
     <input type="range" class="range calm" id="bgslider" min="1" max="10" step="1" value="${d.s0}" style="margin-top:13px">
 
-    <span class="label ink" style="display:block;margin-top:28px">How long will you pause?</span>
+    <span class="label ink qz" style="display:block;margin-top:28px">How long will you pause?</span>
     <div class="dialwrap">
       <svg id="dial" viewBox="0 0 220 220">
         <circle class="d-track" cx="110" cy="110" r="82"/>
