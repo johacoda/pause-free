@@ -235,6 +235,19 @@
   .ms.ic16{width:15px;height:15px}
   .ms.big{width:26px;height:26px}
   .tile.dashed{background:transparent;border:1px dashed var(--faint2)}
+  .tile.dashed .ic{color:var(--mute2)}
+  .tile.dashed .tile-l{color:var(--mute);font-weight:500}
+  /* light-mode only: onboarding rides the purple gradient, so light-grey tiles would read inverted there.
+     unselected = faint glass, selected = solid white. dark mode already reads correctly, so it's left untouched. */
+  :root:not(.dark) .ob-flow .tile{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.16)}
+  :root:not(.dark) .ob-flow .tile .tile-l{color:#F3EFE8}
+  :root:not(.dark) .ob-flow .tile .ic{color:#cdc0f2}
+  :root:not(.dark) .ob-flow .tile.on{background:#FAFAFA;border-color:#FAFAFA}
+  :root:not(.dark) .ob-flow .tile.on .tile-l{color:#0D0D0B}
+  :root:not(.dark) .ob-flow .tile.on .ic{color:#3c3158}
+  :root:not(.dark) .ob-flow .tile.dashed{background:transparent;border:1px dashed rgba(255,255,255,.3)}
+  :root:not(.dark) .ob-flow .tile.dashed .tile-l{color:rgba(243,239,232,.72)}
+  :root:not(.dark) .ob-flow .tile.dashed .ic{color:rgba(243,239,232,.6)}
 
   input[type=text]{font-family:inherit;width:100%;border:none;border-bottom:2px solid var(--faint2);
     background:transparent;padding:10px 0;font-size:24px;font-weight:700;color:var(--purple);letter-spacing:-.01em}
@@ -707,9 +720,9 @@ function fmtMoney(n){ return (S.currency||'₦')+Math.round(n).toLocaleString('e
 function checkedInToday(){ return Array.isArray(S.checkins) && S.checkins.indexOf(iso())>-1; }
 // a once-a-day intention tap; the calm reason to open the app on a day with no craving
 function homeCheckin(){
-  if(checkedInToday()) return `<button class="cin done" data-a="checkin-undo"><span class="mi">${msvg('eco')}</span><span class="ct">You've set today. One steady day.</span></button>`;
-  return `<div class="cin"><div class="ctx"><span class="ct">Today</span><span class="cs">A steady day starts with deciding on it.</span></div>
-    <button class="btn btn-red cinbtn" data-a="checkin">I'm steady today</button></div>`;
+  if(checkedInToday()) return `<button class="cin done" data-a="checkin-undo"><span class="mi">${msvg('eco')}</span><span class="ct">Locked in for today.</span></button>`;
+  return `<div class="cin"><div class="ctx"><span class="ct">Daily intention</span><span class="cs">I'll stay in control, no matter the wave today.</span></div>
+    <button class="btn btn-red cinbtn" data-a="checkin">Lock it in</button></div>`;
 }
 // money kept aside; a subtle setup prompt once there's something to show, the figure once cost is set
 function homeMoney(){
@@ -984,7 +997,7 @@ function Onboard(){
       <h1>What are you<br>working on${ob.name.trim()?`, ${esc(ob.name.trim().split(' ')[0])}`:''}?</h1>
       <p class="body grey" style="margin-top:10px;margin-bottom:20px">Pick as many as you like. You can change these anytime.</p>
       <div class="tiles">${tiles}
-        <button class="tile dashed" data-a="add-type"><span class="ic" style="color:var(--mute2)">${msvg('add')}</span><span class="tile-l" style="font-weight:500;color:var(--mute)">Add your own</span></button>
+        <button class="tile dashed" data-a="add-type"><span class="ic">${msvg('add')}</span><span class="tile-l">Add your own</span></button>
       </div></div>`;
   } else {
     const picked = S.types.filter(t=>ob.pick.has(t.id));
@@ -1117,7 +1130,7 @@ function Begin(){
   const showPicker = S.types.length >= 2;
   const tiles = showPicker ? S.types.map(t=>`<button class="tile ${t.id===d.typeId?'on':''}" data-a="bg-type" data-id="${t.id}">
     <span class="ic">${msvg(t.icon)}</span><span class="tile-l">${esc(t.label)}</span></button>`).join('')
-    + `<button class="tile dashed" data-a="add-type"><span class="ic" style="color:var(--mute2)">${msvg('add')}</span><span class="tile-l" style="font-weight:500;color:var(--mute)">Add your own</span></button>` : '';
+    + `<button class="tile dashed" data-a="add-type"><span class="ic">${msvg('add')}</span><span class="tile-l">Add your own</span></button>` : '';
 
   return `<div class="screen" style="padding-bottom:110px">
     <div style="display:flex;align-items:center;justify-content:space-between;padding-top:16px">
@@ -1495,7 +1508,7 @@ function Me(){
     <div style="margin-top:30px">
       <span class="label ink" style="margin-bottom:12px;display:block">What you're working on</span>
       <div class="tiles">${tiles}
-        <button class="tile dashed" data-a="add-type"><span class="ic" style="color:var(--mute2)">${msvg('add')}</span><span class="tile-l" style="font-weight:500;color:var(--mute)">Add your own</span></button>
+        <button class="tile dashed" data-a="add-type"><span class="ic">${msvg('add')}</span><span class="tile-l">Add your own</span></button>
       </div>
     </div>
 
