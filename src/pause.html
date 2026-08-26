@@ -1779,7 +1779,7 @@ function welcomeFall(){
 /* recorded sea, a seamless 30s loop playing across the whole app; louder on home, quieter elsewhere */
 let SEA=null, audioUnlocked=false, seaCtx=null, seaBuf=null, seaSrc=null, seaGain=null;
 const SEA_LOOP='__PAUSE_WAVES__';                        // 30s crossfaded ocean loop, inlined at build
-const SEA_BASE=0.14;                                     // gentle base level across the app
+const SEA_BASE=0.10;                                     // gentle base level across the app
 // The sea recedes as you go through your first pause: half on entering, and once that pause is
 // done it settles to a quarter and stays there for the rest of the app session. It never climbs
 // back up on leaving, and never ducks further on later pauses. (seaSettled is declared up top, before
@@ -1882,7 +1882,7 @@ function uiTick(){
     if(!uiCtx) uiCtx=new (window.AudioContext||window.webkitAudioContext)();
     if(uiCtx.state!=='running' && uiCtx.resume) uiCtx.resume();
     const ctx=uiCtx, t=ctx.currentTime;
-    const out=ctx.createGain(); out.gain.value=0.5; out.connect(ctx.destination);
+    const out=ctx.createGain(); out.gain.value=0.9; out.connect(ctx.destination);
     // click transient: a very short noise burst through a band-pass, quick decay
     const buf=ctx.createBuffer(1, Math.ceil(ctx.sampleRate*0.03), ctx.sampleRate);
     const d=buf.getChannelData(0);
