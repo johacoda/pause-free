@@ -886,7 +886,7 @@ function summaryText(){
   const top=Object.entries(cc).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
   return [
     'Pause by Pákó: my summary',
-    `${S.name?S.name+', ':''}${n} pause${n===1?'':'s'} taken, ${passed} let pass.`,
+    `${S.name?S.name+', ':''}${n} wave${n===1?'':'s'} watched, ${passed} let pass.`,
     `Steady days: ${calmDays()}.`,
     top.length?`Most common triggers: ${top.join(', ')}.`:''
   ].filter(Boolean).join('\n');
@@ -1088,7 +1088,7 @@ function Home(){
       <span class="grey tnum" style="font-size:13px">${x.date===iso()?x.t:niceDate(x.date)}</span>
       <span class="state ${x.outcome==='passed'?'pass':'act'}">${x.outcome==='passed'?'Passed':'Acted'}</span>
     </div>`;
-  }).join('') || `<p class="body grey" style="padding:14px 0;border-top:1px solid var(--faint)">No waves yet. Your first pause will show up here.</p>`;
+  }).join('') || `<p class="body grey" style="padding:14px 0;border-top:1px solid var(--faint)">No waves yet. Your first wave will show up here.</p>`;
 
   return `<div class="home homeview fade">
     <div class="hero hero-d">
@@ -1121,7 +1121,7 @@ function Home(){
         ${recent}
       </div>
       <div style="flex:1;min-height:20px"></div>
-      <button class="btn btn-red" style="margin-bottom:16px" data-a="begin">Time to pause ${IC.arrow}</button>
+      <button class="btn btn-red" style="margin-bottom:16px" data-a="begin">Watch a wave ${IC.arrow}</button>
     </div>
     ${Nav('home')}
   </div>`;
@@ -1140,7 +1140,7 @@ function Begin(){
   return `<div class="screen" style="padding-bottom:110px">
     <div style="display:flex;align-items:center;justify-content:space-between;padding-top:16px">
       <button data-a="go-home" class="grey">${IC.back}</button>
-      <span class="label ink" style="letter-spacing:.16em">New pause</span><span style="width:24px"></span>
+      <span class="label ink" style="letter-spacing:.16em">New wave</span><span style="width:24px"></span>
     </div>
 ${showPicker?`
     <span class="label ink qz" style="display:block;margin-top:26px">What's the craving?</span>
@@ -1152,7 +1152,7 @@ ${showPicker?`
     </div>
     <input type="range" class="range calm" id="bgslider" min="1" max="10" step="1" value="${d.s0}" style="margin-top:13px">
 
-    <span class="label ink qz" style="display:block;margin-top:28px">How long will you pause?</span>
+    <span class="label ink qz" style="display:block;margin-top:28px">How long will you watch?</span>
     <div class="dialwrap">
       <svg id="dial" viewBox="0 0 220 220">
         <circle class="d-track" cx="110" cy="110" r="82"/>
@@ -1250,7 +1250,7 @@ function Passed(){
     body = drop===0
       ? `It held at ${last.s0} out of 10. And you stayed with it.`
       : `It rose from ${last.s0} to ${last.s1} out of 10. It takes a bit longer sometimes.`;
-    primary = `<button class="btn btn-red" data-a="begin" style="margin-bottom:10px">Pause again ${IC.arrow}</button>`;
+    primary = `<button class="btn btn-red" data-a="begin" style="margin-bottom:10px">Watch another wave ${IC.arrow}</button>`;
   }
   const earned=justEarned();
   return `<div class="home fade">
@@ -1280,7 +1280,7 @@ function Acted(){
       <p class="body grey" style="max-width:23em">You waited ${last?clock(last.elapsed):'0:00'} before you acted.</p>
       ${causeReflect(true)}
       <div style="flex:1;min-height:20px"></div>
-      <button class="btn btn-red" data-a="begin" style="margin-bottom:10px">Try another pause ${IC.arrow}</button>
+      <button class="btn btn-red" data-a="begin" style="margin-bottom:10px">Watch another wave ${IC.arrow}</button>
       <button class="tlink grey" data-a="go-home" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">Back home</button>
     </div>
   </div>`;
@@ -1363,7 +1363,7 @@ function Patterns(){
 
   if(!n){
     parts.push(`<div class="pcard"><div class="pins"><span class="ic">${msvg('monitoring')}</span>
-      <span class="tx"><span class="t">Nothing yet</span><span class="s">Your insights show up here after your first pause.</span></span></div></div>`);
+      <span class="tx"><span class="t">Nothing yet</span><span class="s">Your insights show up here after your first wave.</span></span></div></div>`);
     return `<div class="home">${navHero('Insights')}<div class="hsheet">${parts.join('')}<div style="flex:1;min-height:20px"></div></div>${Nav('patterns')}</div>`;
   }
 
@@ -1467,7 +1467,7 @@ function PrivacyView(){
     </div>
     <h1 style="margin-top:22px">Your privacy</h1>
     <p class="lede grey" style="margin-top:12px">Pause keeps everything you type on your device. There's no account, and no server storing your entries. What you type stays in your own browser, and it only ever leaves if you choose to send it. The one thing we measure is how many people visit the page, counted anonymously at the hosting layer, which runs no script inside the tool and never sees what you enter.</p>
-    ${pSection('What Pause stores, and where', `It saves your first name (shown only on your home screen), the list of cravings you're working on, and a record of each pause: the craving, how strong it felt before and after, how long you waited, any trigger you choose to add, and whether the craving passed or you acted on it. All of it lives in your browser's own local storage, on the device you're using. Pákó never receives it and keeps no copy.`)}
+    ${pSection('What Pause stores, and where', `It saves your first name (shown only on your home screen), the list of cravings you're working on, and a record of each wave: the craving, how strong it felt before and after, how long you waited, any trigger you choose to add, and whether the craving passed or you acted on it. All of it lives in your browser's own local storage, on the device you're using. Pákó never receives it and keeps no copy.`)}
     ${pSection('What Pause never does', `It never creates an account or asks you to log in. It never sends your entries to a server. It runs no analytics, advertising, or third-party tracking scripts inside the tool; the only thing we count is page visits, server-side, described under Hosting. It never asks for your email. And it never sells or shares your data, because it never receives the content of your entries in the first place. Once the page loads its font and icons, it doesn't call out to the internet again.`)}
     ${pSection('Hosting and visit counts', `Pause is a static page hosted on Netlify at pause.pako.health, with no server-side functions, so the tool itself keeps no log of what you do. To deliver the page, Netlify's network handles your browser's request and can see standard technical details such as your IP address and the time of your visit, the same as any website you open. To understand how far Pause reaches, we use Netlify Analytics, which counts visits from those server request logs. It is entirely server-side, so it adds no script to the page, sets no cookies, and does not follow you across sites. It reports only aggregate numbers, such as visits, unique visitors, and which pages load, and it never has access to what you type, which stays on your device and is never sent. Because nothing here sets a cookie, there is still no cookie banner.`)}
     ${pSection('Sharing your own data', `Pause lets you export a copy of your history or share a short summary, for example to give to a coach or a doctor. That copy is made on your device, and it only goes somewhere if you send it. The choice is entirely yours.`)}
