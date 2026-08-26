@@ -713,9 +713,11 @@ function bestRun(){
 }
 
 /* ============ money saved & daily check-in ============ */
-// each wave you let pass is a drink you didn't buy, so money saved = passed waves x cost per drink
-function wavesPassed(){ return S.sessions.filter(x=>x.outcome==='passed').length; }
-function moneySaved(){ const c=+S.costPerDrink; return (c>0) ? c*wavesPassed() : 0; }
+// money saved is an alcohol-specific idea (cost per drink), so it only applies to people tracking alcohol,
+// and only counts alcohol waves let pass, so a passed sugar or phone craving never reads as a drink not bought
+function tracksAlcohol(){ return S.types.some(t=>t.id==='drink'); }
+function alcoholPassed(){ return S.sessions.filter(x=>x.type==='drink'&&x.outcome==='passed').length; }
+function moneySaved(){ const c=+S.costPerDrink; return (c>0&&tracksAlcohol()) ? c*alcoholPassed() : 0; }
 function fmtMoney(n){ return (S.currency||'₦')+Math.round(n).toLocaleString('en-US'); }
 function checkedInToday(){ return Array.isArray(S.checkins) && S.checkins.indexOf(iso())>-1; }
 // a once-a-day intention tap; the calm reason to open the app on a day with no craving
@@ -726,7 +728,8 @@ function homeCheckin(){
 }
 // money kept aside; a subtle setup prompt once there's something to show, the figure once cost is set
 function homeMoney(){
-  const waves=wavesPassed(), c=+S.costPerDrink;
+  if(!tracksAlcohol()) return '';
+  const waves=alcoholPassed(), c=+S.costPerDrink;
   if(!(c>0)){
     if(waves<3) return '';
     return `<button class="moneystrip setup" data-a="nav" data-v="me"><span class="mi">${msvg('savings')}</span>
@@ -1493,7 +1496,7 @@ function Me(){
       </button>
     </div>
 
-    <div style="margin-top:30px">
+    ${tracksAlcohol()?`<div style="margin-top:30px">
       <span class="label ink" style="margin-bottom:8px;display:block">What a drink costs you</span>
       <p class="body grey" style="font-size:13px;margin-bottom:12px">Set this to see the money you keep with every wave you let pass.</p>
       <div class="costrow">
@@ -1503,7 +1506,7 @@ function Me(){
         </div>
         <input type="number" inputmode="numeric" id="meCost" class="select" style="flex:1" min="0" step="1" placeholder="e.g. 2500" value="${S.costPerDrink!=null?S.costPerDrink:''}">
       </div>
-    </div>
+    </div>`:''}
 
     <div style="margin-top:30px">
       <span class="label ink" style="margin-bottom:12px;display:block">What you're working on</span>
