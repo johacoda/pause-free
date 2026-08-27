@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <script>if((window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone)document.documentElement.classList.add('app-installed');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#FAFAFA">
+<meta name="theme-color" content="#3c3158">
 <link rel="icon" type="image/png" href="__PAUSE_FAVICON__">
 <link rel="apple-touch-icon" href="__PAUSE_APPICON__">
 <link rel="manifest" href="/site.webmanifest">
@@ -664,7 +664,9 @@ function boot(){
 function applyTheme(){
   document.documentElement.classList.toggle('dark', S.theme==='dark');
   document.documentElement.style.setProperty('--fs', S.textScale||1);   // text-size accessibility scale
-  const m=document.querySelector('meta[name=theme-color]'); if(m) m.setAttribute('content', S.theme==='dark'?'#1b1813':'#FAFAFA');
+  // the status bar sits above the purple hero on the main screens, so keep it that purple in both themes;
+  // Android then auto-picks light clock/battery icons that stay legible on it
+  const m=document.querySelector('meta[name=theme-color]'); if(m) m.setAttribute('content', '#3c3158');
 }
 
 /* ============ helpers ============ */
