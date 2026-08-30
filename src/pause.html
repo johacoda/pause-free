@@ -526,9 +526,14 @@
   .wnote{display:block;font-size:calc(12.5px * var(--fs,1));color:var(--mute);margin-top:3px;line-height:1.35;font-style:italic}
 
   /* nav */
-  .nav{position:sticky;bottom:0;z-index:5;display:flex;justify-content:space-around;padding:11px 16px calc(12px + env(safe-area-inset-bottom,0));
-    border-top:1px solid rgba(255,255,255,.4);background:rgba(250,250,250,.9);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%)}
-  .dark .nav{background:rgba(27,24,19,.9);border-top-color:rgba(255,255,255,.1)}
+  .nav{position:fixed;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom,0));z-index:20;
+    width:calc(100% - 32px);max-width:calc(var(--maxw) - 32px);margin:0 auto;
+    display:flex;justify-content:space-around;padding:9px 8px;border-radius:30px;
+    border:1px solid rgba(255,255,255,.55);background:rgba(250,250,250,.62);
+    -webkit-backdrop-filter:blur(22px) saturate(170%);backdrop-filter:blur(22px) saturate(170%);
+    box-shadow:0 10px 30px rgba(13,13,11,.16),0 2px 8px rgba(13,13,11,.08)}
+  .dark .nav{background:rgba(27,24,19,.52);border-color:rgba(255,255,255,.12);box-shadow:0 12px 34px rgba(0,0,0,.42)}
+  .navspace{flex:none;height:calc(80px + env(safe-area-inset-bottom,0))}
   .nav button{display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.35;padding:2px 12px;transition:opacity .15s}
   .nav button.on{opacity:1;color:var(--actx)}
   .nav svg{width:21px;height:21px}
@@ -553,7 +558,7 @@
   .fade{animation:fade .3s ease}
   @keyframes fade{from{opacity:0}to{opacity:1}}
   /* glass screens reveal via transform, not opacity, so backdrop-filter never suspends (no first-load flash) */
-  .home.fade{animation:homeReveal .3s ease}
+  .home.fade{animation:fade .3s ease}
   @keyframes homeReveal{from{transform:translateY(8px)}to{transform:translateY(0)}}
   .hidden{display:none!important}
   .wordmark{font-weight:800;letter-spacing:-.02em;font-style:italic}
@@ -1136,7 +1141,7 @@ function Home(){
         ${recent}
       </div>
       <div style="flex:1;min-height:20px"></div>
-      <button class="btn btn-red" style="margin-bottom:16px" data-a="begin">Watch a wave ${IC.arrow}</button>
+      <button class="btn btn-red" data-a="begin">Watch a wave ${IC.arrow}</button>
     </div>
     ${Nav('home')}
   </div>`;
@@ -1585,7 +1590,8 @@ function statLine(items){
 }
 function Nav(active){
   const t=[['home','Home','home'],['waves','Waves','waves'],['chart','Insights','patterns'],['user','You','me']];
-  return `<div class="nav">${t.map(([ic,l,v])=>`<button class="${v===active?'on':''}" data-a="nav" data-v="${v}">${IC[ic]}<span>${l}</span></button>`).join('')}</div>`;
+  // navspace reserves flow room so content clears the floating (fixed) pill; only the screens that show the nav get it
+  return `<div class="navspace"></div><div class="nav">${t.map(([ic,l,v])=>`<button class="${v===active?'on':''}" data-a="nav" data-v="${v}">${IC[ic]}<span>${l}</span></button>`).join('')}</div>`;
 }
 
 /* ============ add-type modal ============ */
