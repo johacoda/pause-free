@@ -304,6 +304,14 @@
     color:#F3EFE8;background:rgba(255,255,255,.10);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
   .whybox:focus{background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.4)}
   .whybox::placeholder{color:rgba(243,239,232,.45);font-weight:400}
+  .whyl{display:inline-block;font-size:calc(10px * var(--fs,1));font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--actx)}
+  .whycard2{display:flex;align-items:center;gap:12px;max-width:23em;margin:18px auto 0;
+    padding:13px 16px;border-radius:15px;background:var(--white);border:1px solid var(--faint2)}
+  .whycard2-l{flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:var(--actx)}
+  .whycard2-l svg{width:30px;height:30px}
+  .whycard2-r{flex:1;min-width:0}
+  .whyline2{margin-top:3px;font-style:italic;font-weight:500;font-size:calc(15px * var(--fs,1));line-height:1.45;color:var(--purple)}
+  .dark .whyline2{color:#cdc0f2}
   .whyline{text-align:center;margin:14px auto 0;max-width:22em;font-style:italic;font-weight:500;
     font-size:calc(15px * var(--fs,1));line-height:1.5;color:var(--purple);opacity:.9}
   .dark .whyline{color:#cdc0f2}
@@ -314,7 +322,7 @@
     font-size:calc(12.5px * var(--fs,1));font-weight:600;color:var(--purple);
     background:var(--white);border:1px solid var(--faint2)}
   .dark .practicepill{color:#cdc0f2}
-  .practicepill .ic16{opacity:.7}
+  .practicepill .ic16{opacity:.85;margin-right:-2px}
   .praclist{display:flex;flex-direction:column;gap:10px}
   .pracopt{display:block;width:100%;text-align:left;padding:13px 15px;border-radius:13px;
     background:var(--white);border:1px solid var(--faint2)}
@@ -1372,7 +1380,7 @@ function PauseView(){
       <button data-a="sound-toggle" id="soundbtn" aria-label="Sound" style="color:${S.sound?'var(--actx)':'var(--mute2)'}">${msvg(S.sound?'volume_up':'volume_off','nav24')}</button>
     </div>`;
   const pill = `<div style="text-align:center;margin-top:10px">
-      <button class="practicepill" data-a="practice-pick">${esc(practiceLabel())} ${msvg('unfold_more','ic16')}</button>
+      <button class="practicepill" data-a="practice-pick"><span>${esc(practiceLabel())}</span>${msvg('expand_more','ic16')}</button>
     </div>`;
   const strengthBox = (shown)=>`<div id="strengthbox" class="${shown?'show':''}" style="margin-bottom:16px">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
@@ -1430,7 +1438,10 @@ function PauseView(){
     </div>
     ${pill}
     <p id="pzmsg" class="body grey" style="text-align:center;margin-top:22px;max-width:24em;margin-left:auto;margin-right:auto;transition:opacity .4s ease">${pauseLead(p)[0]}</p>
-    ${S.why?`<p class="whyline">${esc(S.why)}</p>`:''}
+    ${S.why?`<div class="whycard2">
+      <div class="whycard2-l">${msvg('trophy')}</div>
+      <div class="whycard2-r"><span class="whyl">Your why</span><p class="whyline2">“${esc(S.why)}”</p></div>
+    </div>`:''}
 
     <div style="flex:1"></div>
 
@@ -1746,8 +1757,8 @@ function Me(){
     </div>
 
     <div style="margin-top:30px">
-      <span class="label ink" style="margin-bottom:6px;display:block">Breathing</span>
-      <p class="body grey" style="font-size:calc(13px * var(--fs,1));margin-bottom:12px">The breath the wave screen opens with. You can also switch it mid-wave.</p>
+      <span class="label ink" style="margin-bottom:6px;display:block">Breathwork and grounding</span>
+      <p class="body grey" style="font-size:calc(13px * var(--fs,1));margin-bottom:12px">What the wave screen opens with. You can also switch it mid-wave.</p>
       <div class="praclist">${PATTERNS.concat([GROUND]).map(p=>`<button class="pracopt ${p.id===(S.pattern||'exhale')?'on':''}" data-a="prac-set" data-id="${p.id}">
         <span class="pracn">${esc(p.name)}</span><span class="pracs">${esc(p.sub)}</span>
         <span class="pracnote">${esc(p.note)}</span></button>`).join('')}</div>
@@ -1865,8 +1876,8 @@ function practiceSheet(){
   const el=document.createElement('div');
   el.innerHTML=`<div class="scrim on" data-a="prac-close" style="z-index:50"></div>
     <div class="sheet on" style="z-index:51"><div class="grab"></div>
-      <h2>Breathing</h2>
-      <p class="body grey" style="margin:6px 0 16px">Pick how you want to breathe. It becomes your default, and you can switch any time.</p>
+      <h2>Breathwork and grounding</h2>
+      <p class="body grey" style="margin:6px 0 16px">Pick how you want to steady yourself in a wave. It becomes your default, and you can switch any time.</p>
       ${list}
     </div>`;
   document.getElementById('frame').appendChild(el);
