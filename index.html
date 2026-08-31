@@ -1372,6 +1372,15 @@ ${showPicker?`
 }
 
 /* ============ pause (the wave) ============ */
+// the why, shown in a two-column card (trophy on the left, label and the quoted reason on the right).
+// used on the wave screen and again on the passed screen, with a context-specific label.
+function whyCard(label){
+  if(!S.why) return '';
+  return `<div class="whycard2">
+    <div class="whycard2-l">${msvg('trophy')}</div>
+    <div class="whycard2-r"><span class="whyl">${esc(label)}</span><p class="whyline2">“${esc(S.why)}”</p></div>
+  </div>`;
+}
 function PauseView(){
   const p=S.pause; const ty=typeOf(p.typeId)||{label:'this',em:'🌊'};
   const header = `<div style="display:flex;align-items:center;justify-content:space-between;padding-top:16px">
@@ -1438,10 +1447,7 @@ function PauseView(){
     </div>
     ${pill}
     <p id="pzmsg" class="body grey" style="text-align:center;margin-top:22px;max-width:24em;margin-left:auto;margin-right:auto;transition:opacity .4s ease">${pauseLead(p)[0]}</p>
-    ${S.why?`<div class="whycard2">
-      <div class="whycard2-l">${msvg('trophy')}</div>
-      <div class="whycard2-r"><span class="whyl">Your why</span><p class="whyline2">“${esc(S.why)}”</p></div>
-    </div>`:''}
+    ${whyCard('Your why')}
 
     <div style="flex:1"></div>
 
@@ -1508,7 +1514,7 @@ function Passed(){
         ${statTile('s2', S.sessions.filter(x=>x.outcome==='passed').length, 'Waves passed', MOTIF.passed)}
         ${statTile('s3', bestRun(), 'Best run', MOTIF.taken)}
       </div>
-      ${S.why?`<div class="whycard"><span class="whycard-l">This is what you're protecting</span><p class="whycard-q">${esc(S.why)}</p></div>`:''}
+      ${whyCard("This is what you're protecting")}
       ${causeReflect()}
       <div style="flex:1;min-height:20px"></div>
       ${primary}
@@ -1976,6 +1982,24 @@ function soundPluck(A,when,gain){
   o.connect(g); o2.connect(g2); g2.connect(g); g.connect(A.master);
   o.start(when); o2.start(when); o.stop(when+1.6); o2.stop(when+1.6);
 }
+// a gentle two-note bell to call the person back when it's time for the second rating.
+// runs through the live ambient context; only reaches them while the app is in the foreground.
+function soundChime(){
+  const A=AUD; if(!A) return;
+  const ctx=A.ctx, t0=ctx.currentTime;
+  [[783.99,0],[1174.66,0.16]].forEach(([f,dt])=>{        // G5 then D6, a soft rising call
+    const o=ctx.createOscillator(); o.type='sine'; o.frequency.value=f;
+    const h=ctx.createOscillator(); h.type='sine'; h.frequency.value=f*2;
+    const hg=ctx.createGain(); hg.gain.value=0.14;
+    const g=ctx.createGain();
+    const on=t0+dt;
+    g.gain.setValueAtTime(0.0001,on);
+    g.gain.linearRampToValueAtTime(0.18,on+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0004,on+1.4);
+    o.connect(g); h.connect(hg); hg.connect(g); g.connect(A.master);
+    o.start(on); h.start(on); o.stop(on+1.6); h.stop(on+1.6);
+  });
+}
 function soundStart(){
   if(AUD) return;
   primeAudioSession();                                                        // flip iOS into the media-playback session
@@ -2192,7 +2216,11 @@ function runPause(){
     if(msg.k!==lastMsgKey){ lastMsgKey=msg.k; const m=document.getElementById('pzmsg');
       if(m){ m.style.opacity='0'; setTimeout(()=>{ const mm=document.getElementById('pzmsg'); if(mm){ mm.innerHTML=msg.html; mm.style.opacity='1'; } },400); } }
     // reveal the after-rating near the end
-    if(!revealed && prog>=0.7){ revealed=true; const box=document.getElementById('strengthbox'); if(box) box.classList.add('show'); }
+    if(!revealed && prog>=0.7){ revealed=true; const box=document.getElementById('strengthbox'); if(box) box.classList.add('show');
+      // call them back to rate the wave: a chime (if sound is on) and a gentle buzz
+      if(S.sound) soundChime();
+      if(navigator.vibrate){ try{ navigator.vibrate([40,70,40]); }catch(e){} }
+    }
     pauseRAF=requestAnimationFrame(frame);
   };
   frame();
