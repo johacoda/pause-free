@@ -299,6 +299,17 @@
     border:1px solid var(--faint2);border-radius:10px;padding:12px 14px;line-height:1.45;resize:vertical;min-height:78px;outline:none}
   .notebox:focus{border-color:var(--purple)}
   .notebox::placeholder{color:var(--mute2);font-weight:400}
+  .whybox{width:100%;font-family:inherit;font-size:calc(17px * var(--fs,1));font-weight:500;line-height:1.5;
+    border:none;border-radius:14px;padding:16px;resize:none;min-height:132px;outline:none;
+    color:#F3EFE8;background:rgba(255,255,255,.10);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+  .whybox:focus{background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.4)}
+  .whybox::placeholder{color:rgba(243,239,232,.45);font-weight:400}
+  .whyline{text-align:center;margin:14px auto 0;max-width:22em;font-style:italic;font-weight:500;
+    font-size:calc(15px * var(--fs,1));line-height:1.5;color:var(--purple);opacity:.9}
+  .dark .whyline{color:#cdc0f2}
+  .whycard{margin-top:18px;padding:15px 17px;border-radius:14px;background:var(--redtint);border:1px solid var(--faint)}
+  .whycard-l{display:block;font-size:calc(10.5px * var(--fs,1));font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--actx)}
+  .whycard-q{margin-top:7px;font-style:italic;font-weight:500;font-size:calc(16px * var(--fs,1));line-height:1.5;color:var(--ink)}
 
   /* duration segmented */
   .seg{display:flex;gap:8px}
@@ -473,6 +484,28 @@
   .cin.done .mi{color:var(--act);flex:none;display:flex;line-height:0}
   .cin.done .mi .ms{width:20px;height:20px}
   .cin.done .ct{font-size:calc(14px * var(--fs,1));font-weight:700}
+  /* daily journey card */
+  .jcard{background:var(--grey);border-radius:16px;padding:16px 16px 8px;margin-bottom:18px}
+  .dark .jcard{background:rgba(255,255,255,.06)}
+  .jhead{display:flex;align-items:baseline;gap:9px;margin-bottom:9px}
+  .jday{font-size:calc(13px * var(--fs,1));font-weight:800;color:var(--act);letter-spacing:.01em}
+  .jtag{font-size:calc(10.5px * var(--fs,1));font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mute2)}
+  .jint{font-size:calc(17px * var(--fs,1));font-weight:700;color:var(--ink);line-height:1.34;letter-spacing:-.01em}
+  .jcta{width:100%;margin-top:14px}
+  .jlocked{display:flex;align-items:center;gap:8px;margin-top:12px;width:100%;justify-content:center;background:none;border:none;font-family:inherit;font-size:calc(14px * var(--fs,1));font-weight:700;color:var(--act);cursor:pointer;padding:6px 0}
+  .jlocked .mi{display:flex;line-height:0}.jlocked .mi .ms{width:19px;height:19px}
+  .readlink{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;border-top:1px solid var(--faint);margin-top:12px;padding:13px 2px 9px;font-family:inherit;cursor:pointer}
+  .readlink .rt{font-size:calc(14px * var(--fs,1));font-weight:700;color:var(--purple)}
+  .readlink .rc{color:var(--mute2);display:flex}
+  .jnext{display:flex;align-items:center;gap:11px;margin-top:2px;padding:13px 0 6px;border-top:1px solid var(--faint);opacity:.72}
+  .jnext .jl{color:var(--mute2);display:flex;line-height:0}.jnext .jl .ms{width:18px;height:18px}
+  .jnext .jntx .t{display:block;font-size:calc(14px * var(--fs,1));font-weight:800;color:var(--ink)}
+  .jnext .jntx .s{display:block;font-size:calc(12px * var(--fs,1));color:var(--mute)}
+  /* reading view */
+  .rback{position:absolute;top:calc(env(safe-area-inset-top,0) + 14px);left:14px;z-index:3;color:#FAFAFA;background:none;border:none;display:flex;cursor:pointer}
+  .rsub{color:#c9c1e0;font-size:calc(13px * var(--fs,1));font-weight:600;margin-top:4px;letter-spacing:.02em}
+  .rintent{font-size:calc(20px * var(--fs,1));font-weight:800;color:var(--ink);line-height:1.32;letter-spacing:-.01em;margin-top:2px}
+  .rtext{font-size:calc(16px * var(--fs,1));color:var(--ink);line-height:1.62;margin-top:16px;max-width:34em}
   /* money saved */
   .moneystrip{display:flex;align-items:center;gap:13px;width:100%;background:none;border:none;font-family:inherit;text-align:left;padding:0;margin-top:20px}
   .moneystrip .mi{color:var(--act);flex:none;display:flex;line-height:0}
@@ -593,6 +626,40 @@ const TYPES_SEED = [
   { id:'spend',  label:'Spending',   icon:'shopping_bag' },
 ];
 const CAUSES = ['Stress','Boredom','Tired','Hungry','After a meal','Around people','Low mood','Just habit'];
+
+/* ============ Journey 1: 30 days. one intention + one read per day. ============ */
+const JOURNEY_1 = { name:'Ride the wave', days:[
+  {i:"Today, when a craving comes, I'll watch it pass instead of fighting it.", r:"A craving feels like it will keep climbing until you give it what it wants. It won't. Because every craving is a wave. It rises, it peaks, and it falls, whether or not you give in. But we mistakenly think the only way out is to act on it. There's another way out, and it's just time. So you don't have to fight the wave or even ride it like a master surfer…yet. You only have to watch it and let it do what every wave does. Break. Today, whenever that strong urge comes, pay attention to it. Notice it climb…and peak. Then notice it pass, because it will."},
+  {i:"Today I'll give any strong urge some time before I decide anything.", r:"Many cravings peak and pass inside about fifteen minutes. That's just how they work. That urge that feels like it will never end at 9 pm is usually gone by quarter past IF you don't feed it. The problem is that those fifteen minutes feel like an hour, and your brain spends that time inventing reasons why it's okay to give in just this once. So don't argue with it. Start the clock instead. Tell yourself you can give in at the end if you still want to, and watch what fifteen minutes does to a feeling that seemed like it would last forever."},
+  {i:"Today I'll make the good choice the easy one, so I need less willpower.", r:"Willpower runs down like a battery. By evening, your willpower is flat, just like everyone else's, and that's exactly when cravings are strongest. This is why relying on grit fails. The most 'disciplined' people you know aren't fighting harder; they've arranged their lives so there's less to fight. So there's nothing tempting within reach. Sometimes that means taking a different route home. Or plan something else ahead of time to do at the hour when the craving usually hits. The best time to beat a craving is long before it arrives, by making it a little harder to give in and the better choice a little easier. Don't grind. Rig the room."},
+  {i:"Today I'll learn to look beyond my cravings.", r:"Cravings rarely come from nowhere. They ride on top of something simpler. Like being hungry, angry, lonely, or tired. HALT. When that urge hits hard, take a minute and run the list. Have you eaten? Are you annoyed about something? Perhaps you're alone and feeling a bit restless? Or running on little sleep? More often than you'd think, your urge is standing in for a meal, a phone call, or an early night. Fulfil the real need underneath, and the craving often loses its grip."},
+  {i:"Today I'll notice what sets it off, without judging it.", r:"Your cravings have patterns. They can be a time of day, a place, a person, or a feeling. You've probably never looked straight at them, but a trigger you can name is a trigger you can plan for. For example, the Friday wind-down after a long week. Or a fight with your partner or friend. Or the empty feeling of your home in the evenings. Having triggers doesn't make you weak; it makes you human, which is just fine. It means you can start paying attention to the moment just before your craving comes, not only the craving itself. And you'll often find that's where the real information is."},
+  {i:"Today I'll change one thing in the moment instead of gritting my teeth.", r:"When a craving lands, your instinct is to stand still and resist. Don't. Move. The single strongest thing you can do is change your surroundings, because the urge is wired to where you are. Leave the room. Step outside. Get in the shower. Go somewhere else. It feels too simple to work, which is why people skip it and struggle instead. Your craving is partly the room talking. Change the room and you turn the volume down before you've spent any willpower at all."},
+  {i:"Today I'll remember that craving is something I have, not something I am.", r:"A craving talks in the first person. \"I need this\". \"I can't do this\". \"I'll feel better if\"... It's convincing because it sounds like you. But it isn't. It's an old circuit doing its job, and its job is to want. You can notice the wanting without becoming it, the same way you can notice you're cold without becoming the cold. Put a little space between you and the voice. Let it say its piece. Then decide as the person standing next to it, not as the one shouting."},
+  {i:"My mind may want what it wants, but I decide what I need.", r:"Did you know? The brain chemical called dopamine isn't really about pleasure, it's about the chase. It spikes before you act, in the wanting, not after, in the having. That gap is the trap. Your brain promises a satisfaction that the drink, smoke, or object of your craving never quite delivers, which is why you need more and more and never stop at one. When you feel that pull today, recognise it for what it is. It isn't proof the thing you crave is good for you. It's a chemical promise your brain makes and rarely keeps."},
+  {i:"Today, I will feed myself, not the machine.", r:"Think about how you check your phone. Most times there's nothing there, but every so often something good is waiting: a message, a bit of news, a small hit of good feeling. That \"every so often\" is the hook. If the reward came every single time, or never came at all, you'd lose interest and stop reaching for it. It's the uncertainty that keeps your thumb moving. A lot of cravings run on the same trick. Sometimes giving in is what you hoped for. Mostly it's fine, then flat, then worse an hour later. But your brain files away the good times and forgets the rest, so it keeps you reaching for a prize that mostly isn't there. Again, the pull is natural. Today, see what happens when you don't give in."},
+  {i:"Today I won't trust the voice that says just one.", r:"Just one. You've had a tough day. You've earned it. You'll be good tomorrow. Craving is a lawyer, and it only ever argues one side. It doesn't care how you'll feel after just one, or how it went the last time you promised you'd not have any more than one. So stop arguing back. It's no use. When you hear that reasonable voice making the reasonable case for the thing you already decided against, let it yap. You don't have to listen. If you like, give it a name. Psychologists say that this technique can help you create distance from the craving. Our recommendation: say out loud, \"Lie Lie Lawyer has come again.\" Unless you're a lawyer yourself."},
+  {i:"Today I'll play the whole story forward before I decide.", r:"A craving is a clever film editor. It shows you a trailer of the first hit, the relief, the little rush, and then it cuts the reel right there. Your job is to keep the tape rolling. Play it past the first move to the second, past the rush to the flat feeling that follows, all the way to how you'll feel about it a few hours from now. Then rewind and play the other version. The clear head. The quiet pride of a moment you handled on your own. Nothing to clean up. Cravings only ever live in the next five minutes, so you beat them by seeing further down the road than they can. Watch the whole film today, not just the trailer."},
+  {i:"Today I'll keep the trigger but change what comes after it.", r:"Every habit runs on a simple loop: a cue, a routine, a reward. Something triggers you, you reach for the thing, you feel the edge come off, and it all happens faster than thought. Here's the useful part. You usually can't delete the cue. The hour still comes, the stress still lands, the place is still the place. But you get to change what happens in the middle. Same cue, new routine, a reward that's close enough to satisfy. You feel the trigger, and this time you make tea, or step outside, or call someone, and your shoulders still drop. Do that enough times and the old loop quietly stops running you. You're not deleting the habit. You're giving it somewhere better to go."},
+  {i:"Today I'll notice that I'm already becoming the person who can do this.", r:"Stop for a second and look at what you've actually done. You've felt cravings this week that used to run the show, and here you are, still going. Every wave you watched pass was real. None of them were easy, and you did them anyway. That matters, because the story in your head might still be the old one, the one where you can't do this and never could. That story is out of date. The person in it hasn't met the one reading this. You don't need to feel strong or certain to keep going. You only need to do the next small thing, the way you already have, more times than you're giving yourself credit for. You're not hoping you can do this anymore. You're proving it, one wave at a time."},
+  {i:"Today I'll find one way to settle that isn't giving in.", r:"Giving in to take the edge off works, and that's exactly the problem. It's a fast, reliable way to drop your shoulders, so your brain files it as the answer to stress and stops looking for any other. The trouble is it borrows tomorrow's calm at a terrible rate of interest. The skill here isn't gritting your teeth through the stress. It's building yourself another way out. Ten minutes of walking. A hot shower. A few slow breaths. A call to someone easy. None of these hit as fast as giving in, that's true, but none of them send you a bill in the morning either. Pick one today and give it a real go, not a half-hearted one. You're teaching your brain there's more than one door out of a hard moment."},
+  {i:"If I slip today, I'll treat it as one wave, not the whole tide.", r:"Let's be honest with each other. There may be days you give in. What decides how this goes isn't whether you ever slip, it's what you do in the ten minutes after. The trap is the thought that one slip means the day is ruined, so the week may as well go too, and then the whole thing. That story does far more damage than the slip ever could. A slip is one wave. It doesn't wipe out the run behind it. So notice it, be honest about what led there, and be as kind to yourself as you'd be to a good friend who stumbled. Then let the next wave just be the next wave. Falling isn't the failure here. Deciding you've fallen for good is."},
+  {i:"Today I'll refuse the 'might as well'.", r:"There's a name for the thing that turns one slip into a whole night. Psychologists call it the what-the-hell effect. You break your own rule, you feel like you've failed, and the feeling is so uncomfortable that you reach for the very thing that caused it, just to make the feeling stop. One becomes ten. But the maths is quietly on your side, if you let it be. One slip is one slip. It's a bad hour, not a lost month, unless you decide it's a lost month and act like it. You can cut the whole thing in half right there by refusing the 'might as well'. Stop at one. It's never too late to stop, and the sooner you do, the smaller this stays."},
+  {i:"Today I'll act like the person I'm becoming, not the one I was.", r:"There's a real difference between \"I'm not doing this tonight\" and \"this isn't really me anymore\". The first is a rule you have to enforce on yourself, over and over, and it's exhausting. The second is simply who you are, and you don't sit up arguing with yourself about who you are. You're not on a diet from your old life, waiting to go back to it. You're becoming someone with different defaults. That doesn't happen with a big announcement. It happens quietly, by stacking up ordinary days where you act like that person, until one day your brain stops asking and just believes it. Today is one of those days. You don't have to feel like a new person yet. You only have to move like one."},
+  {i:"Today I'll remove one thing that makes giving in easy.", r:"Take an honest look around your life and ask what makes giving in the path of least resistance. Maybe it's the thing kept within easy reach. The route home that goes right past the place you always stop. The one friend who only ever suggests the one thing. You don't have to blow up your whole life to change this. You just have to tilt the ground a little in your favour. Move the thing out of the house. Change the route. Give the danger hour a plan of its own. Every bit of friction you put between yourself and the craving, and every bit you take off the better choice, is willpower you won't have to spend later. Make it easier to do well. You deserve an easier fight than the one you've been having."},
+  {i:"Today I'll decide my answer before anyone else can.", r:"Other people are one of the hardest parts of this, and not always because they mean any harm. It's the offer pushed on you before you asked. The \"oh come on, just this once\". The friend who gets a little uneasy when you change, because your change says something about them too. Most of it is habit and a bit of discomfort, not malice. The move is to decide your answer before you're in the room, so you're not negotiating on the spot with the thing already in front of you. Know your line. Have a simple reply ready, and say it plainly and warmly. \"I'm good, thanks\" is a full sentence. You don't owe anyone a speech, and you certainly don't owe anyone an explanation for looking after yourself."},
+  {i:"Today I'll count the days I've kept, not just the day I'm on.", r:"Around now, the danger isn't a giant craving. It's a shrug. The newness has worn off, the big feelings have settled, and a quiet voice starts wondering whether any of this really matters. It does, and this is exactly the stretch where people drift back, not because a wave beat them, but because they quietly stopped paying attention. So pay attention on purpose. Look back at the days behind you. The waves you rode out. The mornings you didn't have to piece back together. This was never about being perfect. It's about the pile of good days slowly getting taller, one laid on top of the other. You've built something real here, whether or not it feels dramatic from the inside. Keep stacking. The pile is the whole point."},
+  {i:"Today I'll hold on to why I started.", r:"Somewhere near the beginning there was a moment that made you want to change. Maybe a hard one, maybe just a tired, foggy, \"not this again\" one. It's easy to lose sight of it once things start feeling better, and losing sight of it is often how people quietly slide back. So bring it up on purpose today. Not to beat yourself with it, but to remember what all this effort is actually buying you. A clearer head. Being properly present for the people you love. The steady, underrated feeling of trusting yourself again. Picture the version of you a few months down this road, the one who kept going. That person is real, and you're building them right now, today. You're not giving something up here. You're getting a great deal back."},
+  {i:"Today I'll protect my best run, not chase a perfect one.", r:"Streaks are brittle things. One slip and the counter snaps back to zero, and that zero can feel like proof you've failed, which sends a lot of people straight back to the thing they were trying to leave. So don't hang everything on a perfect, unbroken chain. What actually matters is your best run, the longest stretch you've managed so far, because a single bad day can't erase what you've already shown yourself you can do. You went that many days. That happened. It's yours, and it survives a slip. So aim to match it, then quietly beat it, and let the odd bad day be exactly what it is: one day, not the whole story. Progress was never a straight line anyway. It's a rising one with dips along the way."},
+  {i:"Today I'll notice what this is quietly giving back.", r:"This journey isn't only about the thing you're not doing. It's also about everything quietly growing in the space you've freed up, the stuff that doesn't announce itself the way a craving does. The money that stayed in your account. The hours you got back. The sleep slowly stitching itself together. The way you're starting to trust your own word again. These gains are shy. They won't shout for your attention, so you have to go looking for them now and then and actually count them. Not to congratulate yourself, though you're allowed to, but because seeing the pile is what makes the next hard hour feel worth it. You've been quietly paying into something good. Today, take a proper look at the balance. You're earning more than you think."},
+  {i:"Today I'll tie this to something I genuinely care about.", r:"Rules run out of fuel. \"I'm not allowed\" works right up until you're tired enough to stop caring what you're allowed, which tends to be the exact moment the craving turns up. What lasts far longer is a reason that's truly yours. Being there, properly there, for the people you love. Doing your work without a fog sitting on top of it. Being someone whose word means something, to others and to yourself. So when the craving comes, don't only reach for the rule. Reach for the reason underneath it. Ask yourself plainly: this, or the thing I actually want? Willpower is weak, flickery fuel. A value you genuinely hold burns slow and steady, and it doesn't run flat by the end of a long day the way grit always does."},
+  {i:"Today I'll trust that every wave I don't feed shrinks the next one.", r:"Here's the part nobody tells you at the start, and it might be the best part. Cravings shrink. Every single time a wave rises and you don't feed it, you're teaching that old circuit that the lever doesn't pay out anymore. And slowly, genuinely, it stops pulling so hard. The urges that felt impossible in week one get quieter, less frequent, easier to watch go by. It doesn't happen all at once, and it isn't a tidy straight line, so don't expect one. But you are not going to be white-knuckling this forever. That isn't how brains work. You're retraining something real, and every craving you sit through is a small deposit into a version of you that simply wants it less. It gets easier from here. Keep going. You're closer than it feels."},
+  {i:"Today I'll let the good choice start becoming the automatic one.", r:"At the start, every time you hold the line it's a decision you have to make on purpose, and yes, that's tiring. But here's the encouraging bit: habits run in both directions. Do the new thing enough times, in the same slots, and it slowly stops being a decision at all and becomes simply what you do. The tea at the danger hour. The walk after dinner. The earlier night. One day, and it will sneak up on you, you'll realise you didn't have to fight the craving because it barely turned up, because the loop it used to run on now runs something else entirely. That's the whole goal. Not a lifetime of gritted teeth and endless willpower, but a new default that mostly takes care of itself."},
+  {i:"Today I'll let one person in on what I'm doing.", r:"This is easier to do quietly, and quietly is also, unfortunately, how it tends to fail. When you're alone with it, the only voice in the room is the craving's, and it's a very persuasive voice at 9pm. One other person changes the whole equation. Not for a lecture or a daily check-up, just so somebody knows, so there's a name and a number for the hard moments, so it isn't all sealed up inside your own head. And here's the cruel little trick of it: the moments it matters most to reach out are exactly the moments it feels hardest to. So decide now, while things are calm. Pick one person you trust and let them in, even a little. You've been carrying this on your own, and you really don't have to."},
+  {i:"Today I'll plan for the hard day before it arrives.", r:"There's going to be a day that really tests this. A loss, a fight, a run of bad news, the kind of day the old you would have used the thing just to get through. It comes for all of us eventually, and the very worst time to make a plan is in the middle of it. So make the plan now, today, while your head is clear and the sea is calm. What will you do when the wave is enormous? Who will you call first? Where will you physically take yourself? Write it down somewhere you'll actually find it. That way, on the day it matters, you're not trying to out-argue a craving in real time. You're just following a plan the calm, clear-headed version of you already made. Be that kind of friend to your future self."},
+  {i:"Today I'll notice who I'm turning into.", r:"Think back to the person who started this a month ago. The one who wasn't sure they'd last a week, who half expected to fail before they'd even begun. Look at them kindly, and then notice this: you're not quite that person anymore. Somewhere in these weeks, in all these small ordinary choices, you quietly became someone who watches a wave and lets it pass. Someone who has hard moments and handles them. Someone who did the very thing they doubted they could. That isn't a trick of motivation or a good mood on a good day. It's the real, accumulated weight of the choices you actually made, one after another. Whoever you were before this, you're becoming someone who doesn't need it the same way. Keep becoming that person. They've been worth every hard hour."},
+  {i:"Today I'll treat this as a foundation, not a finish line.", r:"Thirty days. Whatever mix of steady days and hard ones got you here, you showed up for it, and honestly, that's the whole thing. But this was never really a thirty-day fix, because those don't exist. What you've actually built is a foundation. You know now, not as a theory but from your own lived experience, that a craving is a wave, that it peaks, that it passes, and that you can stand and watch it go. You know your triggers now. You know your exits. You know your reasons. None of that expires tomorrow. So keep the tools, keep counting the days, and be proud of this, properly proud. When you're ready for the next stretch, we'll go further together. This isn't the end of anything. It's the solid ground you get to stand on now."},
+]};
 const LENGTHS = [180, 300, 600];
 const PZ_MSGS = [
   "This wave is already changing.<br>Let it.",
@@ -622,7 +689,7 @@ const PICK_ICONS = ['bolt','eco','menu_book','sports_esports','headphones','loca
 
 /* ============ storage ============ */
 const KEY = 'pako-pause/v1';
-const PERSIST = ['name','types','sessions','onboarded','pause','sound','theme','costPerDrink','currency','checkins','textScale'];
+const PERSIST = ['name','types','sessions','onboarded','pause','sound','theme','costPerDrink','currency','checkins','textScale','jStart','why'];
 let storageOK = true;
 function loadRaw(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ storageOK=false; return null; } }
 function save(){ if(!storageOK)return; try{ const o={}; PERSIST.forEach(k=>o[k]=S[k]); localStorage.setItem(KEY,JSON.stringify(o)); }catch(e){ storageOK=false; } }
@@ -639,6 +706,8 @@ function fresh(){
     costPerDrink:null,     // what one drink costs, for money-saved (null = not set)
     currency:'₦',          // shown before the money-saved figure
     checkins:[],           // ISO dates the person tapped the daily check-in
+    jStart:null,           // ISO date the 30-day journey began (null until first opened)
+    why:'',                // the user's own reason, in their words; resurfaced during a wave and after
     textScale:1,           // accessibility text size: 1, 1.15, or 1.3
   };
 }
@@ -735,6 +804,13 @@ function bestRun(){
   return Math.max(0,best);
 }
 
+/* ============ journey: one intention + one read per calendar day ============ */
+function jStartEnsure(){ if(!S.jStart){ S.jStart=iso(); save(); } return S.jStart; }
+function jRawDay(){ const s=S.jStart||iso(); const day=86400000, a=new Date(s+'T00:00:00'), n=new Date(), t=new Date(n.getFullYear(),n.getMonth(),n.getDate()); return Math.floor((t-a)/day)+1; }
+function journeyDay(){ return Math.max(1, Math.min(JOURNEY_1.days.length, jRawDay())); }
+function journeyOver(){ return !!S.jStart && jRawDay()>JOURNEY_1.days.length; }
+function journeyEntry(d){ return JOURNEY_1.days[(d||journeyDay())-1]; }
+
 /* ============ money saved & daily check-in ============ */
 // money saved is an alcohol-specific idea (cost per drink), so it only applies to people tracking alcohol,
 // and only counts alcohol waves let pass, so a passed sugar or phone craving never reads as a drink not bought
@@ -745,9 +821,44 @@ function fmtMoney(n){ return (S.currency||'₦')+Math.round(n).toLocaleString('e
 function checkedInToday(){ return Array.isArray(S.checkins) && S.checkins.indexOf(iso())>-1; }
 // a once-a-day intention tap; the calm reason to open the app on a day with no craving
 function homeCheckin(){
-  if(checkedInToday()) return `<button class="cin done" data-a="checkin-undo"><span class="mi">${msvg('eco')}</span><span class="ct">Locked in for today.</span></button>`;
-  return `<div class="cin"><div class="ctx"><span class="ct">Daily intention</span><span class="cs">I'll stay in control, no matter the wave today.</span></div>
-    <button class="btn btn-red cinbtn" data-a="checkin">Lock it in</button></div>`;
+  jStartEnsure();
+  if(journeyOver()){
+    const last=JOURNEY_1.days.length;
+    return `<div class="jcard">
+      <div class="jhead"><span class="jday">Done</span><span class="jtag">${esc(JOURNEY_1.name)}</span></div>
+      <div class="jint">You finished the 30 days. This was the foundation, not the finish line.</div>
+      <button class="readlink" data-a="read-day" data-d="${last}"><span class="rt">Reread the last note</span><span class="rc">${IC.arrow}</span></button>
+      <div class="jnext"><span class="jl">${msvg('lock')}</span><span class="jntx"><span class="t">Journey 2</span><span class="s">The next 30 days. Opening soon.</span></span></div>
+    </div>`;
+  }
+  const d=journeyDay(), e=journeyEntry(d), done=checkedInToday();
+  return `<div class="jcard">
+    <div class="jhead"><span class="jday">Day ${d}</span><span class="jtag">Today's intention</span></div>
+    <div class="jint">${esc(e.i)}</div>
+    ${done
+      ? `<button class="jlocked" data-a="checkin-undo"><span class="mi">${msvg('eco')}</span>Locked in for today</button>`
+      : `<button class="btn btn-red jcta" data-a="checkin">Lock it in</button>`}
+    <button class="readlink" data-a="read-day" data-d="${d}"><span class="rt">Today's read</span><span class="rc">${IC.arrow}</span></button>
+  </div>`;
+}
+// a calm full-screen reader for one day's piece
+let readDay=null;
+function ReadView(){
+  const d=readDay||journeyDay(), e=journeyEntry(d), n=JOURNEY_1.days.length;
+  return `<div class="home fade">
+    <div class="hero" style="height:172px">
+      ${heroWaves(84)}
+      <button data-a="go-home" class="rback">${IC.back}</button>
+      <div class="d-head"><div class="d-name" style="font-size:calc(26px * var(--fs,1))">Day ${d}</div><div class="rsub">of ${n} · ${esc(JOURNEY_1.name)}</div></div>
+    </div>
+    <div class="hsheet">
+      <div class="rintent">${esc(e.i)}</div>
+      <p class="rtext">${esc(e.r)}</p>
+      <div style="flex:1;min-height:24px"></div>
+      ${!checkedInToday() && d===journeyDay() && !journeyOver() ? `<button class="btn btn-red" data-a="checkin-home" style="margin-bottom:10px">Lock in today ${IC.arrow}</button>` : ''}
+      <button class="tlink grey" data-a="go-home" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">Back home</button>
+    </div>
+  </div>`;
 }
 // money kept aside; a subtle setup prompt once there's something to show, the figure once cost is set
 function homeMoney(){
@@ -898,7 +1009,7 @@ function csvCell(v){ v=String(v==null?'':v); return /[",\n]/.test(v)?'"'+v.repla
 function buildCSV(){
   const head=['Date','Time','Craving','What set it off','Strength before','Strength after','Minutes waited','Outcome','Notes'];
   const rows=S.sessions.map(x=>{const ty=typeOf(x.type);
-    return [x.date,x.t,ty?ty.label:x.type,x.cause||'',x.s0,x.s1,(x.elapsed/60).toFixed(1),x.outcome==='passed'?'Let it pass':'Acted on it',x.note||''];});
+    return [x.date,x.t,ty?ty.label:x.type,x.cause||'',x.s0,x.s1,(x.elapsed/60).toFixed(1),x.outcome==='passed'?'Let it pass':'Gave in',x.note||''];});
   return [head,...rows].map(r=>r.map(csvCell).join(',')).join('\n');
 }
 function summaryText(){
@@ -942,7 +1053,7 @@ let clockInt=null, breathInt=null, pauseRAF=null;
 function stop(){ if(clockInt){clearInterval(clockInt);clockInt=null} if(breathInt){clearInterval(breathInt);breathInt=null} if(pauseRAF){cancelAnimationFrame(pauseRAF);pauseRAF=null} }
 function go(v){ S.view=v; save(); render(); }
 
-const VIEWS = {onboard:Onboard, home:Home, begin:Begin, pause:PauseView, passed:Passed, acted:Acted, waves:Waves, patterns:Patterns, me:Me, privacy:PrivacyView};
+const VIEWS = {onboard:Onboard, home:Home, begin:Begin, pause:PauseView, passed:Passed, acted:Acted, waves:Waves, patterns:Patterns, me:Me, privacy:PrivacyView, read:ReadView};
 let privReturn='me';
 let lastView=null;
 function render(){
@@ -988,7 +1099,7 @@ function rotStart(){
 /* ============ onboarding ============ */
 // original back-view surfer looking out at the water, drawn in the app palette
 function gazer(){ return `<img class="gazer figday" src="__PAUSE_FIGLIGHT__" alt=""><img class="gazer fignight" src="__PAUSE_FIGNIGHT__" alt="">`; }
-let ob = {step:0, name:'', pick:new Set()};
+let ob = {step:0, name:'', pick:new Set(), why:''};
 function Onboard(){
   if(ob.step===0){
     return `<div class="home">
@@ -1025,6 +1136,17 @@ function Onboard(){
       <div class="tiles">${tiles}
         <button class="tile dashed" data-a="add-type"><span class="ic">${msvg('add')}</span><span class="tile-l">Add your own</span></button>
       </div></div>`;
+  } else if(ob.step===3){
+    body=`<div class="fade ob-namebg">
+      <div class="ob-namebg-top">
+        <h1>Why now?</h1>
+        <p class="body grey" style="margin-top:12px;margin-bottom:2px">In your own words, what's making you do this? We'll bring it back when a wave hits, to remind you.</p>
+        <div style="margin-top:22px">
+          <textarea id="obWhy" class="whybox" maxlength="240" placeholder="I want to be present for my kids. I'm tired of the fog. I want to trust myself again.">${esc(ob.why)}</textarea>
+        </div>
+        <p class="body grey" style="margin-top:12px;font-size:calc(12px * var(--fs,1));opacity:.7">Private to you, on this device. You can skip this or change it later.</p>
+      </div>
+    </div>`;
   } else {
     const picked = S.types.filter(t=>ob.pick.has(t.id));
     body=`<div class="fade" style="margin-top:6vh;padding-bottom:140px">
@@ -1034,9 +1156,9 @@ function Onboard(){
   }
   const canGo = ob.step!==1 || ob.name.trim();
   const canFin = ob.step!==2 || ob.pick.size;
-  const lbl = ob.step===1?'Continue':ob.step===2?'Continue':'Enter Pause';
+  const lbl = ob.step===1?'Continue':ob.step===2?'Continue':ob.step===3?'Continue':'Enter Pause';
   return `<div class="screen ob-flow">
-    <div style="position:absolute;top:22px;left:22px;right:22px" class="steps">${[1,2,3].map(i=>`<div class="${i<=ob.step?'on':''}"></div>`).join('')}</div>
+    <div style="position:absolute;top:22px;left:22px;right:22px" class="steps">${[1,2,3,4].map(i=>`<div class="${i<=ob.step?'on':''}"></div>`).join('')}</div>
     ${body}
     <div class="${ob.step===0?'':'actionbar'}" style="position:fixed;bottom:0;left:0;right:0;max-width:var(--maxw);margin:0 auto;padding:14px 22px 26px">
       ${ob.step===0?`<div style="text-align:center;margin-bottom:14px"><button class="btn-text" data-a="go-privacy" style="font-size:calc(11px * var(--fs,1));letter-spacing:.06em">Your privacy</button></div>`:''}
@@ -1107,7 +1229,7 @@ function Home(){
       <span class="dotmark ${x.outcome==='passed'?'dot-pass':'dot-act'}"></span>
       <span style="flex:1;font-size:calc(15px * var(--fs,1))">${ty?esc(ty.label):esc(x.type)}</span>
       <span class="grey tnum" style="font-size:calc(13px * var(--fs,1))">${x.date===iso()?x.t:niceDate(x.date)}</span>
-      <span class="state ${x.outcome==='passed'?'pass':'act'}">${x.outcome==='passed'?'Passed':'Acted'}</span>
+      <span class="state ${x.outcome==='passed'?'pass':'act'}">${x.outcome==='passed'?'Passed':'Gave in'}</span>
     </div>`;
   }).join('') || `<p class="body grey" style="padding:14px 0;border-top:1px solid var(--faint)">No waves yet. Your first wave will show up here.</p>`;
 
@@ -1212,6 +1334,7 @@ function PauseView(){
       </div>
     </div>
     <p id="pzmsg" class="body grey" style="text-align:center;margin-top:22px;max-width:24em;margin-left:auto;margin-right:auto;transition:opacity .4s ease">${pauseLead(p)[0]}</p>
+    ${S.why?`<p class="whyline">${esc(S.why)}</p>`:''}
 
     <div style="flex:1"></div>
 
@@ -1223,7 +1346,7 @@ function PauseView(){
     </div>
 
     <button class="btn btn-red" data-a="pz-passed">It passed</button>
-    <button class="tlink grey" data-a="pz-acted" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">I acted on it</button>
+    <button class="tlink grey" data-a="pz-acted" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">I gave in</button>
   </div>`;
 }
 
@@ -1237,7 +1360,9 @@ function causeReflect(slip){
   const opts='<option value="" '+(last.cause?'':'selected')+'>Not sure</option>'
     + CAUSES.map(c=>`<option value="${esc(c)}" ${last.cause===c?'selected':''}>${esc(c)}</option>`).join('')
     + `<option value="__other__" ${isOther?'selected':''}>Something else…</option>`;
-  const notes = slip ? `<textarea id="pxnote" class="notebox" maxlength="600" placeholder="Want to say more about it? This stays on your device, just for you.">${esc(last.note||'')}</textarea>` : '';
+  const notePh = slip ? 'What pulled you under, how you felt, whatever you want to keep.' : 'What helped, how it felt, whatever you want to keep.';
+  const notes = `<span class="label ink" style="display:block;margin:22px 0 9px">Write about this wave <span style="font-weight:400;color:var(--mute2);font-size:calc(12px * var(--fs,1));text-transform:none;letter-spacing:0">optional</span></span>
+    <textarea id="pxnote" class="notebox" maxlength="600" placeholder="${notePh}">${esc(last.note||'')}</textarea>`;
   return `<div style="margin-top:20px">
     <span class="label ink" style="display:block;margin-bottom:9px">${q} <span style="font-weight:400;color:var(--mute2);font-size:calc(12px * var(--fs,1));text-transform:none;letter-spacing:0">optional</span></span>
     <div class="selectwrap" style="margin-top:0">
@@ -1284,6 +1409,7 @@ function Passed(){
         ${statTile('s2', S.sessions.filter(x=>x.outcome==='passed').length, 'Waves passed', MOTIF.passed)}
         ${statTile('s3', bestRun(), 'Best run', MOTIF.taken)}
       </div>
+      ${S.why?`<div class="whycard"><span class="whycard-l">This is what you're protecting</span><p class="whycard-q">${esc(S.why)}</p></div>`:''}
       ${causeReflect()}
       <div style="flex:1;min-height:20px"></div>
       ${primary}
@@ -1322,7 +1448,7 @@ function Waves(){
         <span class="grey tnum" style="width:44px;font-size:calc(12px * var(--fs,1))">${x.t}</span>
         <span style="flex:1"><span style="font-size:calc(15px * var(--fs,1))">${ty?esc(ty.label):esc(x.type)}</span>
           ${(x.cause||(x.s0!=null&&x.s1!=null))?`<span class="grey" style="display:block;font-size:calc(12px * var(--fs,1))">${x.cause?esc(x.cause):''}${(x.cause&&x.s0!=null)?' · ':''}${(x.s0!=null&&x.s1!=null)?`${x.s0}→${x.s1}`:''}</span>`:''}${x.note?`<span class="wnote">“${esc(x.note)}”</span>`:''}</span>
-        <span class="state ${x.outcome==='passed'?'pass':'act'}">${x.outcome==='passed'?'Passed':'Acted'}</span></div>`}).join('');
+        <span class="state ${x.outcome==='passed'?'pass':'act'}">${x.outcome==='passed'?'Passed':'Gave in'}</span></div>`}).join('');
     return `<div style="margin-top:22px">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px">
         <h3 style="color:var(--ink);font-weight:700">${niceDate(dt)}</h3>
@@ -1431,7 +1557,7 @@ function Patterns(){
       <div class="pkpi pass"><div class="n">${passPct}%</div><div class="k">Passed</div></div>
     </div>
     <div class="pbdh"><span class="t">Breakdown</span>
-      <span class="legend"><span><i style="background:var(--act)"></i>Passed</span><span><i style="background:var(--slip)"></i>Acted</span></span></div>
+      <span class="legend"><span><i style="background:var(--act)"></i>Passed</span><span><i style="background:var(--slip)"></i>Gave in</span></span></div>
     <div class="pchart" style="height:${plotH+22}px">${gl}<div class="pplot" style="height:${plotH}px">${cols}</div></div>
   </div>`);
 
@@ -1488,7 +1614,7 @@ function PrivacyView(){
     </div>
     <h1 style="margin-top:22px">Your privacy</h1>
     <p class="lede grey" style="margin-top:12px"><em>Pause</em> keeps everything you type on your device. There's no account, and no server storing your entries. What you type stays in your own browser, and it only ever leaves if you choose to send it. The one thing we measure is how many people visit the page, counted anonymously at the hosting layer, which runs no script inside the tool and never sees what you enter.</p>
-    ${pSection('What <em>Pause</em> stores, and where', `It saves your first name (shown only on your home screen), the list of cravings you're working on, and a record of each wave: the craving, how strong it felt before and after, how long you waited, any trigger you choose to add, and whether the craving passed or you acted on it. All of it lives in your browser's own local storage, on the device you're using. Pákó never receives it and keeps no copy.`)}
+    ${pSection('What <em>Pause</em> stores, and where', `It saves your first name (shown only on your home screen), the list of cravings you're working on, and a record of each wave: the craving, how strong it felt before and after, how long you waited, any trigger you choose to add, and whether the craving passed or you gave in. All of it lives in your browser's own local storage, on the device you're using. Pákó never receives it and keeps no copy.`)}
     ${pSection('What <em>Pause</em> never does', `It never creates an account or asks you to log in. It never sends your entries to a server. It runs no analytics, advertising, or third-party tracking scripts inside the tool; the only thing we count is page visits, server-side, described under Hosting. It never asks for your email. And it never sells or shares your data, because it never receives the content of your entries in the first place. Once the page loads its font and icons, it doesn't call out to the internet again.`)}
     ${pSection('Hosting and visit counts', `<em>Pause</em> is a static page hosted on Netlify at pause.pako.health, with no server-side functions, so the tool itself keeps no log of what you do. To deliver the page, Netlify's network handles your browser's request and can see standard technical details such as your IP address and the time of your visit, the same as any website you open. To understand how far <em>Pause</em> reaches, we use Netlify Analytics, which counts visits from those server request logs. It is entirely server-side, so it adds no script to the page, sets no cookies, and does not follow you across sites. It reports only aggregate numbers, such as visits, unique visitors, and which pages load, and it never has access to what you type, which stays on your device and is never sent. Because nothing here sets a cookie, there is still no cookie banner.`)}
     ${pSection('Sharing your own data', `<em>Pause</em> lets you export a copy of your history or share a short summary, for example to give to a coach or a doctor. That copy is made on your device, and it only goes somewhere if you send it. The choice is entirely yours.`)}
@@ -1511,6 +1637,11 @@ function Me(){
     <div style="margin-top:4px">
       <span class="label ink" style="margin-bottom:8px">Your name</span>
       <input type="text" id="meName" value="${esc(S.name)}" maxlength="24" placeholder="Your name" autocomplete="off">
+    </div>
+    <div style="margin-top:30px">
+      <span class="label ink" style="margin-bottom:8px;display:block">Your reason</span>
+      <p class="body grey" style="font-size:calc(13px * var(--fs,1));margin-bottom:10px">In your own words, why you're doing this. We bring it back when a wave hits.</p>
+      <textarea id="meWhy" class="notebox" maxlength="240" placeholder="I want to be present for my kids. I'm tired of the fog. I want to trust myself again.">${esc(S.why||'')}</textarea>
     </div>
     <div style="margin-top:30px;display:flex;align-items:center;justify-content:space-between">
       <span class="label ink">Dark mode</span>
@@ -1969,8 +2100,12 @@ function initDial(){
 function wire(){
   const on=document.getElementById('obName');
   if(on) on.addEventListener('input',e=>{ob.name=e.target.value; const b=document.querySelector('[data-a=ob-next]'); if(b)b.disabled=!ob.name.trim();});
+  const ow=document.getElementById('obWhy');
+  if(ow) ow.addEventListener('input',e=>{ob.why=e.target.value;});
   const mn=document.getElementById('meName');
   if(mn) mn.addEventListener('input',e=>{S.name=e.target.value; save();});
+  const mw=document.getElementById('meWhy');
+  if(mw) mw.addEventListener('input',e=>{S.why=e.target.value; save();});
   const mcost=document.getElementById('meCost');
   if(mcost) mcost.addEventListener('input',e=>{ const v=parseFloat(e.target.value); S.costPerDrink=(isFinite(v)&&v>0)?v:null; save(); });
   const mcur=document.getElementById('meCurrency');
@@ -2012,15 +2147,16 @@ app.addEventListener('click',e=>{
       ob.pick.has(id)?ob.pick.delete(id):ob.pick.add(id);
       el.classList.toggle('on', ob.pick.has(id));
       const nb=document.querySelector('[data-a=ob-next]');
-      if(nb){ nb.disabled=ob.pick.size===0; nb.innerHTML='Start with '+(ob.pick.size||'…')+' '+IC.arrow; }
+      if(nb){ nb.disabled=ob.pick.size===0; nb.innerHTML='Continue '+IC.arrow; }
       break; }
     case'ob-back': ob.step--; render(); break;
     case'ob-next':
-      if(ob.step<3){ ob.step++; render(); }
+      if(ob.step<4){ ob.step++; render(); }
       else{
         const picked=S.types.filter(t=>ob.pick.has(t.id));
         S.name=ob.name.trim()||'there';
         if(picked.length) S.types=picked;                 // keep only the cravings they chose
+        S.why=ob.why.trim();                              // their reason, resurfaced later
         S.onboarded=true; S.view='home'; save(); render();
       }
       break;
@@ -2040,6 +2176,8 @@ app.addEventListener('click',e=>{
     case'nav': go(el.dataset.v); break;
     case'checkin':{ if(!Array.isArray(S.checkins)) S.checkins=[]; if(!checkedInToday()) S.checkins.push(iso()); S.checkins=S.checkins.slice(-400); save(); render(); break; }
     case'checkin-undo':{ if(Array.isArray(S.checkins)) S.checkins=S.checkins.filter(d=>d!==iso()); save(); render(); break; }
+    case'read-day':{ readDay=+el.dataset.d||journeyDay(); go('read'); break; }
+    case'checkin-home':{ if(!Array.isArray(S.checkins)) S.checkins=[]; if(!checkedInToday()) S.checkins.push(iso()); S.checkins=S.checkins.slice(-400); save(); go('home'); break; }
     case'begin': S.draft=null; go('begin'); break;
     case'go-home': go('home'); break;
     case'go-waves': go('waves'); break;
