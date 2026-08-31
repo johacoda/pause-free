@@ -323,6 +323,14 @@
   .pracn{display:block;font-weight:700;color:var(--ink);font-size:calc(15px * var(--fs,1))}
   .pracs{display:block;margin-top:1px;font-weight:600;color:var(--actx);font-size:calc(11.5px * var(--fs,1));letter-spacing:.02em}
   .pracnote{display:block;margin-top:5px;color:var(--mute2);font-size:calc(12.5px * var(--fs,1));line-height:1.4}
+  .gnum{font-size:calc(64px * var(--fs,1));font-weight:800;line-height:1;color:var(--purple)}
+  .dark .gnum{color:#cdc0f2}
+  .gdots{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:26px}
+  .gdot{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--faint2);background:var(--white);
+    color:var(--act);font-size:calc(20px * var(--fs,1));font-weight:700;display:flex;align-items:center;justify-content:center;transition:transform .12s ease,background .15s ease,border-color .15s ease}
+  .gdot.on{background:var(--act);border-color:var(--act);color:#fff}
+  .gdot:active{transform:scale(.92)}
+  .gsettled{font-size:calc(22px * var(--fs,1));font-weight:700;color:var(--ink)}
 
   /* duration segmented */
   .seg{display:flex;gap:8px}
@@ -1353,13 +1361,57 @@ ${showPicker?`
 /* ============ pause (the wave) ============ */
 function PauseView(){
   const p=S.pause; const ty=typeOf(p.typeId)||{label:'this',em:'🌊'};
-  return `<div class="screen pausescreen" style="padding-bottom:0">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding-top:16px">
+  const header = `<div style="display:flex;align-items:center;justify-content:space-between;padding-top:16px">
       <button data-a="pz-quit" class="grey">${IC.close}</button>
       <span class="label" style="letter-spacing:.16em;display:inline-flex;align-items:center;gap:6px">${msvg(ty.icon,'ic16')} ${esc(ty.label)}</span>
       <button data-a="sound-toggle" id="soundbtn" aria-label="Sound" style="color:${S.sound?'var(--actx)':'var(--mute2)'}">${msvg(S.sound?'volume_up':'volume_off','nav24')}</button>
+    </div>`;
+  const pill = `<div style="text-align:center;margin-top:10px">
+      <button class="practicepill" data-a="practice-pick">${esc(practiceLabel())} ${msvg('unfold_more','ic16')}</button>
+    </div>`;
+  const strengthBox = (shown)=>`<div id="strengthbox" class="${shown?'show':''}" style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+        <span class="label ink">How strong is it now?</span><span class="grey tnum" style="font-size:calc(13px * var(--fs,1))"><span id="s1val">${p.s1!=null?p.s1:p.s0}</span> / 10</span>
+      </div>
+      <input type="range" class="range calm" id="pzslider" min="1" max="10" step="1" value="${p.s1!=null?p.s1:p.s0}">
     </div>
+    <button class="btn btn-red" data-a="pz-passed">It passed</button>
+    <button class="tlink grey" data-a="pz-acted" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">I gave in</button>`;
 
+  // grounding mode: a self-paced 5-4-3-2-1 walk, no countdown, then the same close
+  if(isGround()){
+    if(!p.g) p.g={step:0, filled:[0,0,0,0,0], done:false};
+    const g=p.g;
+    if(g.done){
+      return `<div class="screen pausescreen" style="padding-bottom:0">
+        ${header}
+        <div style="text-align:center;margin-top:26px"><div class="gsettled">You're back in the room.</div></div>
+        ${pill}
+        <div style="flex:1;min-height:20px"></div>
+        ${strengthBox(true)}
+      </div>`;
+    }
+    const st=GROUND.steps[g.step], filled=g.filled[g.step]||0, last=g.step===GROUND.steps.length-1;
+    const dots = Array.from({length:st.n}).map((_,i)=>`<button class="gdot ${i<filled?'on':''}" data-a="g-dot" data-i="${i}">${i<filled?'✓':''}</button>`).join('');
+    return `<div class="screen pausescreen" style="padding-bottom:0">
+      ${header}
+      <div class="steps" style="margin-top:16px">${GROUND.steps.map((s,i)=>`<div class="${i<=g.step?'on':''}"></div>`).join('')}</div>
+      <div style="margin-top:6vh;text-align:center">
+        <div class="gnum">${st.n}</div>
+        <h2 class="qz" style="margin-top:8px">${st.prompt}</h2>
+        <p class="body grey" style="margin:10px auto 0;max-width:22em">${st.hint}</p>
+      </div>
+      <div class="gdots">${dots}</div>
+      <p class="grey" style="text-align:center;font-size:calc(11.5px * var(--fs,1));margin-top:12px">Tap a circle for each one as you go.</p>
+      ${pill}
+      <div style="flex:1;min-height:20px"></div>
+      <button class="btn btn-red" data-a="g-next" ${filled>=st.n?'':'disabled'} style="margin-bottom:max(20px,env(safe-area-inset-bottom))">${last?'Done':'Next'} ${IC.arrow}</button>
+    </div>`;
+  }
+
+  // breathing mode
+  return `<div class="screen pausescreen" style="padding-bottom:0">
+    ${header}
     <div style="text-align:center;margin-top:14px">
       <span id="pzclock" class="grey tnum" style="font-size:calc(13px * var(--fs,1));letter-spacing:.02em">${clock(leftOf(p.endTime))} left</span>
     </div>
@@ -1371,23 +1423,13 @@ function PauseView(){
         <div id="breathcount" class="tnum">1</div>
       </div>
     </div>
-    <div style="text-align:center;margin-top:10px">
-      <button class="practicepill" data-a="practice-pick">${esc(patOf(S.pattern).name)} ${msvg('unfold_more','ic16')}</button>
-    </div>
+    ${pill}
     <p id="pzmsg" class="body grey" style="text-align:center;margin-top:22px;max-width:24em;margin-left:auto;margin-right:auto;transition:opacity .4s ease">${pauseLead(p)[0]}</p>
     ${S.why?`<p class="whyline">${esc(S.why)}</p>`:''}
 
     <div style="flex:1"></div>
 
-    <div id="strengthbox" style="margin-bottom:16px">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
-        <span class="label ink">How strong is it now?</span><span class="grey tnum" style="font-size:calc(13px * var(--fs,1))"><span id="s1val">${p.s1!=null?p.s1:p.s0}</span> / 10</span>
-      </div>
-      <input type="range" class="range calm" id="pzslider" min="1" max="10" step="1" value="${p.s1!=null?p.s1:p.s0}">
-    </div>
-
-    <button class="btn btn-red" data-a="pz-passed">It passed</button>
-    <button class="tlink grey" data-a="pz-acted" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">I gave in</button>
+    ${strengthBox(false)}
   </div>`;
 }
 
@@ -1701,7 +1743,7 @@ function Me(){
     <div style="margin-top:30px">
       <span class="label ink" style="margin-bottom:6px;display:block">Breathing</span>
       <p class="body grey" style="font-size:calc(13px * var(--fs,1));margin-bottom:12px">The breath the wave screen opens with. You can also switch it mid-wave.</p>
-      <div class="praclist">${PATTERNS.map(p=>`<button class="pracopt ${p.id===(S.pattern||'exhale')?'on':''}" data-a="prac-set" data-id="${p.id}">
+      <div class="praclist">${PATTERNS.concat([GROUND]).map(p=>`<button class="pracopt ${p.id===(S.pattern||'exhale')?'on':''}" data-a="prac-set" data-id="${p.id}">
         <span class="pracn">${esc(p.name)}</span><span class="pracs">${esc(p.sub)}</span>
         <span class="pracnote">${esc(p.note)}</span></button>`).join('')}</div>
     </div>
@@ -1811,7 +1853,8 @@ function addTypeModal(){
 // the breathing picker, opened from the wave screen. Choosing sets the default (persisted)
 // and switches the live wave straight away.
 function practiceSheet(){
-  const list=PATTERNS.map(p=>`<button class="pracopt ${p.id===S.pattern?'on':''}" data-a="prac-live" data-id="${p.id}">
+  const opts=PATTERNS.concat([GROUND]);
+  const list=opts.map(p=>`<button class="pracopt ${p.id===S.pattern?'on':''}" data-a="prac-live" data-id="${p.id}">
     <span class="pracn">${esc(p.name)}</span><span class="pracs">${esc(p.sub)}</span>
     <span class="pracnote">${esc(p.note)}</span></button>`).join('');
   const el=document.createElement('div');
@@ -1824,7 +1867,7 @@ function practiceSheet(){
   document.getElementById('frame').appendChild(el);
   el.addEventListener('click',ev=>{
     const opt=ev.target.closest('[data-a=prac-live]');
-    if(opt){ S.pattern=opt.dataset.id; save(); el.remove(); render(); return; }
+    if(opt){ setPattern(opt.dataset.id); el.remove(); render(); return; }
     if(ev.target.closest('[data-a=prac-close]')) el.remove();
   });
 }
@@ -1882,6 +1925,26 @@ function patternNow(now){
   else if(kind==='hold2') size=0;
   else size=1-f;
   return {size, kind, count:Math.max(1,Math.ceil(dur-within))};
+}
+// 5-4-3-2-1 grounding: a self-paced walk back into the room, offered inside the wave alongside
+// the breathing patterns. Chosen with S.pattern==='ground'.
+const GROUND={ id:'ground', name:'5-4-3-2-1', sub:'A slow walk back into the room',
+  note:"Name what's around you, counting down from five. Good for when your head is racing.",
+  steps:[
+    {n:5, prompt:'things you can see.',   hint:'Anything at all. The floor. A wire. A mark on the wall.'},
+    {n:4, prompt:'things you can feel.',  hint:'Your feet in your shoes. The chair. Air on your arms.'},
+    {n:3, prompt:'things you can hear.',  hint:'Traffic outside. A fan. Your own breathing.'},
+    {n:2, prompt:'things you can smell.', hint:"If you can't smell anything, name two smells you like."},
+    {n:1, prompt:'thing you can taste.',  hint:'Tea, toothpaste, or just your own mouth.'} ] };
+function isGround(){ return S.pattern==='ground'; }
+function practiceLabel(){ return isGround() ? GROUND.name : patOf(S.pattern).name; }
+// switching practice: if we leave grounding for a breathing pattern, restart the countdown
+// (it was set aside during grounding) so the wave has a fresh clock to run down.
+function setPattern(id){
+  const wasGround=isGround();
+  S.pattern=id;
+  if(wasGround && id!=='ground' && S.pause){ S.pause.endTime=Date.now()+S.pause.len*1000; }
+  save();
 }
 function _osc(ctx,m,f,type,g0){ const o=ctx.createOscillator(); o.type=type||'sine'; o.frequency.value=f; const g=ctx.createGain(); g.gain.value=g0; o.connect(g); g.connect(m); o.start(); return {o,g}; }
 function _noise(ctx){ const b=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate); const d=b.getChannelData(0); for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1; const s=ctx.createBufferSource(); s.buffer=b; s.loop=true; return s; }
@@ -2089,6 +2152,8 @@ function seaSync(){ if(S.sound && audioUnlocked){ if(!SEA) seaStart(); else seaL
 function runPause(){
   const p=S.pause; if(!p){ go('home'); return; }
   if(S.sound) soundStart();
+  // grounding is self-paced with no countdown: keep the ambient sound, skip the timer/ring loop
+  if(isGround()){ return; }
   waterInit();
   const ring=document.getElementById('bring'), bw=document.getElementById('breathword'), bc=document.getElementById('breathcount');
   if(S.sound){ const sb=document.getElementById('soundbtn'); if(sb){ sb.classList.add('nudge'); setTimeout(()=>{ if(sb) sb.classList.remove('nudge'); },3300); } }
@@ -2117,7 +2182,7 @@ function runPause(){
   frame();
   document.addEventListener('visibilitychange',onVis);
 }
-function onVis(){ if(document.visibilityState==='visible' && S.view==='pause'){
+function onVis(){ if(document.visibilityState==='visible' && S.view==='pause' && !isGround()){
   if(leftOf(S.pause?.endTime)<=0){ recordPause('passed'); go('passed'); } } }
 
 /* ============ input wiring ============ */
@@ -2277,7 +2342,9 @@ app.addEventListener('click',e=>{
     case'read-day':{ readDay=+el.dataset.d||journeyDay(); go('read'); break; }
     case'checkin-home':{ if(!Array.isArray(S.checkins)) S.checkins=[]; if(!checkedInToday()) S.checkins.push(iso()); S.checkins=S.checkins.slice(-400); save(); go('home'); break; }
     case'practice-pick': practiceSheet(); break;
-    case'prac-set':{ S.pattern=id; save(); render(); break; }   // set default from Settings
+    case'prac-set':{ setPattern(id); render(); break; }   // set default from Settings
+    case'g-dot':{ if(S.pause&&S.pause.g){ const st=GROUND.steps[S.pause.g.step]; let v=(+el.dataset.i)+1; if(S.pause.g.filled[S.pause.g.step]===v) v-=1; S.pause.g.filled[S.pause.g.step]=Math.min(st.n,Math.max(0,v)); save(); render(); } break; }
+    case'g-next':{ if(S.pause&&S.pause.g){ const g=S.pause.g; if(g.step>=GROUND.steps.length-1){ g.done=true; } else { g.step++; } save(); render(); } break; }
     case'begin': S.draft=null; go('begin'); break;
     case'go-home': go('home'); break;
     case'go-waves': go('waves'); break;
