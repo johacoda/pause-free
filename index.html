@@ -807,7 +807,8 @@ function recentSlip(){
 }
 // the line under the greeting; softens for a day or two after a slip, then returns to the default
 function heroSub(){
-  return recentSlip() ? 'A slip is one wave, not the tide.' : 'Every craving passes if you give it time.';
+  // glue the closing phrase so the line breaks sooner and the last word is never left orphaned
+  return recentSlip() ? 'A slip is one wave,<br>not the tide.' : 'Every craving passes<br>if you give it time.';
 }
 function partOfDay(h){ return h<5?'Night':h<12?'Morning':h<17?'Afternoon':h<22?'Evening':'Night'; }
 
