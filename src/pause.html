@@ -175,7 +175,7 @@
   .dark .ob-bg.figday{display:none}
   .ob-fig{position:absolute;left:50%;transform:translateX(-50%);bottom:0;width:128%;height:auto;z-index:0}
   .ob-namebg-top{position:relative;z-index:2}
-  .hero-title{font-size:calc(58px * var(--fs,1));font-weight:300;line-height:.98;letter-spacing:-.03em;color:#FAFAFA;margin-top:22px}
+  .hero-title{font-size:calc(58px * var(--fs,1));font-weight:300;line-height:.98;letter-spacing:-.03em;color:#FAFAFA;margin-top:22px;min-height:calc(58px * var(--fs,1) * 1.96)}
   .hero-title .wv{font-weight:inherit;font-style:normal}
   .rotline{display:inline-block;transition:opacity .9s ease-in-out}
   .rotline.fade{opacity:0}
@@ -1137,7 +1137,8 @@ function render(){
   if(document.querySelector('.journey[data-ms]')) msWire();
 }
 /* gentle rotating affirmation on the welcome headline */
-const CRAVE_LINES = ['is a <span class="wv">wave</span>','will pass',"isn't you"];
+// the welcome headline opens on "Welcome." then fades into the craving lines and cycles them
+const WELCOME_LINES = ['Welcome.','A craving<br>is a <span class="wv">wave</span>','A craving<br>will pass',"A craving<br>isn't you"];
 let rotTimer=null, rotIdx=0;
 function rotStop(){ if(rotTimer){ clearInterval(rotTimer); rotTimer=null; } }
 function rotStart(){
@@ -1149,8 +1150,8 @@ function rotStart(){
     // compositor-driven opacity fade, unaffected by the wave rAF on the main thread
     const out=el.animate([{opacity:1},{opacity:0}],{duration:650,easing:'ease-in',fill:'forwards'});
     out.onfinish=()=>{
-      rotIdx=(rotIdx+1)%CRAVE_LINES.length;
-      el.innerHTML=CRAVE_LINES[rotIdx];
+      rotIdx = rotIdx+1 >= WELCOME_LINES.length ? 1 : rotIdx+1;   // Welcome shows once, then cycle the craving lines
+      el.innerHTML=WELCOME_LINES[rotIdx];
       el.animate([{opacity:0},{opacity:1}],{duration:900,easing:'ease-out',fill:'forwards'});
     };
   }, 4600);
@@ -1166,12 +1167,10 @@ function Onboard(){
       <div class="hero hero-w hero-welcome">
         <div class="hero-copy">
           <img class="hero-mark" src="__PAUSE_SCRIPT__" alt="Pause">
-          <div class="hero-eyebrow" style="margin-top:6px">Welcome</div>
-          <div class="hero-title" style="margin-top:14px">A craving<br><span id="rotline" class="rotline">is a <span class="wv">wave</span></span></div>
+          <div class="hero-title" style="margin-top:20px"><span id="rotline" class="rotline">Welcome.</span></div>
         </div>
       </div>
       <div class="hsheet welcome-sheet">
-        <p class="w-sub">Watch it rise and pass</p>
         <button class="btn btn-red" data-a="ob-next">Get started ${IC.arrow}</button>
         <button class="btn-text" data-a="go-privacy" style="margin-top:16px;font-size:calc(11px * var(--fs,1));letter-spacing:.08em">Your privacy</button>
       </div>
