@@ -1312,7 +1312,7 @@ function Home(){
       </div>
     </div>
     <div class="hsheet">
-      ${homeCheckin()}
+      ${S.sessions.length ? '' : `<div class="pcard" style="margin-bottom:16px"><div class="pins"><span class="ic">${msvg('waves')}</span><span class="tx"><span class="t">How Pause works</span><span class="s">When a craving hits, tap Watch a wave below. Set a short timer, then breathe and watch the urge rise and pass. It fades on its own, whether or not you feed it.</span></span></div></div>`}${homeCheckin()}
       <div class="stats">
         ${statTile('s1', calmDays(), 'Steady days', MOTIF.steady)}
         ${statTile('s2', passed, 'Waves passed', MOTIF.passed)}
@@ -1692,6 +1692,7 @@ function Patterns(){
   </div>`);
 
   parts.push(msInsightCard());
+  if(n && !enough){ parts.push(`<div class="pcard"><div class="pins"><span class="ic">${msvg('schedule')}</span><span class="tx"><span class="t">A little more to go</span><span class="s">After ${MIN_INSIGHT} waves, your triggers and the times of day they hit show up here. You're at ${n}.</span></span></div></div>`); }
 
   if(enough){
     /* time of day, all-time */
@@ -2488,5 +2489,12 @@ document.addEventListener('pointerdown', function unlockAudio(){
 if(document.documentElement.classList.contains('app-installed')){ const sp=document.getElementById('splash'); if(sp) sp.remove(); }
 else setTimeout(()=>{ const sp=document.getElementById('splash'); if(sp){ sp.classList.add('gone'); setTimeout(()=>{ sp.remove(); if(document.querySelector('.hero-welcome')) welcomeFall(); },550); } }, 1150);
 </script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("/sw.js").catch(function () {});
+      });
+    }
+  </script>
 </body>
 </html>
