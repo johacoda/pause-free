@@ -160,11 +160,11 @@
   .dark .fignight{display:block}
   .hero-eyebrow{font-size:calc(12px * var(--fs,1));font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#c9c1e0}
   .hero-mark{display:block;margin:0 auto 4px;width:94px;height:auto}
-  .welcome-min{display:flex;flex-direction:column;min-height:100%}
-  .welcome-copy{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 28px}
+  .welcome-min{display:flex;flex-direction:column;min-height:100%;position:relative;overflow:hidden}
+  .welcome-copy{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 28px;position:relative;z-index:1}
   .welcome-copy .hero-mark{width:94px;height:auto;display:block;margin:0 auto 10px}
   .welcome-promise{font-size:calc(40px * var(--fs,1));font-weight:300;line-height:1.14;letter-spacing:-.02em;color:#FAFAFA;margin-top:14px;max-width:12em}
-  .welcome-cta{flex:0 0 auto;padding:0 22px calc(30px + env(safe-area-inset-bottom,0))}
+  .welcome-cta{flex:0 0 auto;padding:0 22px calc(30px + env(safe-area-inset-bottom,0));position:relative;z-index:1}
   .btn-pill{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:56px;border-radius:999px;background:transparent;color:#FAFAFA;border:1.5px solid rgba(250,250,250,.65);font-weight:700;font-size:calc(16px * var(--fs,1));font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .15s ease,border-color .15s ease,color .15s ease}
   .btn-pill:active{background:var(--act);border-color:var(--act);color:#fff}
   .ob-illus{width:190px;height:auto;display:block;margin:0 auto}
@@ -302,6 +302,34 @@
     border:1px solid var(--faint2);border-radius:10px;padding:13px 40px 13px 14px;-webkit-appearance:none;appearance:none;outline:none}
   .select:focus{border-color:var(--purple)}
   .select.placeholder{color:var(--mute2)}
+  .grp{background:var(--grey);border-radius:14px;padding:0 16px;margin-top:8px}
+  .grow{padding:15px 0;border-bottom:1px solid var(--faint)}
+  .grow:last-child{border-bottom:none}
+  .grow .sl,.swrow .sl{font-size:calc(15px * var(--fs,1));font-weight:600;color:var(--ink);display:block}
+  .grow .ss,.swrow .ss{font-size:calc(12px * var(--fs,1));color:var(--mute);display:block;margin-top:2px}
+  .grp .swrow{padding:15px 0}
+  .grp .grow>input,.grp .grow>textarea{border:none;padding:0;background:transparent;width:100%;font-family:inherit}
+  .swrow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .swrow>span{flex:1;min-width:0}
+  .sw{position:relative;flex:none;width:50px;height:30px;border-radius:999px;padding:0;background:var(--faint2);border:none;cursor:pointer;transition:background .16s}
+  .sw.on{background:var(--purple)}
+  .sw::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .16s}
+  .sw.on::after{transform:translateX(20px)}
+  .fsrow{display:flex;align-items:center;gap:14px;margin-top:12px}
+  .fsrow .a{color:var(--mute2);font-weight:800;line-height:1}
+  .fsrow .range{margin:0}
+  .pair{display:flex;gap:10px}
+  .pair>.btn{flex:1;gap:8px}
+  .wheelwrap{position:relative;margin-top:12px}
+  .wsel{position:absolute;left:0;right:0;top:33.3333%;height:33.3333%;pointer-events:none;border-top:1px solid var(--faint2);border-bottom:1px solid var(--faint2);background:var(--accent-lt);border-radius:10px}
+  .wheel{height:calc(198px * var(--fs,1));overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior:contain;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 30%,#000 70%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 30%,#000 70%,transparent 100%)}
+  .wheel::-webkit-scrollbar{display:none}
+  .wheel .wpad{height:calc(66px * var(--fs,1))}
+  .wi{height:calc(66px * var(--fs,1));scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:.34;transition:opacity .16s;cursor:pointer}
+  .wi.on{opacity:1}
+  .wi .wl{font-size:calc(17px * var(--fs,1));font-weight:700;color:var(--ink);line-height:1.2}
+  .wi.on .wl{color:var(--purple)}
+  .wi .ws{font-size:calc(13px * var(--fs,1));color:var(--mute);margin-top:2px}
   .notebox{width:100%;margin-top:8px;font-family:inherit;font-size:calc(15px * var(--fs,1));font-weight:500;color:var(--ink);background:var(--white);
     border:1px solid var(--faint2);border-radius:10px;padding:12px 14px;line-height:1.45;resize:vertical;min-height:78px;outline:none}
   .notebox:focus{border-color:var(--purple)}
@@ -1176,6 +1204,7 @@ let ob = {step:0, name:'', pick:new Set(), why:''};
 function Onboard(){
   if(ob.step===0){
     return `<div class="home welcome-min">
+        ${heroWaves(360)}
       <div class="welcome-copy">
         <img class="hero-mark" src="__PAUSE_SCRIPT__" alt="Pause">
         <h1 class="welcome-promise">This is how you beat those cravings for good.</h1>
@@ -1762,96 +1791,71 @@ function PrivacyView(){
 }
 
 /* ============ me / settings ============ */
+const TSVALS=[0.9,1,1.15,1.3], TSNAMES=['Small','Default','Large','Larger'];
+function tsIndex(){ const cur=S.textScale||1; let best=1,d=9; for(let i=0;i<TSVALS.length;i++){ const g=Math.abs(cur-TSVALS[i]); if(g<d){d=g;best=i;} } return best; }
+function swRow(label, sub, on, act){ return `<div class="swrow"><span><span class="sl">${esc(label)}</span>${sub?`<span class="ss">${esc(sub)}</span>`:''}</span><button class="sw ${on?'on':''}" data-a="${act}" role="switch" aria-checked="${on?'true':'false'}" aria-label="${esc(label)}"></button></div>`; }
+function patNote(id){ const q=(id==='ground')?GROUND:patOf(id); return (q&&q.note)||''; }
+function wheelHTML(id, items, cur){ const body=items.map(it=>`<div class="wi ${it.id===cur?'on':''}" data-id="${it.id}"><span class="wl">${esc(it.name)}</span>${it.sub?`<span class="ws">${esc(it.sub)}</span>`:''}</div>`).join(''); return `<div class="wheelwrap"><div class="wsel"></div><div class="wheel" id="${id}"><div class="wpad"></div>${body}<div class="wpad"></div></div></div>`; }
+function initWheel(id, list, cur, onPick){ const w=document.getElementById(id); if(!w) return; const items=w.querySelectorAll('.wi'); if(!items.length) return; const ih=items[0].offsetHeight; if(!ih) return; let idx=0; for(let i=0;i<list.length;i++) if(list[i].id===cur) idx=i; const mark=k=>{ for(let j=0;j<items.length;j++) items[j].classList.toggle('on', j===k); }; w.scrollTop=idx*ih; mark(idx); let last=idx, raf=null; w.addEventListener('scroll', ()=>{ if(raf) return; raf=requestAnimationFrame(()=>{ raf=null; let k=Math.round(w.scrollTop/ih); if(k<0)k=0; if(k>list.length-1)k=list.length-1; if(k!==last){ last=k; mark(k); onPick(list[k]); } }); }); items.forEach((it,i)=>it.addEventListener('click',()=>{ w.scrollTo({top:i*ih, behavior:'smooth'}); })); }
+function fillRange(el){ const mn=+el.min,mx=+el.max,v=+el.value,pct=(v-mn)/(mx-mn)*100; el.style.background=`linear-gradient(to right,var(--purple) ${pct}%,var(--faint2) ${pct}%)`; }
 function Me(){
-  const tiles=S.types.map(t=>{const on=true; // all listed are tracked; allow remove
-    return `<button class="tile on" data-a="me-untrack" data-id="${t.id}"><span class="ic">${msvg(t.icon)}</span>
-      <span class="tile-l">${esc(t.label)}</span><span style="color:rgba(255,255,255,.6);font-size:calc(18px * var(--fs,1))">×</span></button>`}).join('');
+  const tiles=S.types.map(t=>`<button class="tile on" data-a="me-untrack" data-id="${t.id}"><span class="ic">${msvg(t.icon)}</span><span class="tile-l">${esc(t.label)}</span><span style="color:rgba(255,255,255,.6);font-size:calc(18px * var(--fs,1))">×</span></button>`).join('');
+  const practices=PATTERNS.concat([GROUND]);
   return `<div class="home">
     ${navHero('Settings')}
     <div class="hsheet">
-    <div style="margin-top:4px">
-      <span class="label ink" style="margin-bottom:8px">Your name</span>
-      <input type="text" id="meName" value="${esc(S.name)}" maxlength="24" placeholder="Your name" autocomplete="off">
+    <span class="label ink" style="display:block">You</span>
+    <div class="grp">
+      <div class="grow"><span class="sl">Your name</span>
+        <input type="text" id="meName" value="${esc(S.name)}" maxlength="24" placeholder="Your name" autocomplete="off" style="margin-top:8px"></div>
+      <div class="grow"><span class="sl">Your reason</span>
+        <span class="ss">Why you're doing this. We bring it back when a wave hits.</span>
+        <textarea id="meWhy" class="notebox" maxlength="240" placeholder="I want to be present for my kids. I'm tired of the fog." style="margin-top:10px">${esc(S.why||'')}</textarea></div>
     </div>
-    <div style="margin-top:30px">
-      <span class="label ink" style="margin-bottom:8px;display:block">Your reason</span>
-      <p class="body grey" style="font-size:calc(13px * var(--fs,1));margin-bottom:10px">In your own words, why you're doing this. We bring it back when a wave hits.</p>
-      <textarea id="meWhy" class="notebox" maxlength="240" placeholder="I want to be present for my kids. I'm tired of the fog. I want to trust myself again.">${esc(S.why||'')}</textarea>
+    <span class="label ink" style="display:block;margin-top:26px">Appearance</span>
+    <div class="grp">
+      ${swRow('Dark mode','Easier at night.', S.theme==='dark', 'theme-toggle')}
+      <div class="grow"><span class="sl">Text size</span><span class="ss" id="tsname">${TSNAMES[tsIndex()]}</span>
+        <div class="fsrow"><span class="a" style="font-size:calc(13px * var(--fs,1))">A</span>
+          <input type="range" class="range" id="tsslider" min="0" max="${TSVALS.length-1}" step="1" value="${tsIndex()}">
+          <span class="a" style="font-size:calc(22px * var(--fs,1))">A</span></div></div>
     </div>
-    <div style="margin-top:30px;display:flex;align-items:center;justify-content:space-between">
-      <span class="label ink">Dark mode</span>
-      <button class="themesw ${S.theme==='dark'?'on':''}" data-a="theme-toggle" aria-label="Toggle dark mode">
-        <span class="knob">${S.theme==='dark'?msvg('dark_mode','ic16'):msvg('light_mode','ic16')}</span>
-      </button>
+    <span class="label ink" style="display:block;margin-top:26px">During a session</span>
+    <div class="grp">
+      <div class="grow"><span class="sl">Breathwork and grounding</span>
+        <span class="ss">What the wave opens with. You can switch mid-wave too.</span>
+        <div class="selectwrap"><select class="select" id="mePractice" aria-label="Default practice">${practices.map(p=>`<option value="${p.id}" ${p.id===(S.pattern||'exhale')?'selected':''}>${esc(p.name)}</option>`).join('')}</select><span class="chev">${msvg('expand_more')}</span></div></div>
+      ${swRow('Sound','A soft tone on each turn of the breath.', S.sound, 'sound-toggle')}
     </div>
-
-    <div style="margin-top:30px">
-      <span class="label ink" style="margin-bottom:12px;display:block">Text size</span>
-      <div class="tsize">
-        ${[['Default',1],['Large',1.15],['Larger',1.3]].map(([lab,v])=>`<button class="${(S.textScale||1)===v?'on':''}" data-a="text-size" data-v="${v}"><span class="a">A</span>${lab}</button>`).join('')}
-      </div>
-    </div>
-
-    <div style="margin-top:30px">
-      <span class="label ink" style="margin-bottom:6px;display:block">Breathwork and grounding</span>
-      <p class="body grey" style="font-size:calc(13px * var(--fs,1));margin-bottom:12px">What the wave screen opens with. You can also switch it mid-wave.</p>
-      <div class="praclist">${PATTERNS.concat([GROUND]).map(p=>`<button class="pracopt ${p.id===(S.pattern||'exhale')?'on':''}" data-a="prac-set" data-id="${p.id}">
-        <span class="pracn">${esc(p.name)}</span><span class="pracs">${esc(p.sub)}</span>
-        <span class="pracnote">${esc(p.note)}</span></button>`).join('')}</div>
-    </div>
-
-    ${tracksAlcohol()?`<div style="margin-top:30px">
-      <span class="label ink" style="margin-bottom:8px;display:block">What a drink costs you</span>
-      <p class="body grey" style="font-size:calc(13px * var(--fs,1));margin-bottom:12px">Set this to see the money you keep with every wave you let pass.</p>
-      <div class="costrow">
-        <div class="selectwrap" style="margin-top:0;width:96px;flex:none">
-          <select class="select" id="meCurrency">${['₦','$','£','€','R'].map(c=>`<option value="${c}" ${(S.currency||'₦')===c?'selected':''}>${c}</option>`).join('')}</select>
-          <span class="chev">${msvg('expand_more')}</span>
-        </div>
-        <input type="number" inputmode="numeric" id="meCost" class="select" style="flex:1" min="0" step="1" placeholder="e.g. 2500" value="${S.costPerDrink!=null?S.costPerDrink:''}">
-      </div>
-    </div>`:''}
-
-    <div style="margin-top:30px">
-      <span class="label ink" style="margin-bottom:12px;display:block">What you're working on</span>
-      <div class="tiles">${tiles}
-        <button class="tile dashed" data-a="add-type"><span class="ic">${msvg('add')}</span><span class="tile-l">Add your own</span></button>
-      </div>
-    </div>
-
-    <div style="margin-top:30px">
-      <span class="label ink" style="margin-bottom:8px;display:block">If-then plans</span>
-      <p class="body grey" style="font-size:calc(13px * var(--fs,1));margin-bottom:18px">Deciding in advance makes it easier to follow through.</p>
-      ${S.types.map(t=>planItem(t)).join('')}
-    </div>
-
-    <div style="margin-top:30px">
-      <span class="label ink" style="margin-bottom:12px;display:block">Your data</span>
-      <div class="iconrow">
-        <button class="icontab" data-a="share-sum">${msvg('share','nav24')}<span>Share summary</span></button>
-        <button class="icontab" data-a="export-csv">${msvg('download','nav24')}<span>Download</span></button>
-      </div>
-      <p class="body grey" style="font-size:calc(12px * var(--fs,1));margin-top:10px">The copy is made on your device and only leaves it if you send it.</p>
-    </div>
-
-    <div class="card" style="margin-top:28px;background:var(--grey);border:none">
+    <span class="label ink" style="display:block;margin-top:26px">What you're working on</span>
+    <div class="tiles" style="margin-top:10px">${tiles}
+      <button class="tile dashed" data-a="add-type"><span class="ic">${msvg('add')}</span><span class="tile-l">Add your own</span></button></div>
+    <span class="label ink" style="display:block;margin-top:26px">If-then plans</span>
+    <p class="body grey" style="font-size:calc(13px * var(--fs,1));margin:6px 0 14px">Deciding in advance makes it easier to follow through.</p>
+    ${S.types.map(t=>planItem(t)).join('')}
+    ${tracksAlcohol()?`<span class="label ink" style="display:block;margin-top:26px">What a drink costs you</span>
+    <div class="grp"><div class="grow"><span class="ss">Set this to see the money you keep with every wave you let pass.</span>
+      <div class="costrow" style="margin-top:12px">
+        <div class="selectwrap" style="margin-top:0;width:96px;flex:none"><select class="select" id="meCurrency">${['₦','$','£','€','R'].map(c=>`<option value="${c}" ${(S.currency||'₦')===c?'selected':''}>${c}</option>`).join('')}</select><span class="chev">${msvg('expand_more')}</span></div>
+        <input type="number" inputmode="numeric" id="meCost" class="select" style="flex:1" min="0" step="1" placeholder="e.g. 2500" value="${S.costPerDrink!=null?S.costPerDrink:''}"></div>
+    </div></div>`:''}
+    <span class="label ink" style="display:block;margin-top:26px">Your data</span>
+    <div class="grp"><div class="grow">
+      <div class="pair"><button class="btn btn-ghost btn-sm" data-a="share-sum">${msvg('share','ic16')}Share</button>
+        <button class="btn btn-ghost btn-sm" data-a="export-csv">${msvg('download','ic16')}Download</button></div>
+      <span class="ss" style="margin-top:10px;display:block">The copy is made on your device and only leaves it if you send it.</span></div></div>
+    <div class="card" style="margin-top:26px;background:var(--grey);border:none">
       <span class="label ink" style="margin-bottom:6px;display:inline-flex;align-items:center;gap:6px">${msvg('lock','ic16')} Private by design</span>
       <p class="body grey" style="font-size:calc(13px * var(--fs,1))"><em>Pause</em> runs entirely in your browser, with no account and no server. Everything you log stays on your device.</p>
-      <button class="btn-text" data-a="go-privacy" style="margin-top:12px;font-size:calc(11px * var(--fs,1));letter-spacing:.08em">Read the full privacy notice</button>
-    </div>
-
+      <button class="btn-text" data-a="go-privacy" style="margin-top:12px;font-size:calc(11px * var(--fs,1));letter-spacing:.08em">Read the full privacy notice</button></div>
     <div class="card" style="margin-top:14px;background:var(--grey);border:none">
       <span class="label ink" style="margin-bottom:6px;display:inline-flex;align-items:center;gap:6px">${msvg('favorite','ic16')} If you need more than a pause</span>
-      <p class="body grey" style="font-size:calc(13px * var(--fs,1))"><em>Pause</em> can help you let a craving pass, but it isn't therapy or medical care. If you're worried about your health or safety, please talk to a professional.</p>
-    </div>
+      <p class="body grey" style="font-size:calc(13px * var(--fs,1))"><em>Pause</em> can help you let a craving pass, but it isn't therapy or medical care. If you're worried about your health or safety, please talk to a professional.</p></div>
     <button class="erasebtn" data-a="wipe-ask" style="margin-top:18px">${msvg('delete','ic16')} Erase everything</button>
     <div id="wipebox" class="hidden card" style="margin-top:2px;background:var(--redtint);border:none">
       <p class="body" style="font-size:calc(14px * var(--fs,1));margin-bottom:12px">This erases your whole history and settings on this device. It can't be undone.</p>
-      <div style="display:flex;gap:10px">
-        <button class="btn btn-ghost btn-sm" style="flex:1" data-a="wipe-no">Keep it</button>
-        <button class="btn btn-red btn-sm" style="flex:1" data-a="wipe-yes">Erase</button>
-      </div>
-    </div>
+      <div style="display:flex;gap:10px"><button class="btn btn-ghost btn-sm" style="flex:1" data-a="wipe-no">Keep it</button>
+        <button class="btn btn-red btn-sm" style="flex:1" data-a="wipe-yes">Erase</button></div></div>
     <div style="flex:1;min-height:16px"></div>
     <p class="grey" style="text-align:center;font-size:calc(11px * var(--fs,1));padding-bottom:6px"><span class="wordmark">Pause</span> by Pákó</p>
     </div>
@@ -1906,20 +1910,20 @@ function addTypeModal(){
 // and switches the live wave straight away.
 function practiceSheet(){
   const opts=PATTERNS.concat([GROUND]);
-  const list=opts.map(p=>`<button class="pracopt ${p.id===S.pattern?'on':''}" data-a="prac-live" data-id="${p.id}">
-    <span class="pracn">${esc(p.name)}</span><span class="pracs">${esc(p.sub)}</span>
-    <span class="pracnote">${esc(p.note)}</span></button>`).join('');
+  let picked=S.pattern||'exhale';
   const el=document.createElement('div');
   el.innerHTML=`<div class="scrim on" data-a="prac-close" style="z-index:50"></div>
     <div class="sheet on" style="z-index:51"><div class="grab"></div>
       <h2>Breathwork and grounding</h2>
-      <p class="body grey" style="margin:6px 0 16px">Pick how you want to steady yourself in a wave. It becomes your default, and you can switch any time.</p>
-      ${list}
+      <p class="body grey" style="margin:6px 0 12px">Spin to pick how you'll steady yourself. It becomes your default, and you can switch any time.</p>
+      ${wheelHTML('pracwheel', opts, picked)}
+      <p class="body grey" id="pracnote" style="text-align:center;font-size:calc(13px * var(--fs,1));min-height:3em;margin:10px 0 4px">${esc(patNote(picked))}</p>
+      <button class="btn btn-red" data-a="prac-use">Use this</button>
     </div>`;
   document.getElementById('frame').appendChild(el);
+  initWheel('pracwheel', opts, picked, q=>{ picked=q.id; const n=el.querySelector('#pracnote'); if(n) n.textContent=patNote(q.id); });
   el.addEventListener('click',ev=>{
-    const opt=ev.target.closest('[data-a=prac-live]');
-    if(opt){ setPattern(opt.dataset.id); el.remove(); render(); return; }
+    if(ev.target.closest('[data-a=prac-use]')){ setPattern(picked); el.remove(); render(); return; }
     if(ev.target.closest('[data-a=prac-close]')) el.remove();
   });
 }
@@ -2339,6 +2343,10 @@ function initDial(){
   setMin((draft().len||300)/60);
 }
 function wire(){
+  const _tss=document.getElementById('tsslider');
+  if(_tss){ fillRange(_tss); _tss.addEventListener('input',function(e){ var i=+e.target.value; S.textScale=TSVALS[i]; document.documentElement.style.setProperty('--fs',S.textScale); save(); fillRange(e.target); var l=document.getElementById('tsname'); if(l) l.textContent=TSNAMES[i]; }); }
+  var _mp=document.getElementById('mePractice'); if(_mp) _mp.addEventListener('change',function(e){ setPattern(e.target.value); save(); });
+
   const on=document.getElementById('obName');
   if(on) on.addEventListener('input',e=>{ob.name=e.target.value; const b=document.querySelector('[data-a=ob-next]'); if(b)b.disabled=!ob.name.trim();});
   const ow=document.getElementById('obWhy');
