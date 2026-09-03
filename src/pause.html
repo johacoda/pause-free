@@ -160,6 +160,13 @@
   .dark .fignight{display:block}
   .hero-eyebrow{font-size:calc(12px * var(--fs,1));font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#c9c1e0}
   .hero-mark{display:block;margin:0 auto 4px;width:94px;height:auto}
+  .welcome-min{display:flex;flex-direction:column;min-height:100%}
+  .welcome-copy{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 28px}
+  .welcome-copy .hero-mark{width:94px;height:auto;display:block;margin:0 auto 10px}
+  .welcome-promise{font-size:calc(40px * var(--fs,1));font-weight:300;line-height:1.14;letter-spacing:-.02em;color:#FAFAFA;margin-top:14px;max-width:12em}
+  .welcome-cta{flex:0 0 auto;padding:0 22px calc(30px + env(safe-area-inset-bottom,0))}
+  .btn-pill{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:56px;border-radius:999px;background:transparent;color:#FAFAFA;border:1.5px solid rgba(250,250,250,.65);font-weight:700;font-size:calc(16px * var(--fs,1));font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .15s ease,border-color .15s ease,color .15s ease}
+  .btn-pill:active{background:var(--act);border-color:var(--act);color:#fff}
   .ob-illus{width:190px;height:auto;display:block;margin:0 auto}
   .ob-namebg{flex:1;position:relative;margin:0 -22px;padding:9vh 22px 0;overflow:hidden;background:transparent}
   /* onboarding sits on the app gradient; keep the top text light so it reads on purple */
@@ -1168,17 +1175,13 @@ function gazer(){ return `<img class="gazer figday" src="__PAUSE_FIGLIGHT__" alt
 let ob = {step:0, name:'', pick:new Set(), why:''};
 function Onboard(){
   if(ob.step===0){
-    return `<div class="home">
-      <div class="hero hero-w hero-welcome">
-        <div class="hero-copy">
-          <img class="hero-mark" src="__PAUSE_SCRIPT__" alt="Pause">
-          <div class="hero-title" style="margin-top:20px"><span id="rotline" class="rotline">Welcome.</span></div>
-        </div>
+    return `<div class="home welcome-min">
+      <div class="welcome-copy">
+        <img class="hero-mark" src="__PAUSE_SCRIPT__" alt="Pause">
+        <h1 class="welcome-promise">This is how you beat those cravings for good.</h1>
       </div>
-      <div class="hsheet welcome-sheet">
-        <p class="w-sub" style="text-align:center;margin-bottom:18px;font-size:calc(16px * var(--fs,1));line-height:1.45">This is how you beat those cravings for good.</p>
-        <button class="btn btn-red" data-a="ob-next">Get started ${IC.arrow}</button>
-        <button class="btn-text" data-a="go-privacy" style="margin-top:16px;font-size:calc(11px * var(--fs,1));letter-spacing:.08em">Your privacy</button>
+      <div class="welcome-cta">
+        <button class="btn-pill" data-a="ob-next">Get started ${IC.arrow}</button>
       </div>
     </div>`;
   }
