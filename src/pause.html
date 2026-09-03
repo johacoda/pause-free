@@ -662,7 +662,7 @@ const CAUSES = ['Stress','Boredom','Tired','Hungry','After a meal','Around peopl
 
 /* ============ Journey 1: 30 days. one intention + one read per day. ============ */
 const JOURNEY_1 = { name:'Ride the wave', days:[
-  {i:"When a craving comes, I'll watch it pass instead of fighting it.", r:"A craving feels like it will keep climbing until you give it what it wants. But every craving is a wave. It rises, it peaks, and it falls, whether or not you give in. When we're overwhelmed, we think the only way out is to act on it. There's another way out, and it's just the passing of time.\nYou don't have to fight the wave or even ride it like a master surfer…yet. You only have to watch it and let it do what every wave does. Break. So today, whenever that strong urge comes, pay attention to it. Notice it climb and peak. And then notice it pass, because it will."},
+  {i:"When I crave {thing}, all I have to do is watch.", r:"Start here, because this is the whole idea, and everything else in the app is built on it. A craving feels like it'll climb and climb until you give in. It won't. Every craving is a wave. It rises, it peaks, and then it falls, whether you give in or not. That urge that feels unbearable at 9pm is usually gone about fifteen minutes later, as long as you don't act on it.\nSo you don't have to fight it, and you don't have to win a staring contest with yourself. You only have to outlast it. That's what this app is for. When the pull toward {thing} hits, open Pause and start a wave. Set yourself a short timer, breathe, and watch the craving do what every wave does. Break. This is just waiting it out, on purpose, while time does the work for you.\nWhen it passes, tell the app it passed. If you gave in, tell it that too. Either way there's no lecture here, because this was never about being perfect. A time you give in is just information. Note it, and keep going. It doesn't erase the good days you've stacked up.\nAnd it gets easier. That's the part people don't believe until they feel it for themselves. Each time you sit through a craving without acting on it, your brain learns that the urge doesn't get what it's chasing, so the next time it shows up a little weaker. The cravings that feel impossible this week slowly get quieter, come less often, and get easier to watch pass. You're training your brain, one wave at a time, and it won't take forever.\nThat's all you need to know to begin. So today, when the wave rises, don't fight it and don't give in. Start your timer, and watch it break."},
   {i:"I'll let time solve what only time can.", r:"Many cravings peak and pass inside about fifteen minutes. That's just how they work. That urge that feels like it will never end at 9 pm is usually gone by quarter past IF you don't feed it. The problem is that those fifteen minutes feel like an hour, and your brain spends that time inventing reasons why it's okay to give in just this once. Don't argue with it. Start the clock instead. Tell yourself you can give in at the end if you still want it as bad, and watch what fifteen minutes does to a feeling that seemed like it would last forever."},
   {i:"I'll make the good choice the easy one.", r:"Willpower runs down like a battery. By evening, your willpower is flat, just like everyone else's, and that's exactly when cravings are strongest. This is why relying on grit fails. The most 'disciplined' people you know aren't fighting harder; they've arranged their lives so there's less to fight. So nothing is tempting within reach. Sometimes that means taking a different route home. Or plan something else ahead of time to do at the hour when the craving usually hits. The best time to beat a craving is long before it arrives, by making it a little harder to give in and the better choice a little easier. Don't grind. Rig the room."},
   {i:"I'll learn to look beyond my cravings.", r:"Cravings rarely come from nowhere. They ride on top of some simpler feeling. Like being hungry, angry, lonely, or tired. HALT. So when next that urge hits hard, halt for a minute and run the list. Have you eaten? Are you annoyed about something? Perhaps you're alone and feeling a bit restless? Or running on little sleep? More often than you'd think, your urge is standing in for a meal, a phone call, or an early night. Fulfil the real need underneath, and the craving often loses its grip."},
@@ -1165,24 +1165,22 @@ function rotStart(){
 /* ============ onboarding ============ */
 // original back-view surfer looking out at the water, drawn in the app palette
 function gazer(){ return `<img class="gazer figday" src="__PAUSE_FIGLIGHT__" alt=""><img class="gazer fignight" src="__PAUSE_FIGNIGHT__" alt="">`; }
-let ob = {step:0, tour:0, name:'', pick:new Set(), why:''};
+let ob = {step:0, name:'', pick:new Set(), why:''};
 function Onboard(){
   if(ob.step===0){
-    const t=ob.tour||0;
-    const dots=`<div style="display:flex;gap:6px;justify-content:center;margin-bottom:18px">${[0,1,2].map(i=>`<span style="width:${i===t?18:6}px;height:6px;border-radius:3px;background:${i===t?'var(--act)':'rgba(140,140,140,.4)'};transition:all .25s"></span>`).join('')}</div>`;
-    const skip=`<button class="btn-text" data-a="ob-skip" style="position:absolute;top:calc(env(safe-area-inset-top,0) + 14px);right:18px;z-index:5;font-size:calc(12px * var(--fs,1));letter-spacing:.04em">Skip</button>`;
-    let hero, sheet;
-    if(t===0){
-      hero=`<div class="hero-copy"><img class="hero-mark" src="__PAUSE_SCRIPT__" alt="Pause"><div class="hero-title" style="margin-top:20px"><span id="rotline" class="rotline">Welcome.</span></div></div>`;
-      sheet=`${dots}<button class="btn btn-red" data-a="ob-next">Next ${IC.arrow}</button>`;
-    } else if(t===1){
-      hero=`${heroWaves(160)}<div class="hero-copy"><div class="hero-title" style="font-size:calc(46px * var(--fs,1))">A craving<br>is a wave</div></div>`;
-      sheet=`${dots}<p class="w-sub" style="text-align:center;margin-bottom:16px;font-size:calc(15px * var(--fs,1));line-height:1.5">It rises, peaks, and passes on its own, whether or not you feed it. When one hits, you set a short timer and breathe while it fades.</p><button class="btn btn-red" data-a="ob-next">Next ${IC.arrow}</button><button class="btn-text" data-a="ob-back" style="margin-top:12px">Back</button>`;
-    } else {
-      hero=`${heroWaves(160)}<div class="hero-copy"><div class="hero-title" style="font-size:calc(46px * var(--fs,1))">Yours<br>alone</div></div>`;
-      sheet=`${dots}<p class="w-sub" style="text-align:center;margin-bottom:16px;font-size:calc(15px * var(--fs,1));line-height:1.5">Everything stays on your phone. No account, no sign-up, and nothing you write ever leaves your device.</p><button class="btn btn-red" data-a="ob-next">Get started ${IC.arrow}</button><button class="btn-text" data-a="ob-back" style="margin-top:12px">Back</button>`;
-    }
-    return `<div class="home" style="position:relative">${skip}<div class="hero hero-w hero-welcome">${hero}</div><div class="hsheet welcome-sheet">${sheet}</div></div>`;
+    return `<div class="home">
+      <div class="hero hero-w hero-welcome">
+        <div class="hero-copy">
+          <img class="hero-mark" src="__PAUSE_SCRIPT__" alt="Pause">
+          <div class="hero-title" style="margin-top:20px"><span id="rotline" class="rotline">Welcome.</span></div>
+        </div>
+      </div>
+      <div class="hsheet welcome-sheet">
+        <p class="w-sub" style="text-align:center;margin-bottom:18px;font-size:calc(16px * var(--fs,1));line-height:1.45">This is how you beat those cravings for good.</p>
+        <button class="btn btn-red" data-a="ob-next">Get started ${IC.arrow}</button>
+        <button class="btn-text" data-a="go-privacy" style="margin-top:16px;font-size:calc(11px * var(--fs,1));letter-spacing:.08em">Your privacy</button>
+      </div>
+    </div>`;
   }
   let body='';
   if(ob.step===1){
@@ -2389,11 +2387,9 @@ app.addEventListener('click',e=>{
       const nb=document.querySelector('[data-a=ob-next]');
       if(nb){ nb.disabled=ob.pick.size===0; nb.innerHTML='Continue '+IC.arrow; }
       break; }
-    case'ob-back': if(ob.step===0){ if((ob.tour||0)>0){ ob.tour=(ob.tour||0)-1; render(); } } else if(ob.step===1){ ob.step=0; ob.tour=2; render(); } else { ob.step--; render(); } break;
-    case'ob-skip': ob.step=1; render(); break;
+    case'ob-back': ob.step--; render(); break;
     case'ob-next':
-      if(ob.step===0){ if((ob.tour||0)<2){ ob.tour=(ob.tour||0)+1; render(); } else { ob.step=1; render(); } }
-      else if(ob.step<4){ ob.step++; render(); }
+      if(ob.step<4){ ob.step++; render(); }
       else{
         const picked=S.types.filter(t=>ob.pick.has(t.id));
         S.name=ob.name.trim()||'there';
