@@ -89,7 +89,7 @@
 
   button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
   .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
-    height:52px;border-radius:10px;font-size:calc(15px * var(--fs,1));font-weight:700;letter-spacing:.01em;transition:background .15s,opacity .15s;
+    height:52px;border-radius:999px;font-size:calc(15px * var(--fs,1));font-weight:700;letter-spacing:.01em;transition:background .15s,opacity .15s;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.22)}
   .btn-red{background:var(--act);color:#fff}
   .btn-red:active{opacity:.85}
@@ -113,7 +113,7 @@
     background:none;border:none;border-bottom:2px solid var(--ink);padding:0 0 2px}
   .arrow{width:15px;height:15px}
 
-  .card{background:rgba(255,255,255,.42);border:1px solid rgba(255,255,255,.5);border-radius:14px;padding:18px;-webkit-backdrop-filter:blur(12px) saturate(140%);backdrop-filter:blur(12px) saturate(140%)}
+  .card{background:rgba(255,255,255,.42);border:1px solid rgba(255,255,255,.5);border-radius:16px;padding:18px;-webkit-backdrop-filter:blur(12px) saturate(140%);backdrop-filter:blur(12px) saturate(140%)}
   .dark .card{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1)}
   .pane-purple{background:var(--purple);border-radius:14px;padding:20px;color:var(--white)}
   .pane-purple .label{color:var(--white);opacity:.7}
@@ -163,7 +163,7 @@
   .welcome-min{display:flex;flex-direction:column;min-height:100%;position:relative;overflow:hidden}
   .welcome-copy{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 28px;position:relative;z-index:1}
   .welcome-copy .hero-mark{width:94px;height:auto;display:block;margin:0 auto 10px}
-  .welcome-promise{font-size:calc(40px * var(--fs,1));font-weight:300;line-height:1.14;letter-spacing:-.02em;color:#FAFAFA;margin-top:14px;max-width:12em}
+  .welcome-promise{font-size:calc(23px * var(--fs,1));font-weight:300;line-height:1.42;letter-spacing:-.01em;color:#F5F1EA;max-width:15em;margin:0 auto}
   .welcome-cta{flex:0 0 auto;padding:0 22px calc(30px + env(safe-area-inset-bottom,0));position:relative;z-index:1}
   .btn-pill{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:56px;border-radius:999px;background:transparent;color:#FAFAFA;border:1.5px solid rgba(250,250,250,.65);font-weight:700;font-size:calc(16px * var(--fs,1));font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .15s ease,border-color .15s ease,color .15s ease}
   .btn-pill:active{background:var(--act);border-color:var(--act);color:#fff}
@@ -175,7 +175,8 @@
   .ob-flow input[type=text]{color:#F3EFE8;border-bottom-color:rgba(255,255,255,.34);caret-color:#fff}
   .ob-flow input[type=text]::placeholder{color:rgba(243,239,232,.5)}
   .ob-flow input[type=text]:focus{border-bottom-color:#fff}
-  .ob-flow input[type=text].planinput{color:#F3EFE8}/* beat the .planinput dark color inside onboarding */
+  .ob-flow input[type=text].planinput{color:#F3EFE8;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18)}/* readable field on the purple gradient */
+  .ob-flow input[type=text].planinput:focus{border-color:rgba(255,255,255,.5)}
   .ob-flow .planlabel{color:#F3EFE8}
   .ob-flow .planlabel b{color:#cdc0f2}
   .ob-bg{position:absolute;left:0;right:0;bottom:0;width:100%;height:auto;z-index:0;display:block}
@@ -211,7 +212,7 @@
   .erasebtn svg{width:17px;height:17px}
   .divider{height:1px;background:var(--faint)}
 
-  .chip{padding:9px 14px;border-radius:10px;font-size:calc(14px * var(--fs,1));font-weight:500;color:var(--ink);
+  .chip{padding:9px 14px;border-radius:999px;font-size:calc(14px * var(--fs,1));font-weight:500;color:var(--ink);
     background:var(--grey);white-space:nowrap;transition:all .12s;border:1px solid transparent}
   .chip.on{background:var(--purple);color:var(--white)}
   .chiprow{display:flex;flex-wrap:wrap;gap:8px}
@@ -221,7 +222,8 @@
   .planitem{margin-bottom:24px}
   .planlabel{font-size:calc(15px * var(--fs,1));font-weight:600;color:var(--ink);margin-bottom:10px;line-height:1.4}
   .planlabel b{font-weight:800;color:var(--purple)}
-  input[type=text].planinput{font-size:calc(16px * var(--fs,1));font-weight:500;color:var(--ink)}
+  input[type=text].planinput{font-size:calc(15px * var(--fs,1));font-weight:500;color:var(--ink);letter-spacing:0;border:1px solid var(--faint2);border-bottom:1px solid var(--faint2);border-radius:12px;background:var(--white);padding:12px 14px}
+  input[type=text].planinput:focus{border-color:var(--purple)}
   .sugrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
   .sugchip{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:22px;background:var(--grey);
     border:1px solid transparent;font-size:calc(13px * var(--fs,1));font-weight:600;color:var(--ink);cursor:pointer;transition:all .12s}
@@ -230,7 +232,7 @@
   .sugchip:active svg{color:var(--white)}
 
   .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .tile{display:flex;align-items:center;gap:11px;padding:14px;border-radius:12px;background:var(--grey);
+  .tile{display:flex;align-items:center;gap:11px;padding:14px;border-radius:16px;background:var(--grey);
     border:1px solid transparent;text-align:left;width:100%;transition:all .12s}
   .tile.on{background:var(--purple);border-color:var(--purple)}
   .tile.on .tile-l{color:var(--white)}
@@ -299,10 +301,10 @@
   .selectwrap .chev{position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--mute2);pointer-events:none;display:flex}
   .selectwrap .chev svg{width:20px;height:20px}
   .select{width:100%;font-family:inherit;font-size:calc(15px * var(--fs,1));font-weight:500;color:var(--ink);background:var(--white);
-    border:1px solid var(--faint2);border-radius:10px;padding:13px 40px 13px 14px;-webkit-appearance:none;appearance:none;outline:none}
+    border:1px solid var(--faint2);border-radius:12px;padding:13px 40px 13px 14px;-webkit-appearance:none;appearance:none;outline:none}
   .select:focus{border-color:var(--purple)}
   .select.placeholder{color:var(--mute2)}
-  .grp{background:var(--grey);border-radius:14px;padding:0 16px;margin-top:8px}
+  .grp{background:var(--grey);border-radius:16px;padding:0 16px;margin-top:8px}
   .grow{padding:15px 0;border-bottom:1px solid var(--faint)}
   .grow:last-child{border-bottom:none}
   .grow .sl,.swrow .sl{font-size:calc(15px * var(--fs,1));font-weight:600;color:var(--ink);display:block}
@@ -331,7 +333,7 @@
   .wi.on .wl{color:var(--purple)}
   .wi .ws{font-size:calc(13px * var(--fs,1));color:var(--mute);margin-top:2px}
   .notebox{width:100%;margin-top:8px;font-family:inherit;font-size:calc(15px * var(--fs,1));font-weight:500;color:var(--ink);background:var(--white);
-    border:1px solid var(--faint2);border-radius:10px;padding:12px 14px;line-height:1.45;resize:vertical;min-height:78px;outline:none}
+    border:1px solid var(--faint2);border-radius:12px;padding:12px 14px;line-height:1.45;resize:vertical;min-height:78px;outline:none}
   .notebox:focus{border-color:var(--purple)}
   .notebox::placeholder{color:var(--mute2);font-weight:400}
   .whybox{width:100%;font-family:inherit;font-size:calc(17px * var(--fs,1));font-weight:500;line-height:1.5;
@@ -391,8 +393,11 @@
 
   /* steps */
   .steps{display:flex;gap:5px}
-  .steps>div{flex:1;height:3px;border-radius:2px;background:var(--faint)}
-  .steps>div.on{background:var(--act)}
+  .steps>div{flex:1;height:3px;border-radius:2px;background:rgba(243,239,232,.22)}
+  .steps>div.on{background:#F3EFE8}
+  .obdots{position:absolute;top:24px;left:0;right:0;display:flex;justify-content:center;gap:7px;z-index:2}
+  .obdots>div{width:6px;height:6px;border-radius:50%;background:rgba(243,239,232,.24);transition:background .25s ease,transform .25s ease}
+  .obdots>div.on{background:#F3EFE8;transform:scale(1.12)}
 
   /* wave */
   #wave{width:100%;height:150px;display:block;overflow:visible}
@@ -455,6 +460,20 @@
   .fchev .ms{width:22px;height:22px;transition:transform .2s ease}
   .fchev.open .ms{transform:rotate(180deg)}
   .fhint{font-size:calc(11.5px * var(--fs,1));font-weight:700;letter-spacing:.02em;color:var(--act);margin-top:5px;display:block}
+  .coach{position:relative;background:rgba(255,255,255,.55);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);color:var(--ink);border:1px solid rgba(60,49,88,.14);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 6px 20px rgba(20,16,34,.10);animation:coachIn .35s ease both}
+  .dark .coach{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.16);box-shadow:0 6px 20px rgba(0,0,0,.30)}
+  .coach .coach-tx{flex:1;font-size:calc(13.5px * var(--fs,1));line-height:1.4;font-weight:600;color:var(--ink)}
+  .coach .coach-ok{flex:none;background:var(--faint2);color:var(--ink);border:none;border-radius:999px;padding:7px 13px;font-size:calc(12px * var(--fs,1));font-weight:700;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .coach .coach-ok:active{background:var(--faint)}
+  .coach-flat::after{display:none}
+  .coach-down{margin-bottom:16px}
+  .coach-up{margin-top:16px}
+  .coach-down::after,.coach-up::after{content:'';position:absolute;left:50%;margin-left:-8px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent}
+  .coach-down::after{bottom:-8px;border-top:8px solid #EDEAF4}
+  .coach-up::after{top:-8px;border-bottom:8px solid #EDEAF4}
+  .dark .coach-down::after{border-top-color:#2a2640}
+  .dark .coach-up::after{border-bottom-color:#2a2640}
+  @keyframes coachIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
   .fdetail{margin-top:15px;padding-top:15px;border-top:1px solid var(--faint)}
   .pcap{font-size:calc(12.5px * var(--fs,1));line-height:1.5;color:var(--mute);margin-top:12px}
   /* ===== Patterns v2 ===== */
@@ -489,6 +508,51 @@
   .pins .tx{flex:1;min-width:0}
   .pins .tx .t{display:block;font-size:calc(17px * var(--fs,1));font-weight:800;color:var(--ink);letter-spacing:-.01em}
   .pins .tx .s{display:block;font-size:calc(13px * var(--fs,1));color:var(--mute);margin-top:2px;line-height:1.35}
+  .sk{position:relative;overflow:hidden;background:var(--faint2);border-radius:7px}
+  .sk::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:translateX(-100%);animation:skwave 1.6s ease-in-out infinite}
+  .dark .sk::after{background:linear-gradient(90deg,transparent,rgba(255,255,255,.10),transparent)}
+  @keyframes skwave{100%{transform:translateX(100%)}}
+  @media (prefers-reduced-motion:reduce){ .sk::after{display:none} }
+  .pvlabel{font-size:calc(11.5px * var(--fs,1));font-weight:700;letter-spacing:.06em;color:var(--mute2);text-transform:uppercase;margin-bottom:12px}
+  .ghost-tod{display:flex;align-items:flex-end;gap:12px}
+  .ghost-tod .gtc{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px}
+  .ghost-tod .gtb{width:100%;border-radius:8px 8px 4px 4px}
+  .ghost-tod .l{font-size:calc(11px * var(--fs,1));color:var(--mute2);font-weight:600}
+  .ghost-trig .gtrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--faint)}
+  .ghost-trig .gtrow:first-child{border-top:none}
+  .ghost-trig .gtn{height:13px;border-radius:7px;flex:none}
+  .ghost-trig .gtk{flex:1;height:8px;border-radius:6px}
+  .ghost-trig .gtv{width:34px;height:13px;border-radius:7px;flex:none}
+  /* calm celebration bloom */
+  .celebrate{position:absolute;inset:0;z-index:130;display:flex;align-items:center;justify-content:center}
+  .cel-scrim{position:absolute;inset:0;background:rgba(20,16,34,.36);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:celFade .4s ease both}
+  .dark .cel-scrim{background:rgba(0,0,0,.52)}
+  .cel-core{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;z-index:1;animation:celPop .6s cubic-bezier(.22,1,.36,1) both}
+  .cel-rings{position:absolute;top:38px;left:50%;width:0;height:0}
+  .cel-rings span{position:absolute;left:0;top:0;width:150px;height:150px;margin:-75px 0 0 -75px;border-radius:50%;border:2px solid var(--actx);opacity:0;animation:celRing 2s ease-out both}
+  .cel-rings span:nth-child(2){animation-delay:.28s}
+  .cel-rings span:nth-child(3){animation-delay:.56s}
+  .cel-mark{width:78px;height:78px;display:flex;align-items:center;justify-content:center;background:var(--act);border-radius:50%;box-shadow:0 12px 36px rgba(192,57,43,.42);margin-bottom:18px}
+  .cel-mark svg{width:40px;height:40px}
+  .cel-title{font-size:calc(24px * var(--fs,1));font-weight:800;color:#fff;letter-spacing:-.01em}
+  .cel-sub{font-size:calc(15px * var(--fs,1));color:rgba(255,255,255,.84);margin-top:4px}
+  .celebrate.out .cel-scrim,.celebrate.out .cel-core{animation:celOut .34s ease forwards}
+  @keyframes celFade{from{opacity:0}to{opacity:1}}
+  @keyframes celOut{to{opacity:0}}
+  @keyframes celPop{from{opacity:0;transform:scale(.86) translateY(8px)}to{opacity:1;transform:none}}
+  @keyframes celRing{0%{opacity:.5;transform:scale(.4)}100%{opacity:0;transform:scale(1.5)}}
+  /* wave-passed entrance ripple */
+  .passed-screen{position:relative}
+  .winripple{position:absolute;top:104px;left:50%;width:0;height:0;z-index:2;pointer-events:none}
+  .winripple span{position:absolute;left:0;top:0;width:170px;height:170px;margin:-85px 0 0 -85px;border-radius:50%;border:2px solid var(--actx);opacity:0;animation:winR 2.6s ease-out both}
+  .winripple span:nth-child(2){animation-delay:.5s}
+  @keyframes winR{0%{opacity:.4;transform:scale(.45)}100%{opacity:0;transform:scale(1.55)}}
+  /* milestone badge shines in on the passed screen */
+  .passed-screen .mearned{animation:meIn .7s cubic-bezier(.22,1,.36,1) both}
+  .passed-screen .mearned .node{animation:meGlow 1.7s ease-out .25s both}
+  @keyframes meIn{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:none}}
+  @keyframes meGlow{0%,100%{filter:drop-shadow(0 0 0 rgba(192,57,43,0))}42%{filter:drop-shadow(0 0 15px rgba(192,57,43,.5))}}
+  @media (prefers-reduced-motion:reduce){ .cel-rings span,.winripple{display:none} .passed-screen .mearned,.passed-screen .mearned .node{animation:none} }
   .ptod{display:flex;align-items:flex-end;gap:10px;height:72px;margin-top:16px}
   .ptc{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;height:100%;justify-content:flex-end}
   .ptc .ptb{width:100%;background:var(--purple);opacity:.38;border-radius:4px;min-height:4px}
@@ -560,8 +624,12 @@
   .jtag{font-size:calc(10.5px * var(--fs,1));font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mute2)}
   .jint{font-size:calc(17px * var(--fs,1));font-weight:700;color:var(--ink);line-height:1.34;letter-spacing:-.01em}
   .jcta{width:100%;margin-top:14px}
-  .jlocked{display:flex;align-items:center;gap:8px;margin-top:12px;width:100%;justify-content:center;background:none;border:none;font-family:inherit;font-size:calc(14px * var(--fs,1));font-weight:700;color:var(--act);cursor:pointer;padding:6px 0}
-  .jlocked .mi{display:flex;line-height:0}.jlocked .mi .ms{width:19px;height:19px}
+  .jdone{display:flex;align-items:center;gap:11px;width:100%;margin-top:14px;background:var(--redtint);border:none;border-radius:999px;padding:10px 14px 10px 10px;font-family:inherit;cursor:pointer;text-align:left}
+  .dark .jdone{background:rgba(255,255,255,.07)}
+  .jdone-check{flex:none;width:28px;height:28px;border-radius:50%;background:var(--act);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(192,57,43,.28)}
+  .jdone-check svg{width:15px;height:15px}
+  .jdone-tx{flex:1;font-size:calc(14.5px * var(--fs,1));font-weight:700;color:var(--ink)}
+  .jdone-x{flex:none;font-size:calc(11px * var(--fs,1));font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mute2);padding-right:4px}
   .readlink{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;border-top:1px solid var(--faint);margin-top:12px;padding:13px 2px 9px;font-family:inherit;cursor:pointer}
   .readlink .rt{font-size:calc(14px * var(--fs,1));font-weight:700;color:var(--purple)}
   .readlink .rc{color:var(--mute2);display:flex}
@@ -572,8 +640,13 @@
   /* reading view */
   .rback{position:absolute;top:calc(env(safe-area-inset-top,0) + 14px);left:14px;z-index:3;color:#FAFAFA;background:none;border:none;display:flex;cursor:pointer}
   .rsub{color:#c9c1e0;font-size:calc(13px * var(--fs,1));font-weight:600;margin-top:4px;letter-spacing:.02em}
-  .rintent{font-size:calc(20px * var(--fs,1));font-weight:800;color:var(--ink);line-height:1.32;letter-spacing:-.01em;margin-top:2px}
+  .rintent{font-size:calc(21px * var(--fs,1));font-weight:800;color:var(--ink);line-height:1.34;letter-spacing:-.01em;margin-top:6px}
   .rtext{font-size:calc(16px * var(--fs,1));color:var(--ink);line-height:1.62;margin-top:16px;max-width:34em}
+  .rlead{margin-top:20px}
+  .rlead::first-letter{font-size:2.7em;font-weight:800;float:left;line-height:.82;padding:6px 9px 0 0;color:var(--purple)}
+  .rcallout{margin:24px 0}
+  .rcallout .cwave{display:block;width:60px;height:16px;color:var(--act);margin-bottom:12px}
+  .rcallout p{font-size:calc(20px * var(--fs,1));font-weight:700;line-height:1.42;color:var(--ink);letter-spacing:-.01em;max-width:20em}
   /* money saved */
   .moneystrip{display:flex;align-items:center;gap:13px;width:100%;background:none;border:none;font-family:inherit;text-align:left;padding:0;margin-top:20px}
   .moneystrip .mi{color:var(--act);flex:none;display:flex;line-height:0}
@@ -697,7 +770,7 @@ const CAUSES = ['Stress','Boredom','Tired','Hungry','After a meal','Around peopl
 
 /* ============ Journey 1: 30 days. one intention + one read per day. ============ */
 const JOURNEY_1 = { name:'Ride the wave', days:[
-  {i:"When I crave {thing}, all I have to do is watch.", r:"Start here, because this is the whole idea, and everything else in the app is built on it. A craving feels like it'll climb and climb until you give in. It won't. Every craving is a wave. It rises, it peaks, and then it falls, whether you give in or not. That urge that feels unbearable at 9pm is usually gone about fifteen minutes later, as long as you don't act on it.\nSo you don't have to fight it, and you don't have to win a staring contest with yourself. You only have to outlast it. That's what this app is for. When the pull toward {thing} hits, open Pause and start a wave. Set yourself a short timer, breathe, and watch the craving do what every wave does. Break. This is just waiting it out, on purpose, while time does the work for you.\nWhen it passes, tell the app it passed. If you gave in, tell it that too. Either way there's no lecture here, because this was never about being perfect. A time you give in is just information. Note it, and keep going. It doesn't erase the good days you've stacked up.\nAnd it gets easier. That's the part people don't believe until they feel it for themselves. Each time you sit through a craving without acting on it, your brain learns that the urge doesn't get what it's chasing, so the next time it shows up a little weaker. The cravings that feel impossible this week slowly get quieter, come less often, and get easier to watch pass. You're training your brain, one wave at a time, and it won't take forever.\nThat's all you need to know to begin. So today, when the wave rises, don't fight it and don't give in. Start your timer, and watch it break."},
+  {i:"When I crave {thing}, all I have to do is watch.", r:"Welcome, and we're glad you've decided to gain more control of your habits. On Day 1, we want to introduce you to the foundation of this journey. This is the whole idea, and everything you'll find in the app is built on it.\n[[A craving feels like it'll climb and climb until you give in. It won't. Every craving is a wave. It rises, it peaks, and then it falls, whether you give in or not.]]\nThat urge that feels unbearable at 9pm is usually gone about fifteen minutes later, as long as you don't act on it.\nSo you don't have to fight it, and you don't have to win a staring contest with yourself. You only have to outlast it. That's what this app is for. When the pull toward {thing} hits, open Pause and start a wave. Set yourself a short timer, breathe, and watch the craving do what every wave does. Break. This is just waiting it out, on purpose, while time does the work for you.\nWhen it passes, tell the app it passed. If you gave in, tell it that too. Either way there's no lecture here, because this was never about being perfect. A time you give in is just information. Note it, and keep going. It doesn't erase the good days you've stacked up.\nAnd it gets easier. That's the part people don't believe until they feel it for themselves. Each time you sit through a craving without acting on it, your brain learns that the urge doesn't get what it's chasing, so the next time it shows up a little weaker. The cravings that feel impossible this week slowly get quieter, come less often, and get easier to watch pass. You're training your brain, one wave at a time, and it won't take forever.\nThat's all you need to know to begin. So today, when the wave rises, don't fight it and don't give in. Start your timer, and watch it break."},
   {i:"I'll let time solve what only time can.", r:"Many cravings peak and pass inside about fifteen minutes. That's just how they work. That urge that feels like it will never end at 9 pm is usually gone by quarter past IF you don't feed it. The problem is that those fifteen minutes feel like an hour, and your brain spends that time inventing reasons why it's okay to give in just this once. Don't argue with it. Start the clock instead. Tell yourself you can give in at the end if you still want it as bad, and watch what fifteen minutes does to a feeling that seemed like it would last forever."},
   {i:"I'll make the good choice the easy one.", r:"Willpower runs down like a battery. By evening, your willpower is flat, just like everyone else's, and that's exactly when cravings are strongest. This is why relying on grit fails. The most 'disciplined' people you know aren't fighting harder; they've arranged their lives so there's less to fight. So nothing is tempting within reach. Sometimes that means taking a different route home. Or plan something else ahead of time to do at the hour when the craving usually hits. The best time to beat a craving is long before it arrives, by making it a little harder to give in and the better choice a little easier. Don't grind. Rig the room."},
   {i:"I'll learn to look beyond my cravings.", r:"Cravings rarely come from nowhere. They ride on top of some simpler feeling. Like being hungry, angry, lonely, or tired. HALT. So when next that urge hits hard, halt for a minute and run the list. Have you eaten? Are you annoyed about something? Perhaps you're alone and feeling a bit restless? Or running on little sleep? More often than you'd think, your urge is standing in for a meal, a phone call, or an early night. Fulfil the real need underneath, and the craving often loses its grip."},
@@ -748,16 +821,17 @@ const SUGGESTIONS = [
   {s:'wait ten minutes', i:'schedule', l:'Wait'},
 ];
 function sugChips(id){ return SUGGESTIONS.map(x=>`<button class="sugchip" data-a="plan-sug" data-id="${id}" data-s="${esc(x.s)}">${msvg(x.i,'ic16')}<span>${x.l}</span></button>`).join(''); }
-function planItem(t){ return `<div class="planitem">
+function planItem(t){ const has=(t.plan||'').trim();
+ return `<div class="planitem">
   <div class="planlabel">If I crave <b>${esc(t.label)}</b>, I'll…</div>
   <input class="planinput" type="text" data-plan="${t.id}" value="${esc(t.plan||'')}" maxlength="120" placeholder="e.g. drink water and step outside" autocomplete="off">
-  <div class="sugrow">${sugChips(t.id)}</div>
+  ${has?'':`<div class="sugrow">${sugChips(t.id)}</div>`}
 </div>`; }
 const PICK_ICONS = ['bolt','eco','menu_book','sports_esports','headphones','local_drink','cookie','laptop_mac','directions_run','bedtime','chat_bubble','shopping_cart','fitness_center','local_pizza','savings','mood','favorite'];
 
 /* ============ storage ============ */
 const KEY = 'pako-pause/v1';
-const PERSIST = ['name','types','sessions','onboarded','pause','sound','theme','costPerDrink','currency','checkins','textScale','jStart','why','pattern','seenPractices'];
+const PERSIST = ['name','types','sessions','onboarded','pause','sound','theme','costPerDrink','currency','checkins','textScale','jStart','why','pattern','seenPractices','seenHints','celebratedMs'];
 let storageOK = true;
 function loadRaw(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ storageOK=false; return null; } }
 function save(){ if(!storageOK)return; try{ const o={}; PERSIST.forEach(k=>o[k]=S[k]); localStorage.setItem(KEY,JSON.stringify(o)); }catch(e){ storageOK=false; } }
@@ -774,6 +848,8 @@ function fresh(){
     costPerDrink:null,     // what one drink costs, for money-saved (null = not set)
     currency:'₦',          // shown before the money-saved figure
     checkins:[],           // ISO dates the person tapped the daily check-in
+    seenHints:[],          // ids of one-time in-app hints the person has dismissed
+    celebratedMs:[],       // milestone keys already celebrated with the bloom, so it fires once
     jStart:null,           // ISO date the 30-day journey began (null until first opened)
     why:'',                // the user's own reason, in their words; resurfaced during a wave and after
     pattern:'exhale',      // chosen breathing pattern for the wave (default: longer exhale)
@@ -834,7 +910,7 @@ function pauseMsgAt(elapsed, lead){
   if(elapsed < lead.length*L){ const i=Math.floor(elapsed/L); return {k:'L'+i, html:lead[i]}; }
   const i=Math.floor((elapsed-lead.length*L)/18)%PZ_MSGS.length; return {k:'P'+i, html:PZ_MSGS[i]};
 }
-function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function esc(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function greet(){ const h=new Date().getHours(); return h<12?'Good morning':h<17?'Good afternoon':h<22?'Good evening':'You’re up late'; }
 // true while the most recent thing that happened was a slip, within the last day or so
 function recentSlip(){
@@ -932,24 +1008,34 @@ function homeCheckin(){
     <div class="jhead"><span class="jday">Day ${d}</span><span class="jtag">Today's intention</span></div>
     <div class="jint">${esc(jFill(e.i))}</div>
     ${done
-      ? `<button class="jlocked" data-a="checkin-undo"><span class="mi">${msvg('eco')}</span>Locked in for today</button>`
+      ? `<button class="jdone" data-a="checkin-undo" aria-label="Locked in for today. Tap to undo."><span class="jdone-check">${CEL_CHECK}</span><span class="jdone-tx">Locked in for today</span></button>`
       : `<button class="btn btn-red jcta" data-a="checkin">Lock it in</button>`}
     <button class="readlink" data-a="read-day" data-d="${d}"><span class="rt">Today's read</span><span class="rc">${IC.arrow}</span></button>
   </div>`;
 }
-// a calm full-screen reader for one day's piece
+// a small single-crest wave that echoes a craving rising, peaking, and falling
+function readWave(){ return `<svg class="cwave" viewBox="0 0 76 18" fill="none" aria-hidden="true"><path d="M2 15 C20 15 24 4 38 4 C52 4 56 15 74 15" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>`; }
+// a calm full-screen reader for one day's piece. a paragraph wrapped in [[ ]] renders as a highlighted wave callout.
 let readDay=null;
 function ReadView(){
   const d=readDay||journeyDay(), e=journeyEntry(d), n=JOURNEY_1.days.length;
-  return `<div class="home fade">
-    <div class="hero" style="height:172px">
-      ${heroWaves(84)}
+  const paras=jFill(e.r).split('\n').map(x=>x.trim()).filter(Boolean);
+  let led=false;
+  const body=paras.map(para=>{
+    const m=para.match(/^\[\[([\s\S]+)\]\]$/);
+    if(m) return `<div class="rcallout">${readWave()}<p>${esc(m[1].trim())}</p></div>`;
+    const lead=!led; led=true;
+    return `<p class="rtext${lead?' rlead':''}">${esc(para)}</p>`;
+  }).join('');
+  return `<div class="home fade readview">
+    <div class="hero rhero" style="height:186px">
+      ${heroWaves(92)}
       <button data-a="go-home" class="rback">${IC.back}</button>
       <div class="d-head"><div class="d-name" style="font-size:calc(26px * var(--fs,1))">Day ${d}</div><div class="rsub">of ${n} · ${esc(JOURNEY_1.name)}</div></div>
     </div>
     <div class="hsheet">
       <div class="rintent">${esc(jFill(e.i))}</div>
-      ${jFill(e.r).split('\n').map(s=>s.trim()).filter(Boolean).map(p=>`<p class="rtext">${esc(p)}</p>`).join('')}
+      ${body}
       <div style="flex:1;min-height:24px"></div>
       ${!checkedInToday() && d===journeyDay() && !journeyOver() ? `<button class="btn btn-red" data-a="checkin-home" style="margin-bottom:10px">Lock in today ${IC.arrow}</button>` : ''}
       <button class="tlink grey" data-a="go-home" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">Back home</button>
@@ -977,6 +1063,8 @@ function passedTotal(){ return S.sessions.filter(x=>x.outcome==='passed').length
 function msTierDay(v){ return v<=7?0:v<=30?1:v<=90?2:3; }
 function msTierWave(v){ return v<=10?0:v<=25?1:v<=50?2:3; }
 function plu(u,n){ return n===1?u:u+'s'; }
+// milestone mark: a filled star inside a circle (currentColor = the accent), replacing the old leaf glyph
+function starBadge(){ return `<svg class="ms" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M12 6.4l1.6 3.24 3.58.52-2.59 2.52.61 3.56L12 14.72 8.79 16.76l.61-3.56L6.81 10.16l3.58-.52z" fill="#fff"/></svg>`; }
 // a milestone badge: a tiered wave-medallion. earned = filled + glow, next = progress ring, future = grey + lock.
 function msMedal(v,unit,state,tier,size,frac){
   const c=MS_GRAD[tier], c1=c[0], c2=c[1], id='ms'+unit+v+state;
@@ -997,7 +1085,7 @@ function msMedal(v,unit,state,tier,size,frac){
 // the milestone journey, rendered as a card inside Insights (second card, under Overview)
 function msInsightCard(){
   const best=bestRun(), streak=calmDays();
-  if(best<1) return `<div class="pcard"><div class="pins"><span class="ic">${msvg('eco')}</span><span class="tx"><span class="t">Your first milestone</span><span class="s">One steady day. You're on your way to it.</span></span></div></div>`;
+  if(best<1) return `<div class="pcard"><div class="pins"><span class="ic">${starBadge()}</span><span class="tx"><span class="t">Your first milestone</span><span class="s">One steady day. You're on your way to it.</span></span></div></div>`;
   const next=DAY_MARKS.find(m=>m>best);
   const d=next?next-streak:0;
   const cd = next ? `${d} steady ${plu('day',d)} to go` : 'All earned';
@@ -1008,7 +1096,7 @@ function msInsightCard(){
     return msMedal(m,'day',state,msTierDay(m),size,frac);
   }).join('');
   return `<div class="pcard mscard">
-    <div class="mhead" style="padding:0"><span class="mi">${msvg('eco')}</span><span class="mt">Steady Badges</span><span class="mcd">${cd}</span></div>
+    <div class="mhead" style="padding:0"><span class="mi">${starBadge()}</span><span class="mt">Steady Badges</span><span class="mcd">${cd}</span></div>
     <div class="journey" data-ms="days"><div class="rail"></div><div class="raildone"></div><div class="stations">${nodes}</div></div>
   </div>`;
 }
@@ -1036,6 +1124,7 @@ function homeMilestone(){
       ${msMedal(next,'day','next',msTierDay(next),50,frac)}
       <span class="mstx"><span class="t">${d} steady ${plu('day',d)} to go</span><span class="mbar"><span style="width:${(frac*100).toFixed(0)}%"></span></span></span>
       <span class="mchev">${IC.arrow}</span></button>
+    ${hintSeen('home-begin')?coachHint('home-milestone','This is your next badge. Tap it to see all your milestones.','up'):''}
   </div>`;
 }
 // a milestone newly reached by the pass just recorded, for the result screen (null if none)
@@ -1152,6 +1241,26 @@ function go(v){ S.view=v; save(); render(); }
 const VIEWS = {onboard:Onboard, home:Home, begin:Begin, pause:PauseView, passed:Passed, acted:Acted, waves:Waves, patterns:Patterns, me:Me, privacy:PrivacyView, read:ReadView};
 let privReturn='me';
 let lastView=null;
+// a brief, calm celebration bloom: soft scrim, expanding rings, a mark and a line. auto-dismisses.
+const CEL_CHECK='<svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.3 4.3L19 7.4" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const CEL_STAR='<svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.28 5.82.85-4.21 4.1 1 5.79L12 16.9l-5.21 2.74 1-5.79-4.21-4.1 5.82-.85z" fill="#fff"/></svg>';
+function celebrate(opts){
+  opts=opts||{};
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const el=document.createElement('div');
+  el.className='celebrate';
+  el.innerHTML=`<div class="cel-scrim"></div>
+    <div class="cel-core">
+      <div class="cel-rings"><span></span><span></span><span></span></div>
+      <div class="cel-mark">${opts.mark||''}</div>
+      <div class="cel-title">${opts.title||''}</div>
+      ${opts.sub?`<div class="cel-sub">${opts.sub}</div>`:''}
+    </div>`;
+  (document.getElementById('frame')||document.body).appendChild(el);
+  const kill=()=>{ if(!el.parentNode) return; el.classList.add('out'); setTimeout(()=>el.remove(),360); };
+  el.addEventListener('click',kill);
+  setTimeout(kill, reduce?1100:2000);
+}
 function render(){
   stop();
   waterStop();
@@ -1175,6 +1284,7 @@ function render(){
   if(document.querySelector('.hero-welcome')){ welcomeInit(); if(!document.getElementById('splash')) welcomeFall(); }
   if(document.getElementById('rotline')) rotStart(); else rotStop();
   if(document.querySelector('.journey[data-ms]')) msWire();
+  if(S.view==='passed'){ const je=justEarned(); if(je){ const key='d'+je.v; if(!Array.isArray(S.celebratedMs)) S.celebratedMs=[]; if(!S.celebratedMs.includes(key)){ S.celebratedMs.push(key); save(); celebrate({mark:CEL_STAR,title:'New milestone',sub:je.v+' '+plu(je.unit,je.v)+' steady'}); } } }
 }
 /* gentle rotating affirmation on the welcome headline */
 // the welcome headline opens on "Welcome." then fades into the craving lines and cycles them
@@ -1206,8 +1316,7 @@ function Onboard(){
     return `<div class="home welcome-min">
         ${heroWaves(360)}
       <div class="welcome-copy">
-        <img class="hero-mark" src="__PAUSE_SCRIPT__" alt="Pause">
-        <h1 class="welcome-promise">This is how you beat those cravings for good.</h1>
+        <p class="welcome-promise">This <em>wave</em> too shall pass.</p>
       </div>
       <div class="welcome-cta">
         <button class="btn-pill" data-a="ob-next">Get started ${IC.arrow}</button>
@@ -1255,13 +1364,13 @@ function Onboard(){
   const canFin = ob.step!==2 || ob.pick.size;
   const lbl = ob.step===1?'Continue':ob.step===2?'Continue':ob.step===3?'Continue':'Enter Pause';
   return `<div class="screen ob-flow">
-    <div style="position:absolute;top:22px;left:22px;right:22px" class="steps">${[1,2,3,4].map(i=>`<div class="${i<=ob.step?'on':''}"></div>`).join('')}</div>
+    ${ob.step>0?`<button class="grey" data-a="ob-back" aria-label="Back" style="position:absolute;top:16px;left:16px;display:flex;z-index:3">${IC.back}</button>`:''}
+    <div class="obdots">${[1,2,3,4].map(i=>`<div class="${i<=ob.step?'on':''}"></div>`).join('')}</div>
     ${body}
     <div class="${ob.step===0?'':'actionbar'}" style="position:fixed;bottom:0;left:0;right:0;max-width:var(--maxw);margin:0 auto;padding:14px 22px 26px">
       ${ob.step===0?`<div style="text-align:center;margin-bottom:14px"><button class="btn-text" data-a="go-privacy" style="font-size:calc(11px * var(--fs,1));letter-spacing:.06em">Your privacy</button></div>`:''}
       <div style="display:flex;gap:10px">
-        ${ob.step>0?`<button class="btn btn-ghost" style="flex:1" data-a="ob-back">Back</button>`:''}
-        <button class="btn btn-red" style="flex:${ob.step>0?1.6:1}" data-a="ob-next" ${(!canGo||!canFin)?'disabled':''}>${lbl} ${IC.arrow}</button>
+        <button class="btn btn-red" style="flex:1" data-a="ob-next" ${(!canGo||!canFin)?'disabled':''}>${lbl} ${IC.arrow}</button>
       </div>
     </div>
   </div>`;
@@ -1361,6 +1470,7 @@ function Home(){
         ${recent}
       </div>
       <div style="flex:1;min-height:20px"></div>
+      ${coachHint('home-begin','When a craving hits, start here. Set a short timer and watch the urge pass.','down')}
       <button class="btn btn-red" data-a="begin">Watch a wave ${IC.arrow}</button>
     </div>
     ${Nav('home')}
@@ -1562,7 +1672,8 @@ function Passed(){
     primary = `<button class="btn btn-red" data-a="begin" style="margin-bottom:10px">Watch another wave ${IC.arrow}</button>`;
   }
   const earned=justEarned();
-  return `<div class="home fade">
+  return `<div class="home fade passed-screen">
+    <div class="winripple" aria-hidden="true"><span></span><span></span></div>
     ${resultHero(title,tf,waveH)}
     <div class="hsheet">
       ${earned?`<div class="mearned">${msMedal(earned.v,earned.unit,'earned',earned.tier,46,1)}<div><div class="mel">New milestone</div><div class="mev">${earned.v} ${plu(earned.unit,earned.v)} ${earned.tail}</div></div></div>`:''}
@@ -1622,6 +1733,7 @@ function Waves(){
     ${navHero(`${S.sessions.length} ${S.sessions.length===1?'wave':'waves'} watched`)}
     <div class="hsheet">
       ${S.sessions.length?`<div class="chiprow" style="margin-bottom:2px;flex-wrap:nowrap;overflow-x:auto">${pills}</div>`:''}
+      ${S.sessions.length?coachHint('waves-log','Every wave you log lands here, marked Passed or Gave in. Both are just information, and your best run never resets.','flat'):''}
       ${groups}
       <div style="flex:1;min-height:20px"></div>
     </div>
@@ -1665,6 +1777,21 @@ function trigSheet(cause){
   el.addEventListener('click',ev=>{ if(ev.target.closest('[data-a=ts-close]')) el.remove(); });
 }
 
+// low-data insights: a greyed skeleton of the real charts, so people see what they're building toward
+function insightsPreview(n){
+  const left=Math.max(1,MIN_INSIGHT-n);
+  const labels=['Morning','Afternoon','Evening','Night'], hts=[34,52,72,44];
+  const bars=labels.map((l,i)=>`<div class="gtc"><div class="gtb sk" style="height:${hts[i]}px"></div><div class="l">${l}</div></div>`).join('');
+  const rows=[74,54,88].map(w=>`<div class="gtrow"><span class="gtn sk" style="width:${w}px"></span><span class="gtk sk"></span><span class="gtv sk"></span></div>`).join('');
+  return `<div class="pcard preview">
+    <div class="pins" style="margin-bottom:14px"><span class="ic">${msvg('monitoring')}</span>
+      <span class="tx"><span class="t">Your patterns are forming</span><span class="s">After ${MIN_INSIGHT} waves, the times your urges hit and the triggers behind them show up here. ${left} to go.</span></span></div>
+    <div class="pvlabel">When they hit</div>
+    <div class="ghost-tod">${bars}</div>
+    <div class="pvlabel" style="margin-top:18px">Your triggers</div>
+    <div class="ghost-trig">${rows}</div>
+  </div>`;
+}
 function Patterns(){
   const s=S.sessions;
   const n=s.length;
@@ -1672,8 +1799,7 @@ function Patterns(){
   const parts=[];
 
   if(!n){
-    parts.push(`<div class="pcard"><div class="pins"><span class="ic">${msvg('monitoring')}</span>
-      <span class="tx"><span class="t">Nothing yet</span><span class="s">Your insights show up here after your first wave.</span></span></div></div>`);
+    parts.push(insightsPreview(0));
     return `<div class="home">${navHero('Insights')}<div class="hsheet">${parts.join('')}<div style="flex:1;min-height:20px"></div></div>${Nav('patterns')}</div>`;
   }
 
@@ -1725,7 +1851,7 @@ function Patterns(){
   </div>`);
 
   parts.push(msInsightCard());
-  if(n && !enough){ parts.push(`<div class="pcard"><div class="pins"><span class="ic">${msvg('schedule')}</span><span class="tx"><span class="t">A little more to go</span><span class="s">After ${MIN_INSIGHT} waves, your triggers and the times of day they hit show up here. You're at ${n}.</span></span></div></div>`); }
+  // the low-data preview (below) now carries this cue, so no separate text card here
 
   if(enough){
     /* time of day, all-time */
@@ -1754,13 +1880,13 @@ function Patterns(){
         ${trRows}${showAll}</div>`);
     }
   } else {
-    parts.push(`<div class="pcard"><div class="pins"><span class="ic">${msvg('lock')}</span>
-      <span class="tx"><span class="t">More coming</span><span class="s">Your triggers and timing unlock after ${Math.max(1,MIN_INSIGHT-n)} more.</span></span></div></div>`);
+    parts.push(insightsPreview(n));
   }
 
   return `<div class="home">
     ${navHero('Insights')}
     <div class="hsheet">
+      ${coachHint('insights-what','This is where your waves turn into patterns: when cravings tend to hit and what sets them off, so you can plan for them.','flat')}
       ${parts.join('')}
       <div style="flex:1;min-height:20px"></div>
     </div>
@@ -1810,35 +1936,31 @@ function Me(){
         <input type="text" id="meName" value="${esc(S.name)}" maxlength="24" placeholder="Your name" autocomplete="off" style="margin-top:8px"></div>
       <div class="grow"><span class="sl">Your reason</span>
         <span class="ss">Why you're doing this. We bring it back when a wave hits.</span>
-        <textarea id="meWhy" class="notebox" maxlength="240" placeholder="I want to be present for my kids. I'm tired of the fog." style="margin-top:10px">${esc(S.why||'')}</textarea></div>
-    </div>
-    <span class="label ink" style="display:block;margin-top:26px">Appearance</span>
-    <div class="grp">
-      ${swRow('Dark mode','Easier at night.', S.theme==='dark', 'theme-toggle')}
-      <div class="grow"><span class="sl">Text size</span><span class="ss" id="tsname">${TSNAMES[tsIndex()]}</span>
-        <div class="fsrow"><span class="a" style="font-size:calc(13px * var(--fs,1))">A</span>
-          <input type="range" class="range" id="tsslider" min="0" max="${TSVALS.length-1}" step="1" value="${tsIndex()}">
-          <span class="a" style="font-size:calc(22px * var(--fs,1))">A</span></div></div>
-    </div>
-    <span class="label ink" style="display:block;margin-top:26px">During a session</span>
-    <div class="grp">
-      <div class="grow"><span class="sl">Breathwork and grounding</span>
-        <span class="ss">What the wave opens with. You can switch mid-wave too.</span>
-        <div class="selectwrap"><select class="select" id="mePractice" aria-label="Default practice">${practices.map(p=>`<option value="${p.id}" ${p.id===(S.pattern||'exhale')?'selected':''}>${esc(p.name)}</option>`).join('')}</select><span class="chev">${msvg('expand_more')}</span></div></div>
-      ${swRow('Sound','A soft tone on each turn of the breath.', S.sound, 'sound-toggle')}
+        <textarea id="meWhy" class="notebox" maxlength="240" placeholder="I want to be present for my kids. I'm tired of the fog." style="margin-top:10px;min-height:46px;height:46px">${esc(S.why||'')}</textarea></div>
     </div>
     <span class="label ink" style="display:block;margin-top:26px">What you're working on</span>
     <div class="tiles" style="margin-top:10px">${tiles}
       <button class="tile dashed" data-a="add-type"><span class="ic">${msvg('add')}</span><span class="tile-l">Add your own</span></button></div>
-    <span class="label ink" style="display:block;margin-top:26px">If-then plans</span>
+    <span class="label ink" style="display:block;margin-top:26px">Your plan</span>
     <p class="body grey" style="font-size:calc(13px * var(--fs,1));margin:6px 0 14px">Deciding in advance makes it easier to follow through.</p>
     ${S.types.map(t=>planItem(t)).join('')}
-    ${tracksAlcohol()?`<span class="label ink" style="display:block;margin-top:26px">What a drink costs you</span>
-    <div class="grp"><div class="grow"><span class="ss">Set this to see the money you keep with every wave you let pass.</span>
+    ${tracksAlcohol()?`<span class="label ink" style="display:block;margin-top:26px">Money you're saving</span>
+    <div class="grp"><div class="grow"><span class="ss">Set what one drink costs, and you'll see the money you keep with every wave you let pass.</span>
       <div class="costrow" style="margin-top:12px">
         <div class="selectwrap" style="margin-top:0;width:96px;flex:none"><select class="select" id="meCurrency">${['₦','$','£','€','R'].map(c=>`<option value="${c}" ${(S.currency||'₦')===c?'selected':''}>${c}</option>`).join('')}</select><span class="chev">${msvg('expand_more')}</span></div>
         <input type="number" inputmode="numeric" id="meCost" class="select" style="flex:1" min="0" step="1" placeholder="e.g. 2500" value="${S.costPerDrink!=null?S.costPerDrink:''}"></div>
     </div></div>`:''}
+    <span class="label ink" style="display:block;margin-top:26px">Preferences</span>
+    <div class="grp">
+      ${swRow('Dark mode','', S.theme==='dark', 'theme-toggle')}
+      <div class="grow"><span class="sl">Text size</span><span class="ss" id="tsname">${TSNAMES[tsIndex()]}</span>
+        <div class="fsrow"><span class="a" style="font-size:calc(13px * var(--fs,1))">A</span>
+          <input type="range" class="range" id="tsslider" min="0" max="${TSVALS.length-1}" step="1" value="${tsIndex()}">
+          <span class="a" style="font-size:calc(22px * var(--fs,1))">A</span></div></div>
+      <div class="grow"><span class="sl">Breathwork and grounding</span>
+        <span class="ss">What the wave opens with. You can switch mid-wave too.</span>
+        <div class="selectwrap"><select class="select" id="mePractice" aria-label="Default practice">${practices.map(p=>`<option value="${p.id}" ${p.id===(S.pattern||'exhale')?'selected':''}>${esc(p.name)}</option>`).join('')}</select><span class="chev">${msvg('expand_more')}</span></div></div>
+    </div>
     <span class="label ink" style="display:block;margin-top:26px">Your data</span>
     <div class="grp"><div class="grow">
       <div class="pair"><button class="btn btn-ghost btn-sm" data-a="share-sum">${msvg('share','ic16')}Share</button>
@@ -1850,7 +1972,7 @@ function Me(){
       <button class="btn-text" data-a="go-privacy" style="margin-top:12px;font-size:calc(11px * var(--fs,1));letter-spacing:.08em">Read the full privacy notice</button></div>
     <div class="card" style="margin-top:14px;background:var(--grey);border:none">
       <span class="label ink" style="margin-bottom:6px;display:inline-flex;align-items:center;gap:6px">${msvg('favorite','ic16')} If you need more than a pause</span>
-      <p class="body grey" style="font-size:calc(13px * var(--fs,1))"><em>Pause</em> can help you let a craving pass, but it isn't therapy or medical care. If you're worried about your health or safety, please talk to a professional.</p></div>
+      <p class="body grey" style="font-size:calc(13px * var(--fs,1))"><em>Pause</em> is a wellness and self-help tool. It does not provide medical advice, diagnosis, or treatment, and it is not a substitute for professional care. If you are worried about your health or safety, please speak to a qualified health professional.</p></div>
     <button class="erasebtn" data-a="wipe-ask" style="margin-top:18px">${msvg('delete','ic16')} Erase everything</button>
     <div id="wipebox" class="hidden card" style="margin-top:2px;background:var(--redtint);border:none">
       <p class="body" style="font-size:calc(14px * var(--fs,1));margin-bottom:12px">This erases your whole history and settings on this device. It can't be undone.</p>
@@ -2004,6 +2126,9 @@ function setPattern(id){
 }
 // first-use explainer: has this practice's short "how it works" been shown before?
 function seenPractice(id){ return Array.isArray(S.seenPractices) && S.seenPractices.includes(id); }
+// one-time in-context hints: a small dismissible bubble shown the first time it matters, then never again
+function hintSeen(id){ return Array.isArray(S.seenHints) && S.seenHints.includes(id); }
+function coachHint(id, text, dir){ if(!S.onboarded || hintSeen(id)) return ''; return `<div class="coach coach-${dir||'flat'}"><span class="coach-tx">${text}</span><button class="coach-ok" data-a="hint-ok" data-id="${id}">Got it</button></div>`; }
 function _osc(ctx,m,f,type,g0){ const o=ctx.createOscillator(); o.type=type||'sine'; o.frequency.value=f; const g=ctx.createGain(); g.gain.value=g0; o.connect(g); g.connect(m); o.start(); return {o,g}; }
 function _noise(ctx){ const b=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate); const d=b.getChannelData(0); for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1; const s=ctx.createBufferSource(); s.buffer=b; s.loop=true; return s; }
 function soundPluck(A,when,gain){
@@ -2354,7 +2479,7 @@ function wire(){
   const mn=document.getElementById('meName');
   if(mn) mn.addEventListener('input',e=>{S.name=e.target.value; save();});
   const mw=document.getElementById('meWhy');
-  if(mw) mw.addEventListener('input',e=>{S.why=e.target.value; save();});
+  if(mw){ const growWhy=()=>{ mw.style.height='auto'; mw.style.height=Math.max(46,mw.scrollHeight)+'px'; }; growWhy(); mw.addEventListener('input',e=>{ S.why=e.target.value; save(); growWhy(); }); }
   const mcost=document.getElementById('meCost');
   if(mcost) mcost.addEventListener('input',e=>{ const v=parseFloat(e.target.value); S.costPerDrink=(isFinite(v)&&v>0)?v:null; save(); });
   const mcur=document.getElementById('meCurrency');
@@ -2399,6 +2524,7 @@ app.addEventListener('click',e=>{
       if(nb){ nb.disabled=ob.pick.size===0; nb.innerHTML='Continue '+IC.arrow; }
       break; }
     case'ob-back': ob.step--; render(); break;
+    case'hint-ok':{ if(!Array.isArray(S.seenHints)) S.seenHints=[]; if(id&&!S.seenHints.includes(id)) S.seenHints.push(id); save(); render(); break; }
     case'ob-next':
       if(ob.step<4){ ob.step++; render(); }
       else{
@@ -2423,10 +2549,10 @@ app.addEventListener('click',e=>{
 
     /* nav */
     case'nav': go(el.dataset.v); break;
-    case'checkin':{ if(!Array.isArray(S.checkins)) S.checkins=[]; if(!checkedInToday()) S.checkins.push(iso()); S.checkins=S.checkins.slice(-400); save(); render(); break; }
+    case'checkin':{ if(!Array.isArray(S.checkins)) S.checkins=[]; const fresh=!checkedInToday(); if(fresh) S.checkins.push(iso()); S.checkins=S.checkins.slice(-400); save(); render(); if(fresh) celebrate({mark:CEL_CHECK,title:'Locked in',sub:'Day '+journeyDay()}); break; }
     case'checkin-undo':{ if(Array.isArray(S.checkins)) S.checkins=S.checkins.filter(d=>d!==iso()); save(); render(); break; }
     case'read-day':{ readDay=+el.dataset.d||journeyDay(); go('read'); break; }
-    case'checkin-home':{ if(!Array.isArray(S.checkins)) S.checkins=[]; if(!checkedInToday()) S.checkins.push(iso()); S.checkins=S.checkins.slice(-400); save(); go('home'); break; }
+    case'checkin-home':{ if(!Array.isArray(S.checkins)) S.checkins=[]; const fresh=!checkedInToday(); if(fresh) S.checkins.push(iso()); S.checkins=S.checkins.slice(-400); save(); go('home'); if(fresh) celebrate({mark:CEL_CHECK,title:'Locked in',sub:'Day '+journeyDay()}); break; }
     case'practice-pick': practiceSheet(); break;
     case'prac-explained':{ if(!Array.isArray(S.seenPractices)) S.seenPractices=[]; if(!S.seenPractices.includes(S.pattern)) S.seenPractices.push(S.pattern); if(S.pause) S.pause.endTime=Date.now()+S.pause.len*1000; save(); render(); break; }
     case'prac-set':{ setPattern(id); render(); break; }   // set default from Settings
