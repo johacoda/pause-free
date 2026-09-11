@@ -1223,7 +1223,7 @@ function recordPause(outcome, via){
     s0:p.s0, s1:(p.s1!=null?p.s1:p.s0),
     len:p.len, elapsed, outcome, via:via||'timer',   // 'tap' = they said it passed; 'timer' = the clock ran out
   });
-  S.sessions = S.sessions.slice(0,1000);
+  // no cap: keep the full wave history (bounded only by device storage)
   S.pause = null;
   save();
 }
