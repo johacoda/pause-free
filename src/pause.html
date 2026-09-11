@@ -76,20 +76,20 @@
   .safe{height:env(safe-area-inset-top,0)}
 
   h1,h2,h3{letter-spacing:-0.02em;line-height:1.12;color:var(--purple)}
-  h1{font-size:calc(32px * var(--fs,1));font-weight:800}
-  h2{font-size:calc(24px * var(--fs,1));font-weight:800}
-  h3{font-size:calc(18px * var(--fs,1));font-weight:700}
+  h1{font-size:calc(32px * var(--fs,1));font-weight:600}
+  h2{font-size:calc(24px * var(--fs,1));font-weight:600}
+  h3{font-size:calc(18px * var(--fs,1));font-weight:600}
   .lede{font-size:calc(16px * var(--fs,1));font-weight:400;line-height:1.6;color:var(--ink)}
   p{line-height:1.6}
   .body{font-size:calc(15px * var(--fs,1));line-height:1.65}
   .grey{color:var(--mute)}
-  .label{font-size:calc(11px * var(--fs,1));font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--actx);display:block}
+  .label{font-size:calc(11px * var(--fs,1));font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--actx);display:block}
   .label.ink{color:var(--mute2)}
   .tnum{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
 
   button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
   .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
-    height:52px;border-radius:999px;font-size:calc(15px * var(--fs,1));font-weight:700;letter-spacing:.01em;transition:background .15s,opacity .15s;
+    height:52px;border-radius:999px;font-size:calc(15px * var(--fs,1));font-weight:600;letter-spacing:.01em;transition:background .15s,opacity .15s;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.22)}
   .btn-red{background:var(--act);color:#fff}
   .btn-red:active{opacity:.85}
@@ -109,7 +109,17 @@
   .tlink{font-size:calc(13px * var(--fs,1));font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);
     background:none;padding:12px;width:100%;text-align:center}
   .tlink.grey{color:var(--mute)}
-  .btn-text{display:inline-block;font-weight:700;text-transform:uppercase;color:var(--ink);
+  .btn + .tlink{margin-top:10px}
+  .postit{position:relative;margin-top:18px;padding:16px 18px 14px;border-radius:14px;background:linear-gradient(180deg,#FBF4E6,#F5EBD4);border:1px solid rgba(180,150,90,.20);box-shadow:0 6px 18px rgba(90,70,30,.10);transform:rotate(-.6deg);color:#4a3f2e}
+  .postit::before{content:'';position:absolute;top:-8px;left:50%;transform:translateX(-50%) rotate(1.6deg);width:58px;height:15px;background:rgba(255,255,255,.4);border:1px solid rgba(180,150,90,.16);border-radius:2px}
+  .dark .postit{background:linear-gradient(180deg,#3a3326,#332c20);border-color:rgba(200,170,110,.16);color:#efe6d2;box-shadow:0 6px 18px rgba(0,0,0,.30)}
+  .dark .postit::before{background:rgba(255,255,255,.10);border-color:rgba(200,170,110,.14)}
+  .postit-l{display:block;font-size:calc(10px * var(--fs,1));font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#a98a4e;margin-bottom:6px}
+  .dark .postit-l{color:#cdb27a}
+  .postit-q{font-size:calc(16px * var(--fs,1));line-height:1.5;font-weight:500;letter-spacing:-.005em}
+  .postit-sig{margin-top:10px;text-align:right;font-style:italic;font-size:calc(13px * var(--fs,1));font-weight:500;color:#8a7550}
+  .dark .postit-sig{color:#b7a279}
+  .btn-text{display:inline-block;font-weight:600;text-transform:uppercase;color:var(--ink);
     background:none;border:none;border-bottom:2px solid var(--ink);padding:0 0 2px}
   .arrow{width:15px;height:15px}
 
@@ -123,8 +133,8 @@
   .statline>div:first-child{padding-left:0}
   .statline>div:last-child{padding-right:0}
   .statline>div+div{border-left:1px solid var(--faint)}
-  .statline .sk{font-size:calc(11px * var(--fs,1));font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--purple)}
-  .statline .sv{font-size:calc(30px * var(--fs,1));font-weight:800;color:var(--ink);margin-top:6px;line-height:1;font-variant-numeric:tabular-nums}
+  .statline .sk{font-size:calc(11px * var(--fs,1));font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--purple)}
+  .statline .sv{font-size:calc(30px * var(--fs,1));font-weight:600;color:var(--ink);margin-top:6px;line-height:1;font-variant-numeric:tabular-nums}
   .statline .sv small{font-size:calc(13px * var(--fs,1));font-weight:600;color:var(--mute2);margin-left:2px}
 
   /* redesigned home + welcome: sun-and-waves hero, cream sheet, tinted stat tiles */
@@ -143,13 +153,13 @@
   .hero-toggles button{width:38px;height:38px;display:flex;align-items:center;justify-content:center;color:#c9c1e0}
   .d-head{position:absolute;top:calc(env(safe-area-inset-top,0) + 40px);left:22px;right:22px;z-index:2}
   .d-hi{font-size:calc(14px * var(--fs,1));font-weight:600;letter-spacing:normal;color:#c9c1e0}
-  .d-name{font-size:calc(34px * var(--fs,1));font-weight:800;letter-spacing:-.02em;margin-top:6px;line-height:1;color:#FAFAFA}
+  .d-name{font-size:calc(34px * var(--fs,1));font-weight:600;letter-spacing:-.02em;margin-top:6px;line-height:1;color:#FAFAFA}
   .d-sub{color:#c9c1e0;font-size:calc(14px * var(--fs,1));margin-top:12px;max-width:17em;line-height:1.45}
   .hsheet{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;background:rgba(250,250,250,.72);-webkit-backdrop-filter:blur(20px) saturate(150%);backdrop-filter:blur(20px) saturate(150%);margin-top:-24px;border-radius:24px 24px 0 0;padding:22px 22px 0;box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
   .dark .hsheet{background:rgba(27,24,19,.68);box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
   .stats{display:flex;gap:9px}
   .stat{position:relative;flex:1;height:104px;border-radius:16px;overflow:hidden;padding:13px 11px}
-  .stat .n{font-size:calc(26px * var(--fs,1));font-weight:800;color:var(--ink);line-height:1;position:relative;z-index:2;font-variant-numeric:tabular-nums}
+  .stat .n{font-size:calc(26px * var(--fs,1));font-weight:600;color:var(--ink);line-height:1;position:relative;z-index:2;font-variant-numeric:tabular-nums}
   .stat .k{font-size:calc(11px * var(--fs,1));font-weight:600;letter-spacing:normal;color:var(--mute2);margin-top:6px;position:relative;z-index:2;white-space:nowrap}
   .stat svg{position:absolute;left:0;right:0;bottom:0;width:100%;height:44px;display:block}
   .stat.s1{background:var(--t1)} .stat.s2{background:var(--t2)} .stat.s3{background:var(--t3)}
@@ -158,14 +168,14 @@
   .fignight{display:none}
   .dark .figday{display:none}
   .dark .fignight{display:block}
-  .hero-eyebrow{font-size:calc(12px * var(--fs,1));font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#c9c1e0}
+  .hero-eyebrow{font-size:calc(12px * var(--fs,1));font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#c9c1e0}
   .hero-mark{display:block;margin:0 auto 4px;width:94px;height:auto}
   .welcome-min{display:flex;flex-direction:column;min-height:100%;position:relative;overflow:hidden}
   .welcome-copy{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 28px;position:relative;z-index:1}
   .welcome-copy .hero-mark{width:94px;height:auto;display:block;margin:0 auto 10px}
   .welcome-promise{font-size:calc(23px * var(--fs,1));font-weight:300;line-height:1.42;letter-spacing:-.01em;color:#F5F1EA;max-width:15em;margin:0 auto}
   .welcome-cta{flex:0 0 auto;padding:0 22px calc(30px + env(safe-area-inset-bottom,0));position:relative;z-index:1}
-  .btn-pill{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:56px;border-radius:999px;background:transparent;color:#FAFAFA;border:1.5px solid rgba(250,250,250,.65);font-weight:700;font-size:calc(16px * var(--fs,1));font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .15s ease,border-color .15s ease,color .15s ease}
+  .btn-pill{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:56px;border-radius:999px;background:transparent;color:#FAFAFA;border:1.5px solid rgba(250,250,250,.65);font-weight:600;font-size:calc(16px * var(--fs,1));font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .15s ease,border-color .15s ease,color .15s ease}
   .btn-pill:active{background:var(--act);border-color:var(--act);color:#fff}
   .ob-illus{width:190px;height:auto;display:block;margin:0 auto}
   .ob-namebg{flex:1;position:relative;margin:0 -22px;padding:9vh 22px 0;overflow:hidden;background:transparent}
@@ -221,7 +231,7 @@
   /* if-then plan items */
   .planitem{margin-bottom:24px}
   .planlabel{font-size:calc(15px * var(--fs,1));font-weight:600;color:var(--ink);margin-bottom:10px;line-height:1.4}
-  .planlabel b{font-weight:800;color:var(--purple)}
+  .planlabel b{font-weight:600;color:var(--purple)}
   input[type=text].planinput{font-size:calc(15px * var(--fs,1));font-weight:500;color:var(--ink);letter-spacing:0;border:1px solid var(--faint2);border-bottom:1px solid var(--faint2);border-radius:12px;background:var(--white);padding:12px 14px}
   input[type=text].planinput:focus{border-color:var(--purple)}
   .sugrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
@@ -260,7 +270,7 @@
   :root:not(.dark) .ob-flow .tile.dashed .ic{color:rgba(243,239,232,.6)}
 
   input[type=text]{font-family:inherit;width:100%;border:none;border-bottom:2px solid var(--faint2);
-    background:transparent;padding:10px 0;font-size:calc(24px * var(--fs,1));font-weight:700;color:var(--purple);letter-spacing:-.01em}
+    background:transparent;padding:10px 0;font-size:calc(24px * var(--fs,1));font-weight:600;color:var(--purple);letter-spacing:-.01em}
   input[type=text]:focus{outline:none;border-bottom-color:var(--actx)}
   input::placeholder{color:var(--mute3);font-weight:400}
 
@@ -284,7 +294,7 @@
   .clockopt.on{color:var(--purple);background:var(--accent-lt,rgba(60,49,88,.06))}
   .clockopt .cl-track{stroke:var(--faint2)}
   .clockopt .cl-arc{stroke:currentColor}
-  .clockopt .cl-num{font-size:calc(15px * var(--fs,1));font-weight:800;color:var(--ink)}
+  .clockopt .cl-num{font-size:calc(15px * var(--fs,1));font-weight:600;color:var(--ink)}
   .clockopt.on .cl-num{color:var(--purple)}
   .clockopt .cl-min{font-size:calc(10px * var(--fs,1));font-weight:600;color:var(--mute2);margin-left:3px}
   /* radial time dial */
@@ -294,8 +304,8 @@
   .d-arc{fill:none;stroke:var(--purple);stroke-width:3;stroke-linecap:round}
   .d-handle{fill:#fff;stroke:var(--purple);stroke-width:2}
   .dialval{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
-  #dMin{font-size:calc(46px * var(--fs,1));font-weight:800;color:var(--purple);line-height:1;font-variant-numeric:tabular-nums}
-  .dialunit{font-size:calc(12px * var(--fs,1));font-weight:700;color:var(--mute2);letter-spacing:.14em;text-transform:uppercase;margin-top:6px}
+  #dMin{font-size:calc(46px * var(--fs,1));font-weight:600;color:var(--purple);line-height:1;font-variant-numeric:tabular-nums}
+  .dialunit{font-size:calc(12px * var(--fs,1));font-weight:600;color:var(--mute2);letter-spacing:.14em;text-transform:uppercase;margin-top:6px}
   /* dropdown */
   .selectwrap{position:relative;margin-top:12px}
   .selectwrap .chev{position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--mute2);pointer-events:none;display:flex}
@@ -318,7 +328,7 @@
   .sw::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .16s}
   .sw.on::after{transform:translateX(20px)}
   .fsrow{display:flex;align-items:center;gap:14px;margin-top:12px}
-  .fsrow .a{color:var(--mute2);font-weight:800;line-height:1}
+  .fsrow .a{color:var(--mute2);font-weight:600;line-height:1}
   .fsrow .range{margin:0}
   .pair{display:flex;gap:10px}
   .pair>.btn{flex:1;gap:8px}
@@ -329,7 +339,7 @@
   .wheel .wpad{height:calc(66px * var(--fs,1))}
   .wi{height:calc(66px * var(--fs,1));scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:.34;transition:opacity .16s;cursor:pointer}
   .wi.on{opacity:1}
-  .wi .wl{font-size:calc(17px * var(--fs,1));font-weight:700;color:var(--ink);line-height:1.2}
+  .wi .wl{font-size:calc(17px * var(--fs,1));font-weight:600;color:var(--ink);line-height:1.2}
   .wi.on .wl{color:var(--purple)}
   .wi .ws{font-size:calc(13px * var(--fs,1));color:var(--mute);margin-top:2px}
   .notebox{width:100%;margin-top:8px;font-family:inherit;font-size:calc(15px * var(--fs,1));font-weight:500;color:var(--ink);background:var(--white);
@@ -341,7 +351,7 @@
     color:#F3EFE8;background:rgba(255,255,255,.10);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
   .whybox:focus{background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.4)}
   .whybox::placeholder{color:rgba(243,239,232,.45);font-weight:400}
-  .whyl{display:inline-block;font-size:calc(10px * var(--fs,1));font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--actx)}
+  .whyl{display:inline-block;font-size:calc(10px * var(--fs,1));font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--actx)}
   .whycard2{display:flex;align-items:center;gap:12px;max-width:23em;margin:18px auto 0;
     padding:13px 16px;border-radius:15px;background:var(--white);border:1px solid var(--faint2)}
   .whycard2-l{flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:var(--actx)}
@@ -353,7 +363,7 @@
     font-size:calc(15px * var(--fs,1));line-height:1.5;color:var(--purple);opacity:.9}
   .dark .whyline{color:#cdc0f2}
   .whycard{margin-top:18px;padding:15px 17px;border-radius:14px;background:var(--redtint);border:1px solid var(--faint)}
-  .whycard-l{display:block;font-size:calc(10.5px * var(--fs,1));font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--actx)}
+  .whycard-l{display:block;font-size:calc(10.5px * var(--fs,1));font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--actx)}
   .whycard-q{margin-top:7px;font-style:italic;font-weight:500;font-size:calc(16px * var(--fs,1));line-height:1.5;color:var(--ink)}
   .practicepill{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:999px;
     font-size:calc(12.5px * var(--fs,1));font-weight:600;color:var(--purple);
@@ -365,25 +375,25 @@
     background:var(--white);border:1px solid var(--faint2)}
   .pracopt.on{border-color:var(--purple);box-shadow:inset 0 0 0 1px var(--purple)}
   .dark .pracopt.on{border-color:#8f86ad;box-shadow:inset 0 0 0 1px #8f86ad}
-  .pracn{display:block;font-weight:700;color:var(--ink);font-size:calc(15px * var(--fs,1))}
+  .pracn{display:block;font-weight:600;color:var(--ink);font-size:calc(15px * var(--fs,1))}
   .pracs{display:block;margin-top:1px;font-weight:600;color:var(--actx);font-size:calc(11.5px * var(--fs,1));letter-spacing:.02em}
   .pracnote{display:block;margin-top:5px;color:var(--mute2);font-size:calc(12.5px * var(--fs,1));line-height:1.4}
-  .gnum{font-size:calc(64px * var(--fs,1));font-weight:800;line-height:1;color:var(--purple)}
+  .gnum{font-size:calc(64px * var(--fs,1));font-weight:600;line-height:1;color:var(--purple)}
   .dark .gnum{color:#cdc0f2}
   .gdots{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:26px}
   .gdot{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--faint2);background:var(--white);
-    color:var(--act);font-size:calc(20px * var(--fs,1));font-weight:700;display:flex;align-items:center;justify-content:center;transition:transform .12s ease,background .15s ease,border-color .15s ease}
+    color:var(--act);font-size:calc(20px * var(--fs,1));font-weight:600;display:flex;align-items:center;justify-content:center;transition:transform .12s ease,background .15s ease,border-color .15s ease}
   .gdot.on{background:var(--act);border-color:var(--act);color:#fff}
   .gdot:active{transform:scale(.92)}
-  .gsettled{font-size:calc(22px * var(--fs,1));font-weight:700;color:var(--ink)}
+  .gsettled{font-size:calc(22px * var(--fs,1));font-weight:600;color:var(--ink)}
   .expl{margin-top:9vh;text-align:center;max-width:24em;margin-left:auto;margin-right:auto}
-  .expl-name{font-size:calc(34px * var(--fs,1));font-weight:800;color:var(--ink);margin-top:8px;line-height:1.06}
-  .expl-cad{margin-top:10px;font-weight:700;color:var(--actx);letter-spacing:.02em;font-size:calc(14px * var(--fs,1))}
+  .expl-name{font-size:calc(34px * var(--fs,1));font-weight:600;color:var(--ink);margin-top:8px;line-height:1.06}
+  .expl-cad{margin-top:10px;font-weight:600;color:var(--actx);letter-spacing:.02em;font-size:calc(14px * var(--fs,1))}
   .expl-note{margin-top:16px;color:var(--mute);font-size:calc(16px * var(--fs,1));line-height:1.55}
 
   /* duration segmented */
   .seg{display:flex;gap:8px}
-  .seg>button{flex:1;padding:14px 0;border-radius:10px;background:var(--grey);font-weight:700;font-size:calc(15px * var(--fs,1));color:var(--ink)}
+  .seg>button{flex:1;padding:14px 0;border-radius:10px;background:var(--grey);font-weight:600;font-size:calc(15px * var(--fs,1));color:var(--ink)}
   .seg>button .u{font-size:calc(11px * var(--fs,1));font-weight:500;opacity:.5}
   .seg>button.on{background:var(--purple);color:var(--white)}
 
@@ -411,7 +421,7 @@
     transform:scale(.6);will-change:transform}
   .breathtext{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
   #breathword{font-size:calc(13px * var(--fs,1));font-weight:600;letter-spacing:normal;text-transform:none;color:var(--purple);opacity:.8}
-  #breathcount{font-size:calc(40px * var(--fs,1));font-weight:800;color:var(--purple);line-height:1;margin-top:6px;font-variant-numeric:tabular-nums}
+  #breathcount{font-size:calc(40px * var(--fs,1));font-weight:600;color:var(--purple);line-height:1;margin-top:6px;font-variant-numeric:tabular-nums}
   /* gentle nudge so people notice the speaker is a control they can mute */
   @keyframes soundnudge{0%,100%{transform:rotate(0)}18%{transform:rotate(-11deg)}36%{transform:rotate(9deg)}54%{transform:rotate(-6deg)}72%{transform:rotate(3deg)}}
   #soundbtn.nudge{animation:soundnudge 1.05s ease .5s 2}
@@ -420,7 +430,7 @@
   .row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--faint)}
   .dotmark{width:7px;height:7px;border-radius:50%;flex-shrink:0}
   .dot-pass{background:var(--actx)} .dot-act{background:var(--mute3)}
-  .state{font-size:calc(10px * var(--fs,1));font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+  .state{font-size:calc(10px * var(--fs,1));font-weight:600;letter-spacing:.12em;text-transform:uppercase}
   .state.pass{color:var(--actx)} .state.act{color:var(--mute2)}
   /* Home uses sentence-case labels; lowercase never gets wide tracking. Every other screen keeps its tracked uppercase. */
   .homeview .label,.homeview .tlink,.homeview .state{text-transform:none;letter-spacing:normal}
@@ -432,7 +442,7 @@
   /* stats mini */
   .statrow{display:flex}
   .statrow>div{flex:1}
-  .statrow .v{font-size:calc(26px * var(--fs,1));font-weight:800;color:var(--white);line-height:1;margin-top:6px}
+  .statrow .v{font-size:calc(26px * var(--fs,1));font-weight:600;color:var(--white);line-height:1;margin-top:6px}
   .statrow .v small{font-size:calc(13px * var(--fs,1));font-weight:600;opacity:.7}
 
   .pod{display:flex;flex-direction:column;gap:10px}
@@ -454,16 +464,16 @@
   .fic{flex:none;color:var(--act);line-height:0}
   .fic .ms.fbig{width:30px;height:30px}
   .ftext{flex:1;display:flex;flex-direction:column;min-width:0}
-  .fval{font-size:calc(19px * var(--fs,1));font-weight:800;letter-spacing:-.01em;color:var(--ink);line-height:1.15}
+  .fval{font-size:calc(19px * var(--fs,1));font-weight:600;letter-spacing:-.01em;color:var(--ink);line-height:1.15}
   .fcap{font-size:calc(13px * var(--fs,1));color:var(--mute);margin-top:3px;line-height:1.35}
   .fchev{flex:none;color:var(--mute2);line-height:0}
   .fchev .ms{width:22px;height:22px;transition:transform .2s ease}
   .fchev.open .ms{transform:rotate(180deg)}
-  .fhint{font-size:calc(11.5px * var(--fs,1));font-weight:700;letter-spacing:.02em;color:var(--act);margin-top:5px;display:block}
+  .fhint{font-size:calc(11.5px * var(--fs,1));font-weight:600;letter-spacing:.02em;color:var(--act);margin-top:5px;display:block}
   .coach{position:relative;background:rgba(255,255,255,.55);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);color:var(--ink);border:1px solid rgba(60,49,88,.14);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 6px 20px rgba(20,16,34,.10);animation:coachIn .35s ease both}
   .dark .coach{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.16);box-shadow:0 6px 20px rgba(0,0,0,.30)}
   .coach .coach-tx{flex:1;font-size:calc(13.5px * var(--fs,1));line-height:1.4;font-weight:600;color:var(--ink)}
-  .coach .coach-ok{flex:none;background:var(--faint2);color:var(--ink);border:none;border-radius:999px;padding:7px 13px;font-size:calc(12px * var(--fs,1));font-weight:700;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .coach .coach-ok{flex:none;background:var(--faint2);color:var(--ink);border:none;border-radius:999px;padding:7px 13px;font-size:calc(12px * var(--fs,1));font-weight:600;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
   .coach .coach-ok:active{background:var(--faint)}
   .coach-flat::after{display:none}
   .coach-down{margin-bottom:16px}
@@ -478,19 +488,19 @@
   .pcap{font-size:calc(12.5px * var(--fs,1));line-height:1.5;color:var(--mute);margin-top:12px}
   /* ===== Patterns v2 ===== */
   .ovhead{display:flex;justify-content:space-between;align-items:center;gap:10px}
-  .ovhead .ttl{font-size:calc(16px * var(--fs,1));font-weight:800;color:var(--purple);letter-spacing:-.01em}
+  .ovhead .ttl{font-size:calc(16px * var(--fs,1));font-weight:600;color:var(--purple);letter-spacing:-.01em}
   .pseg{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;flex:none}
   .pseg::-webkit-scrollbar{display:none}
-  .pseg button{flex:none;font-family:inherit;font-size:calc(12.5px * var(--fs,1));font-weight:700;padding:6px 14px;border-radius:999px;background:var(--grey);color:var(--mute);border:none;cursor:pointer}
+  .pseg button{flex:none;font-family:inherit;font-size:calc(12.5px * var(--fs,1));font-weight:600;padding:6px 14px;border-radius:999px;background:var(--grey);color:var(--mute);border:none;cursor:pointer}
   .pseg button.on{background:var(--purple);color:#fff}
   .pkpis{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:13px}
   .pkpi{border-radius:13px;padding:15px 16px;background:var(--grey)}
   .pkpi.pass{background:var(--redtint)}
-  .pkpi .n{font-size:calc(30px * var(--fs,1));font-weight:800;letter-spacing:-.02em;color:var(--ink);line-height:1;font-variant-numeric:tabular-nums}
+  .pkpi .n{font-size:calc(30px * var(--fs,1));font-weight:600;letter-spacing:-.02em;color:var(--ink);line-height:1;font-variant-numeric:tabular-nums}
   .pkpi.pass .n{color:var(--act)}
   .pkpi .k{font-size:calc(13px * var(--fs,1));color:var(--mute);margin-top:6px}
   .pbdh{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
-  .pbdh .t{font-size:calc(13.5px * var(--fs,1));font-weight:700;color:var(--ink)}
+  .pbdh .t{font-size:calc(13.5px * var(--fs,1));font-weight:600;color:var(--ink)}
   .pchart{position:relative;margin-top:20px}
   .pgl{position:absolute;left:16px;right:0;height:1px;background:var(--faint)}
   .pgn{position:absolute;left:0;transform:translateY(-50%);font-size:calc(10px * var(--fs,1));color:var(--mute2);font-variant-numeric:tabular-nums}
@@ -501,19 +511,19 @@
   .pbar .sa{background:var(--slip);border-radius:4px 4px 0 0;min-height:3px}
   .pbar.allp .sp{border-radius:4px}
   .pcol .cl{font-size:calc(10.5px * var(--fs,1));color:var(--mute);font-weight:600}
-  .pcol.now .cl{color:var(--ink);font-weight:700}
+  .pcol.now .cl{color:var(--ink);font-weight:600}
   .pins{display:flex;align-items:flex-start;gap:13px}
   .pins .ic{color:var(--act);flex:none;margin-top:2px;line-height:0}
   .pins .ic .ms{width:26px;height:26px}
   .pins .tx{flex:1;min-width:0}
-  .pins .tx .t{display:block;font-size:calc(17px * var(--fs,1));font-weight:800;color:var(--ink);letter-spacing:-.01em}
+  .pins .tx .t{display:block;font-size:calc(17px * var(--fs,1));font-weight:600;color:var(--ink);letter-spacing:-.01em}
   .pins .tx .s{display:block;font-size:calc(13px * var(--fs,1));color:var(--mute);margin-top:2px;line-height:1.35}
   .sk{position:relative;overflow:hidden;background:var(--faint2);border-radius:7px}
   .sk::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:translateX(-100%);animation:skwave 1.6s ease-in-out infinite}
   .dark .sk::after{background:linear-gradient(90deg,transparent,rgba(255,255,255,.10),transparent)}
   @keyframes skwave{100%{transform:translateX(100%)}}
   @media (prefers-reduced-motion:reduce){ .sk::after{display:none} }
-  .pvlabel{font-size:calc(11.5px * var(--fs,1));font-weight:700;letter-spacing:.06em;color:var(--mute2);text-transform:uppercase;margin-bottom:12px}
+  .pvlabel{font-size:calc(11.5px * var(--fs,1));font-weight:600;letter-spacing:.06em;color:var(--mute2);text-transform:uppercase;margin-bottom:12px}
   .ghost-tod{display:flex;align-items:flex-end;gap:12px}
   .ghost-tod .gtc{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px}
   .ghost-tod .gtb{width:100%;border-radius:8px 8px 4px 4px}
@@ -534,7 +544,7 @@
   .cel-rings span:nth-child(3){animation-delay:.56s}
   .cel-mark{width:78px;height:78px;display:flex;align-items:center;justify-content:center;background:var(--act);border-radius:50%;box-shadow:0 12px 36px rgba(192,57,43,.42);margin-bottom:18px}
   .cel-mark svg{width:40px;height:40px}
-  .cel-title{font-size:calc(24px * var(--fs,1));font-weight:800;color:#fff;letter-spacing:-.01em}
+  .cel-title{font-size:calc(24px * var(--fs,1));font-weight:600;color:#fff;letter-spacing:-.01em}
   .cel-sub{font-size:calc(15px * var(--fs,1));color:rgba(255,255,255,.84);margin-top:4px}
   .celebrate.out .cel-scrim,.celebrate.out .cel-core{animation:celOut .34s ease forwards}
   @keyframes celFade{from{opacity:0}to{opacity:1}}
@@ -558,24 +568,24 @@
   .ptc .ptb{width:100%;background:var(--purple);opacity:.38;border-radius:4px;min-height:4px}
   .ptc.peak .ptb{opacity:1}
   .ptc .l{font-size:calc(10.5px * var(--fs,1));color:var(--mute);font-weight:600}
-  .ptc.peak .l{color:var(--ink);font-weight:700}
+  .ptc.peak .l{color:var(--ink);font-weight:600}
   .ptrow{display:flex;align-items:center;gap:12px;padding:13px 0;border:none;border-bottom:1px solid var(--faint);width:100%;background:none;text-align:left;font-family:inherit;cursor:pointer}
   .ptrow:last-of-type{border-bottom:none}
   .ptrow .tn{font-size:calc(15px * var(--fs,1));font-weight:600;color:var(--ink);width:118px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .ptrow .tk{flex:1;height:7px;border-radius:5px;background:var(--faint);overflow:hidden}
   .ptrow .tk>div{height:100%;background:var(--act);border-radius:5px}
-  .ptrow .tv{font-size:calc(13.5px * var(--fs,1));font-weight:800;color:var(--ink);width:42px;text-align:right;font-variant-numeric:tabular-nums}
+  .ptrow .tv{font-size:calc(13.5px * var(--fs,1));font-weight:600;color:var(--ink);width:42px;text-align:right;font-variant-numeric:tabular-nums}
   .ptrow .cv{color:var(--mute2);display:flex}
-  .pshowall{width:100%;background:none;border:none;font-family:inherit;font-size:calc(13px * var(--fs,1));font-weight:700;color:var(--act);padding:12px 0 2px;cursor:pointer;text-align:center}
+  .pshowall{width:100%;background:none;border:none;font-family:inherit;font-size:calc(13px * var(--fs,1));font-weight:600;color:var(--act);padding:12px 0 2px;cursor:pointer;text-align:center}
   .tsheet .thero{background:var(--redtint);border-radius:14px;padding:18px 16px}
-  .tsheet .thero .big{font-size:calc(42px * var(--fs,1));font-weight:800;color:var(--act);letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+  .tsheet .thero .big{font-size:calc(42px * var(--fs,1));font-weight:600;color:var(--act);letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
   .tsheet .thero .cap{font-size:calc(14px * var(--fs,1));color:var(--ink);margin-top:8px;line-height:1.4}
   .tdrow{display:flex;align-items:center;gap:14px;padding:15px 2px;border-bottom:1px solid var(--faint)}
   .tdrow:last-of-type{border-bottom:none}
   .tdrow .di{color:var(--purple);flex:none;line-height:0}
   .tdrow .di .ms{width:22px;height:22px}
   .tdrow .dl{flex:1;font-size:calc(14.5px * var(--fs,1));color:var(--mute)}
-  .tdrow .dv{font-size:calc(15px * var(--fs,1));font-weight:800;color:var(--ink)}
+  .tdrow .dv{font-size:calc(15px * var(--fs,1));font-weight:600;color:var(--ink)}
   /* ===== Milestones ===== */
   .mcard{background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.7);border-radius:18px;padding:16px 0 14px;margin-top:14px}
   .dark .mcard{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1)}
@@ -583,8 +593,8 @@
   .mhead{display:flex;align-items:center;gap:10px;padding:0 18px}
   .mhead .mi{color:var(--act);flex:none;display:flex;line-height:0}
   .mhead .mi .ms{width:22px;height:22px}
-  .mhead .mt{font-size:calc(16px * var(--fs,1));font-weight:800;color:var(--purple);letter-spacing:-.01em}
-  .mhead .mcd{margin-left:auto;font-size:calc(12.5px * var(--fs,1));font-weight:700;color:var(--mute)}
+  .mhead .mt{font-size:calc(16px * var(--fs,1));font-weight:600;color:var(--purple);letter-spacing:-.01em}
+  .mhead .mcd{margin-left:auto;font-size:calc(12.5px * var(--fs,1));font-weight:600;color:var(--mute)}
   .journey{position:relative;overflow-x:auto;scrollbar-width:none;padding:12px 34px 6px}
   .journey::-webkit-scrollbar{display:none}
   .journey .rail{position:absolute;top:58px;height:4px;background:var(--faint);border-radius:3px;z-index:0}
@@ -601,7 +611,7 @@
   .mstrip{display:flex;align-items:center;gap:14px;width:100%;background:none;border:none;font-family:inherit;text-align:left;cursor:pointer;padding:0}
   .mstrip .node{filter:none}
   .mstx{flex:1;min-width:0}
-  .mstx .t{display:block;font-size:calc(15px * var(--fs,1));font-weight:700;color:var(--ink)}
+  .mstx .t{display:block;font-size:calc(15px * var(--fs,1));font-weight:600;color:var(--ink)}
   .mbar{display:block;height:6px;border-radius:4px;background:var(--faint);overflow:hidden;margin-top:9px}
   .mbar>span{display:block;height:100%;background:var(--act);border-radius:4px}
   .mchev{color:var(--mute2);flex:none;display:flex}
@@ -609,50 +619,50 @@
   .cin{background:var(--grey);border-radius:16px;padding:15px 16px;display:flex;align-items:center;gap:12px;margin-bottom:18px}
   .dark .cin{background:rgba(255,255,255,.06)}
   .cin .ctx{flex:1;min-width:0}
-  .cin .ct{display:block;font-size:calc(15px * var(--fs,1));font-weight:800;color:var(--ink)}
+  .cin .ct{display:block;font-size:calc(15px * var(--fs,1));font-weight:600;color:var(--ink)}
   .cin .cs{display:block;font-size:calc(12.5px * var(--fs,1));color:var(--mute);margin-top:2px}
   .cin .cinbtn{width:auto;flex:none;padding:11px 16px;font-size:calc(14px * var(--fs,1));margin:0}
   .cin.done{cursor:pointer;border:none;width:100%;font-family:inherit;text-align:left;gap:10px}
   .cin.done .mi{color:var(--act);flex:none;display:flex;line-height:0}
   .cin.done .mi .ms{width:20px;height:20px}
-  .cin.done .ct{font-size:calc(14px * var(--fs,1));font-weight:700}
+  .cin.done .ct{font-size:calc(14px * var(--fs,1));font-weight:600}
   /* daily journey card */
   .jcard{background:var(--grey);border-radius:16px;padding:16px 16px 8px;margin-bottom:18px}
   .dark .jcard{background:rgba(255,255,255,.06)}
   .jhead{display:flex;align-items:baseline;gap:9px;margin-bottom:9px}
-  .jday{font-size:calc(13px * var(--fs,1));font-weight:800;color:var(--act);letter-spacing:.01em}
-  .jtag{font-size:calc(10.5px * var(--fs,1));font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mute2)}
-  .jint{font-size:calc(17px * var(--fs,1));font-weight:700;color:var(--ink);line-height:1.34;letter-spacing:-.01em}
+  .jday{font-size:calc(13px * var(--fs,1));font-weight:600;color:var(--act);letter-spacing:.01em}
+  .jtag{font-size:calc(10.5px * var(--fs,1));font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mute2)}
+  .jint{font-size:calc(17px * var(--fs,1));font-weight:600;color:var(--ink);line-height:1.34;letter-spacing:-.01em}
   .jcta{width:100%;margin-top:14px}
   .jdone{display:flex;align-items:center;gap:11px;width:100%;margin-top:14px;background:var(--redtint);border:none;border-radius:999px;padding:10px 14px 10px 10px;font-family:inherit;cursor:pointer;text-align:left}
   .dark .jdone{background:rgba(255,255,255,.07)}
   .jdone-check{flex:none;width:28px;height:28px;border-radius:50%;background:var(--act);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(192,57,43,.28)}
   .jdone-check svg{width:15px;height:15px}
-  .jdone-tx{flex:1;font-size:calc(14.5px * var(--fs,1));font-weight:700;color:var(--ink)}
-  .jdone-x{flex:none;font-size:calc(11px * var(--fs,1));font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mute2);padding-right:4px}
+  .jdone-tx{flex:1;font-size:calc(14.5px * var(--fs,1));font-weight:600;color:var(--ink)}
+  .jdone-x{flex:none;font-size:calc(11px * var(--fs,1));font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mute2);padding-right:4px}
   .readlink{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;border-top:1px solid var(--faint);margin-top:12px;padding:13px 2px 9px;font-family:inherit;cursor:pointer}
-  .readlink .rt{font-size:calc(14px * var(--fs,1));font-weight:700;color:var(--purple)}
+  .readlink .rt{font-size:calc(14px * var(--fs,1));font-weight:600;color:var(--purple)}
   .readlink .rc{color:var(--mute2);display:flex}
   .jnext{display:flex;align-items:center;gap:11px;margin-top:2px;padding:13px 0 6px;border-top:1px solid var(--faint);opacity:.72}
   .jnext .jl{color:var(--mute2);display:flex;line-height:0}.jnext .jl .ms{width:18px;height:18px}
-  .jnext .jntx .t{display:block;font-size:calc(14px * var(--fs,1));font-weight:800;color:var(--ink)}
+  .jnext .jntx .t{display:block;font-size:calc(14px * var(--fs,1));font-weight:600;color:var(--ink)}
   .jnext .jntx .s{display:block;font-size:calc(12px * var(--fs,1));color:var(--mute)}
   /* reading view */
   .rback{position:absolute;top:calc(env(safe-area-inset-top,0) + 14px);left:14px;z-index:3;color:#FAFAFA;background:none;border:none;display:flex;cursor:pointer}
   .rsub{color:#c9c1e0;font-size:calc(13px * var(--fs,1));font-weight:600;margin-top:4px;letter-spacing:.02em}
-  .rintent{font-size:calc(21px * var(--fs,1));font-weight:800;color:var(--ink);line-height:1.34;letter-spacing:-.01em;margin-top:6px}
+  .rintent{font-size:calc(21px * var(--fs,1));font-weight:600;color:var(--ink);line-height:1.34;letter-spacing:-.01em;margin-top:6px}
   .rtext{font-size:calc(16px * var(--fs,1));color:var(--ink);line-height:1.62;margin-top:16px;max-width:34em}
   .rlead{margin-top:20px}
-  .rlead::first-letter{font-size:2.7em;font-weight:800;float:left;line-height:.82;padding:6px 9px 0 0;color:var(--purple)}
+  .rlead::first-letter{font-size:2.7em;font-weight:600;float:left;line-height:.82;padding:6px 9px 0 0;color:var(--purple)}
   .rcallout{margin:24px 0}
   .rcallout .cwave{display:block;width:60px;height:16px;color:var(--act);margin-bottom:12px}
-  .rcallout p{font-size:calc(20px * var(--fs,1));font-weight:700;line-height:1.42;color:var(--ink);letter-spacing:-.01em;max-width:20em}
+  .rcallout p{font-size:calc(20px * var(--fs,1));font-weight:600;line-height:1.42;color:var(--ink);letter-spacing:-.01em;max-width:20em}
   /* money saved */
   .moneystrip{display:flex;align-items:center;gap:13px;width:100%;background:none;border:none;font-family:inherit;text-align:left;padding:0;margin-top:20px}
   .moneystrip .mi{color:var(--act);flex:none;display:flex;line-height:0}
   .moneystrip .mi .ms{width:24px;height:24px}
   .moneystrip .mtx{flex:1;min-width:0}
-  .moneystrip .mtx .t{display:block;font-size:calc(15px * var(--fs,1));font-weight:800;color:var(--ink)}
+  .moneystrip .mtx .t{display:block;font-size:calc(15px * var(--fs,1));font-weight:600;color:var(--ink)}
   .moneystrip .mtx .s{display:block;font-size:calc(12.5px * var(--fs,1));color:var(--mute);margin-top:2px}
   .moneystrip.setup{cursor:pointer}
   .moneystrip .mchev{color:var(--mute2);flex:none;display:flex}
@@ -662,24 +672,24 @@
   .tsize button{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:13px 0;border-radius:12px;background:var(--grey);color:var(--ink);border:1px solid transparent;font-family:inherit;cursor:pointer;font-weight:600;font-size:12px}
   .dark .tsize button{background:rgba(255,255,255,.06)}
   .tsize button.on{background:var(--purple);color:#fff;border-color:var(--purple)}
-  .tsize button .a{font-weight:800;line-height:1;color:var(--purple)}
+  .tsize button .a{font-weight:600;line-height:1;color:var(--purple)}
   .tsize button.on .a{color:#fff}
   .tsize button:nth-child(1) .a{font-size:15px}
   .tsize button:nth-child(2) .a{font-size:19px}
   .tsize button:nth-child(3) .a{font-size:24px}
   .mearned{display:flex;align-items:center;gap:13px;background:var(--redtint);border-radius:14px;padding:12px 14px;margin-bottom:16px}
   .mearned .node{filter:none}
-  .mel{font-size:calc(11px * var(--fs,1));font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--act)}
-  .mev{font-size:calc(16px * var(--fs,1));font-weight:800;color:var(--ink);margin-top:2px}
+  .mel{font-size:calc(11px * var(--fs,1));font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--act)}
+  .mev{font-size:calc(16px * var(--fs,1));font-weight:600;color:var(--ink);margin-top:2px}
   .hourline{width:100%;height:auto;display:block;margin-top:14px}
   .spark{width:100%;height:56px;display:block}
   /* borrowed: overview + daily breakdown + week-vs-week cards */
   .pcard{background:var(--t3);border-radius:16px;padding:16px 16px;margin-top:10px}
   .mscard .journey{margin:6px -16px 0;padding:10px 30px 2px}
   .pcard-h{display:flex;justify-content:space-between;align-items:baseline}
-  .pcard-h .ttl{font-size:calc(15px * var(--fs,1));font-weight:800;color:var(--ink);letter-spacing:-.01em}
+  .pcard-h .ttl{font-size:calc(15px * var(--fs,1));font-weight:600;color:var(--ink);letter-spacing:-.01em}
   .ov{display:flex;gap:26px;margin-top:12px}
-  .ov .n{font-size:calc(23px * var(--fs,1));font-weight:800;color:var(--ink);letter-spacing:-.02em;line-height:1}
+  .ov .n{font-size:calc(23px * var(--fs,1));font-weight:600;color:var(--ink);letter-spacing:-.02em;line-height:1}
   .ov .k{font-size:calc(12px * var(--fs,1));color:var(--mute);margin-top:4px}
   .legend{display:flex;gap:16px;margin-top:14px}
   .legend span{display:flex;align-items:center;gap:6px;font-size:calc(11.5px * var(--fs,1));color:var(--mute)}
@@ -694,7 +704,7 @@
   .wvw>div{flex:1}
   .wvw>div+div{border-left:1px solid var(--faint);padding-left:16px}
   .wvw .wk{font-size:calc(12px * var(--fs,1));color:var(--mute)}
-  .wvw .wn{font-size:calc(24px * var(--fs,1));font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-top:4px;line-height:1}
+  .wvw .wn{font-size:calc(24px * var(--fs,1));font-weight:600;color:var(--ink);letter-spacing:-.02em;margin-top:4px;line-height:1}
   .wvw .k{font-size:calc(12px * var(--fs,1));color:var(--mute);margin-top:4px}
   .wvw-note{font-size:calc(13px * var(--fs,1));color:var(--ink);margin-top:14px;line-height:1.4;border-top:1px solid var(--faint);padding-top:12px}
   .wnote{display:block;font-size:calc(12.5px * var(--fs,1));color:var(--mute);margin-top:3px;line-height:1.35;font-style:italic}
@@ -728,7 +738,7 @@
   .splash-in{display:flex;flex-direction:column;align-items:center;animation:sp-in .7s cubic-bezier(.22,1,.36,1) both}
   .splash-mark{width:88px;height:auto;margin-bottom:20px;border-radius:50%}
   .splash-word{width:172px;height:auto}
-  .splash-by{margin-top:12px;font-size:calc(12px * var(--fs,1));font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(250,250,250,.6)}
+  .splash-by{margin-top:12px;font-size:calc(12px * var(--fs,1));font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:rgba(250,250,250,.6)}
   @keyframes sp-in{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
   .fade{animation:fade .3s ease}
   @keyframes fade{from{opacity:0}to{opacity:1}}
@@ -736,7 +746,7 @@
   .home.fade{animation:fade .3s ease}
   @keyframes homeReveal{from{transform:translateY(8px)}to{transform:translateY(0)}}
   .hidden{display:none!important}
-  .wordmark{font-weight:800;letter-spacing:-.02em;font-style:italic}
+  .wordmark{font-weight:700;letter-spacing:-.02em;font-style:italic}
   ::-webkit-scrollbar{display:none}
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -831,7 +841,7 @@ const PICK_ICONS = ['bolt','eco','menu_book','sports_esports','headphones','loca
 
 /* ============ storage ============ */
 const KEY = 'pako-pause/v1';
-const PERSIST = ['name','types','sessions','onboarded','pause','sound','theme','costPerDrink','currency','checkins','textScale','jStart','why','pattern','seenPractices','seenHints','celebratedMs'];
+const PERSIST = ['name','types','sessions','onboarded','pause','sound','theme','costPerDrink','currency','checkins','textScale','jStart','why','whyDate','pattern','seenPractices','seenHints','celebratedMs'];
 let storageOK = true;
 function loadRaw(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ storageOK=false; return null; } }
 function save(){ if(!storageOK)return; try{ const o={}; PERSIST.forEach(k=>o[k]=S[k]); localStorage.setItem(KEY,JSON.stringify(o)); }catch(e){ storageOK=false; } }
@@ -852,6 +862,7 @@ function fresh(){
     celebratedMs:[],       // milestone keys already celebrated with the bloom, so it fires once
     jStart:null,           // ISO date the 30-day journey began (null until first opened)
     why:'',                // the user's own reason, in their words; resurfaced during a wave and after
+    whyDate:'',            // ISO date the why was written or last edited, shown on the dashboard note
     pattern:'exhale',      // chosen breathing pattern for the wave (default: longer exhale)
     seenPractices:[],      // practice ids whose first-use explainer has been shown
     textScale:1,           // accessibility text size: 1, 1.15, or 1.3
@@ -871,6 +882,7 @@ function boot(){
   const saved = loadRaw();
   if(saved){
     S = Object.assign(fresh(), saved);
+    if(S.why && !S.whyDate) S.whyDate = S.jStart || iso();
     if(!S.types||!S.types.length) S.types = TYPES_SEED.slice();
     if(S.pause && S.pause.endTime){
       S.view = leftOf(S.pause.endTime) > 0 ? 'pause' : 'passed';
@@ -1036,8 +1048,8 @@ function ReadView(){
     <div class="hsheet">
       <div class="rintent">${esc(jFill(e.i))}</div>
       ${body}
-      <div style="flex:1;min-height:24px"></div>
-      ${!checkedInToday() && d===journeyDay() && !journeyOver() ? `<button class="btn btn-red" data-a="checkin-home" style="margin-bottom:10px">Lock in today ${IC.arrow}</button>` : ''}
+      <div style="flex:1;min-height:20px"></div>
+      ${!checkedInToday() && d===journeyDay() && !journeyOver() ? `<button class="btn btn-red" data-a="checkin-home">Lock in today ${IC.arrow}</button>` : ''}
       <button class="tlink grey" data-a="go-home" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">Back home</button>
     </div>
   </div>`;
@@ -1069,7 +1081,7 @@ function starBadge(){ return `<svg class="ms" viewBox="0 0 24 24"><circle cx="12
 function msMedal(v,unit,state,tier,size,frac){
   const c=MS_GRAD[tier], c1=c[0], c2=c[1], id='ms'+unit+v+state;
   const ulab=plu(unit,v).toUpperCase();
-  const num=(fa,fb)=>`<text x="50" y="46" text-anchor="middle" font-family="Plus Jakarta Sans" font-weight="800" font-size="30" fill="${fa}">${v}</text><text x="50" y="63" text-anchor="middle" font-family="Plus Jakarta Sans" font-weight="700" font-size="10" letter-spacing="1" fill="${fb}">${ulab}</text>`;
+  const num=(fa,fb)=>`<text x="50" y="46" text-anchor="middle" font-family="Plus Jakarta Sans" font-weight="600" font-size="30" fill="${fa}">${v}</text><text x="50" y="63" text-anchor="middle" font-family="Plus Jakarta Sans" font-weight="600" font-size="10" letter-spacing="1" fill="${fb}">${ulab}</text>`;
   let svg;
   if(state==='future'){
     svg=`<svg width="${size}" height="${size}" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#e4e2e8"/>${num('#b4b0bb','#b4b0bb')}</svg>`;
@@ -1170,6 +1182,20 @@ function niceDate(d){
   if(diff<7)return wk;
   const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][dt.getMonth()];
   return `${mo} ${dt.getDate()}`;
+}
+
+// the dashboard "why" note: their own words, signed with their name and the date they wrote it
+function fmtWhyDate(d){
+  if(!d) return '';
+  const dt=new Date(d+'T00:00:00'); if(isNaN(dt)) return '';
+  const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][dt.getMonth()];
+  return `${dt.getDate()} ${mo} ${String(dt.getFullYear()).slice(2)}`;
+}
+function homeWhy(){
+  if(!S.why) return '';
+  const first=(S.name||'').split(' ')[0];
+  const sig=[first, fmtWhyDate(S.whyDate)].filter(Boolean).join(', ');
+  return `<div class="postit"><span class="postit-l">Your why</span><p class="postit-q">${esc(S.why)}</p>${sig?`<div class="postit-sig">${esc(sig)}</div>`:''}</div>`;
 }
 
 /* records the active pause as a session */
@@ -1367,7 +1393,7 @@ function Onboard(){
     ${ob.step>0?`<button class="grey" data-a="ob-back" aria-label="Back" style="position:absolute;top:16px;left:16px;display:flex;z-index:3">${IC.back}</button>`:''}
     <div class="obdots">${[1,2,3,4].map(i=>`<div class="${i<=ob.step?'on':''}"></div>`).join('')}</div>
     ${body}
-    <div class="${ob.step===0?'':'actionbar'}" style="position:fixed;bottom:0;left:0;right:0;max-width:var(--maxw);margin:0 auto;padding:14px 22px 26px">
+    <div class="${ob.step===0?'':'actionbar'}" style="position:fixed;bottom:0;left:0;right:0;max-width:var(--maxw);margin:0 auto;padding:16px 22px max(22px,env(safe-area-inset-bottom))">
       ${ob.step===0?`<div style="text-align:center;margin-bottom:14px"><button class="btn-text" data-a="go-privacy" style="font-size:calc(11px * var(--fs,1));letter-spacing:.06em">Your privacy</button></div>`:''}
       <div style="display:flex;gap:10px">
         <button class="btn btn-red" style="flex:1" data-a="ob-next" ${(!canGo||!canFin)?'disabled':''}>${lbl} ${IC.arrow}</button>
@@ -1460,6 +1486,7 @@ function Home(){
         ${statTile('s2', passed, 'Waves passed', MOTIF.passed)}
         ${statTile('s3', bestRun(), 'Best run', MOTIF.taken)}
       </div>
+      ${homeWhy()}
       ${homeMoney()}
       ${homeMilestone()}
       <div style="margin-top:24px">
@@ -1498,7 +1525,7 @@ ${showPicker?`
 `:''}
     <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:${showPicker?28:26}px">
       <span class="label ink qz">${(typeOf(d.typeId)||{}).label ? `How strong is the urge for ${esc((typeOf(d.typeId).label).toLowerCase())} right now?` : 'How strong is it right now?'}</span>
-      <span class="tnum" style="font-size:calc(14px * var(--fs,1));font-weight:800;color:var(--purple)"><span id="bgval">${d.s0}</span><span style="font-weight:600;color:var(--mute2)">/10</span></span>
+      <span class="tnum" style="font-size:calc(14px * var(--fs,1));font-weight:600;color:var(--purple)"><span id="bgval">${d.s0}</span><span style="font-weight:600;color:var(--mute2)">/10</span></span>
     </div>
     <input type="range" class="range calm" id="bgslider" min="1" max="10" step="1" value="${d.s0}" style="margin-top:13px">
 
@@ -1513,7 +1540,7 @@ ${showPicker?`
     </div>
     <p class="grey" style="text-align:center;font-size:calc(12px * var(--fs,1));margin-top:0">Drag the dial to set your time</p>
 
-    <div class="actionbar" style="position:fixed;bottom:0;left:0;right:0;max-width:var(--maxw);margin:0 auto;padding:14px 22px 26px">
+    <div class="actionbar" style="position:fixed;bottom:0;left:0;right:0;max-width:var(--maxw);margin:0 auto;padding:16px 22px max(22px,env(safe-area-inset-bottom))">
       <button class="btn btn-red" data-a="bg-start">Begin ${IC.arrow}</button>
     </div>
   </div>`;
@@ -1562,8 +1589,8 @@ function PauseView(){
         ${line}
         <p class="expl-note">${esc(P.note)}</p>
       </div>
-      <div style="flex:1"></div>
-      <button class="btn btn-red" data-a="prac-explained" style="margin-bottom:8px">Begin ${IC.arrow}</button>
+      <div style="flex:1;min-height:20px"></div>
+      <button class="btn btn-red" data-a="prac-explained">Begin ${IC.arrow}</button>
       <button class="tlink grey" data-a="practice-pick" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">Choose another</button>
     </div>`;
   }
@@ -1617,7 +1644,7 @@ function PauseView(){
     <p id="pzmsg" class="body grey" style="text-align:center;margin-top:22px;max-width:24em;margin-left:auto;margin-right:auto;transition:opacity .4s ease">${pauseLead(p)[0]}</p>
     ${whyCard('Your why')}
 
-    <div style="flex:1"></div>
+    <div style="flex:1;min-height:20px"></div>
 
     ${strengthBox(false)}
   </div>`;
@@ -1659,17 +1686,17 @@ function Passed(){
     title='The wave<br>passed'; tf=38; waveH=92;
     body = drop>=1 ? `It eased from ${last.s0} to ${last.s1} out of 10.`
                    : `You stayed with it.`;
-    primary = `<button class="btn btn-red" data-a="go-patterns" style="margin-bottom:10px">See your insights ${IC.arrow}</button>`;
+    primary = `<button class="btn btn-red" data-a="go-patterns">See your insights ${IC.arrow}</button>`;
   } else if(drop>=1){
     title='The wave is<br>settling'; tf=33; waveH=122;
     body = `It eased from ${last.s0} to ${last.s1} out of 10. It's settling.`;
-    primary = `<button class="btn btn-red" data-a="go-patterns" style="margin-bottom:10px">See your insights ${IC.arrow}</button>`;
+    primary = `<button class="btn btn-red" data-a="go-patterns">See your insights ${IC.arrow}</button>`;
   } else {
     title='You got<br>through it'; tf=37; waveH=152;
     body = drop===0
       ? `It held at ${last.s0} out of 10. And you stayed with it.`
       : `It rose from ${last.s0} to ${last.s1} out of 10. It takes a bit longer sometimes.`;
-    primary = `<button class="btn btn-red" data-a="begin" style="margin-bottom:10px">Watch another wave ${IC.arrow}</button>`;
+    primary = `<button class="btn btn-red" data-a="begin">Watch another wave ${IC.arrow}</button>`;
   }
   const earned=justEarned();
   return `<div class="home fade passed-screen">
@@ -1701,7 +1728,7 @@ function Acted(){
       <p class="body grey" style="max-width:23em">You waited ${last?clock(last.elapsed):'0:00'} before you acted.</p>
       ${causeReflect(true)}
       <div style="flex:1;min-height:20px"></div>
-      <button class="btn btn-red" data-a="begin" style="margin-bottom:10px">Watch another wave ${IC.arrow}</button>
+      <button class="btn btn-red" data-a="begin">Watch another wave ${IC.arrow}</button>
       <button class="tlink grey" data-a="go-home" style="margin-bottom:max(20px,env(safe-area-inset-bottom))">Back home</button>
     </div>
   </div>`;
@@ -1725,7 +1752,7 @@ function Waves(){
         <span class="state ${x.outcome==='passed'?'pass':'act'}">${x.outcome==='passed'?'Passed':'Gave in'}</span></div>`}).join('');
     return `<div style="margin-top:22px">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px">
-        <h3 style="color:var(--ink);font-weight:700">${niceDate(dt)}</h3>
+        <h3 style="color:var(--ink);font-weight:600">${niceDate(dt)}</h3>
         <span class="grey tnum" style="font-size:calc(12px * var(--fs,1))">${passed}/${rows.length} passed</span></div>
       ${items}</div>`;
   }).join('') || `<p class="body grey" style="text-align:center;margin-top:50px">No waves logged yet.</p>`;
@@ -1770,7 +1797,7 @@ function trigSheet(cause){
         ${strength!=null?`<div class="tdrow"><span class="di">${msvg('waves')}</span><span class="dl">Usually feels like</span><span class="dv">${strength} / 10</span></div>`:''}
         ${settle!=null?`<div class="tdrow"><span class="di">${msvg('self_improvement')}</span><span class="dl">Settles in about</span><span class="dv">${settle} min</span></div>`:''}
       </div>
-      <div style="font-size:calc(15px * var(--fs,1));font-weight:700;color:var(--ink);margin:20px 0 0">When it hits</div>
+      <div style="font-size:calc(15px * var(--fs,1));font-weight:600;color:var(--ink);margin:20px 0 0">When it hits</div>
       ${hourLine(rows)}
     </div>`;
   document.getElementById('frame').appendChild(el);
@@ -1895,7 +1922,7 @@ function Patterns(){
 }
 
 /* ============ full privacy notice (in-app) ============ */
-function pSection(h,b){ return `<div style="margin-top:24px"><h3 style="color:var(--ink);font-weight:700">${h}</h3><p class="body grey" style="margin-top:8px">${b}</p></div>`; }
+function pSection(h,b){ return `<div style="margin-top:24px"><h3 style="color:var(--ink);font-weight:600">${h}</h3><p class="body grey" style="margin-top:8px">${b}</p></div>`; }
 function PrivacyView(){
   return `<div class="screen" style="padding-bottom:34px">
     <div style="display:flex;align-items:center;justify-content:space-between;padding-top:16px">
@@ -2479,7 +2506,7 @@ function wire(){
   const mn=document.getElementById('meName');
   if(mn) mn.addEventListener('input',e=>{S.name=e.target.value; save();});
   const mw=document.getElementById('meWhy');
-  if(mw){ const growWhy=()=>{ mw.style.height='auto'; mw.style.height=Math.max(46,mw.scrollHeight)+'px'; }; growWhy(); mw.addEventListener('input',e=>{ S.why=e.target.value; save(); growWhy(); }); }
+  if(mw){ const growWhy=()=>{ mw.style.height='auto'; mw.style.height=Math.max(46,mw.scrollHeight)+'px'; }; growWhy(); mw.addEventListener('input',e=>{ S.why=e.target.value; if(S.why.trim()) S.whyDate=iso(); save(); growWhy(); }); }
   const mcost=document.getElementById('meCost');
   if(mcost) mcost.addEventListener('input',e=>{ const v=parseFloat(e.target.value); S.costPerDrink=(isFinite(v)&&v>0)?v:null; save(); });
   const mcur=document.getElementById('meCurrency');
@@ -2531,7 +2558,7 @@ app.addEventListener('click',e=>{
         const picked=S.types.filter(t=>ob.pick.has(t.id));
         S.name=ob.name.trim()||'there';
         if(picked.length) S.types=picked;                 // keep only the cravings they chose
-        S.why=ob.why.trim();                              // their reason, resurfaced later
+        S.why=ob.why.trim(); S.whyDate=iso();             // their reason + the date they wrote it
         S.onboarded=true; S.view='home'; save(); render();
       }
       break;
