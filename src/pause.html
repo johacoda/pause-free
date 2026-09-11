@@ -730,10 +730,13 @@
 
   .scrim{position:absolute;inset:0;background:var(--mute2);opacity:0;transition:opacity .28s;z-index:40}
   .scrim.on{opacity:1}
+  .scrim.frost{background:rgba(22,17,34,.26);-webkit-backdrop-filter:blur(16px) saturate(120%);backdrop-filter:blur(16px) saturate(120%)}
   .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--white);z-index:41;
     border-radius:18px 18px 0 0;padding:8px 22px max(22px,env(safe-area-inset-bottom));
     transform:translateY(100%);transition:transform .3s cubic-bezier(.22,1,.36,1)}
   .sheet.on{transform:translateY(0)}
+  .sheet.tsheet{padding-top:24px;background:rgba(250,250,250,.86);-webkit-backdrop-filter:blur(30px) saturate(150%);backdrop-filter:blur(30px) saturate(150%)}
+  .dark .sheet.tsheet{background:rgba(32,28,23,.86)}
   .grab{width:36px;height:4px;border-radius:2px;background:var(--faint2);margin:8px auto 16px}
 
   #splash{position:absolute;inset:0;z-index:100;background:#3c3158;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease}
@@ -1220,7 +1223,7 @@ function recordPause(outcome, via){
     s0:p.s0, s1:(p.s1!=null?p.s1:p.s0),
     len:p.len, elapsed, outcome, via:via||'timer',   // 'tap' = they said it passed; 'timer' = the clock ran out
   });
-  S.sessions = S.sessions.slice(0,200);
+  S.sessions = S.sessions.slice(0,1000);
   S.pause = null;
   save();
 }
@@ -1796,7 +1799,7 @@ function trigSheet(cause){
   const settle=w.length?Math.max(1,Math.round(w[Math.floor(w.length/2)]/60)):null;
   const bars=pods.map(x=>`<div class="ptc ${x===peak&&pod[peak]>0?'peak':''}"><div class="ptb" style="height:${Math.max(6,pod[x]/maxPod*100)}%"></div><div class="l">${x}</div></div>`).join('');
   const el=document.createElement('div');
-  el.innerHTML=`<div class="scrim on" data-a="ts-close" style="z-index:50"></div>
+  el.innerHTML=`<div class="scrim frost on" data-a="ts-close" style="z-index:50"></div>
     <div class="sheet tsheet on" style="z-index:51">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
         <h2 style="font-size:calc(22px * var(--fs,1))">${esc(cause)}</h2>
