@@ -110,9 +110,11 @@
     background:none;padding:12px;width:100%;text-align:center}
   .tlink.grey{color:var(--mute)}
   .btn + .tlink{margin-top:10px}
-  .postit{position:relative;margin-top:18px;padding:16px 20px 16px;border-radius:0;background:linear-gradient(180deg,#FBF4E6,#F4E9D0);border:1px solid rgba(180,150,90,.22);box-shadow:0 6px 16px rgba(90,70,30,.10);color:#4a3f2e}
+  .postit{position:relative;margin-top:20px;padding:16px 20px 16px;border-radius:0;background:linear-gradient(180deg,#FBF4E6,#F4E9D0);border:1px solid rgba(180,150,90,.22);box-shadow:0 6px 16px rgba(90,70,30,.10);transform:rotate(-.6deg);color:#4a3f2e}
+  .postit::before{content:'';position:absolute;top:-9px;left:50%;transform:translateX(-50%) rotate(1.4deg);width:58px;height:15px;background:rgba(255,255,255,.42);border:1px solid rgba(180,150,90,.16);border-radius:2px;z-index:2}
   .postit::after{content:'';position:absolute;right:0;bottom:0;width:22px;height:22px;background:linear-gradient(135deg,#F0E1BD 0%,#E2CD9C 55%,#D3BA82 100%);clip-path:polygon(100% 0,0 100%,100% 100%)}
   .dark .postit{background:linear-gradient(180deg,#3a3326,#322b1f);border-color:rgba(200,170,110,.16);color:#efe6d2;box-shadow:0 6px 16px rgba(0,0,0,.30)}
+  .dark .postit::before{background:rgba(255,255,255,.10);border-color:rgba(200,170,110,.14)}
   .dark .postit::after{background:linear-gradient(135deg,#4c4331 0%,#3d3526 55%,#2f2a1e 100%)}
   .postit-l{display:block;font-size:calc(10px * var(--fs,1));font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#a98a4e;margin-bottom:6px}
   .dark .postit-l{color:#cdb27a}
@@ -331,6 +333,68 @@
   .fsrow .a{color:var(--mute2);font-weight:600;line-height:1}
   .fsrow .range{margin:0}
   .pair{display:flex;gap:10px}
+  /* ---- settings on the gradient (ported from the react client) ---- */
+  .setwrap{background:transparent}
+  .setpage{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;padding:0 22px}
+  .set-top{padding:calc(env(safe-area-inset-top,0) + 30px) 0 4px}
+  .set-h{font-size:calc(32px * var(--fs,1));font-weight:600;letter-spacing:-.01em;color:#FAFAFA}
+  .setpage .prof-sec{display:block;font-size:calc(11px * var(--fs,1));font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(250,250,250,.5);margin:26px 0 10px}
+  .set-group{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:0 16px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+  .set-row{display:flex;align-items:center;gap:12px;width:100%;padding:16px 0;border:none;border-bottom:1px solid rgba(255,255,255,.12);background:none;font-family:inherit;text-align:left;cursor:pointer;color:#FAFAFA;-webkit-tap-highlight-color:transparent}
+  .set-row:last-child{border-bottom:none}
+  .set-row.open{flex-direction:column;align-items:stretch;cursor:default}
+  .set-row .t{font-size:calc(15px * var(--fs,1));font-weight:600;color:#FAFAFA}
+  .set-row.open .t{margin-bottom:9px}
+  .set-row .t .s{font-weight:400;color:rgba(250,250,250,.5);margin-left:8px;letter-spacing:normal;text-transform:none;font-size:calc(13px * var(--fs,1))}
+  .set-row .tx{flex:1;min-width:0;display:flex;flex-direction:column}
+  .set-row .tx .s{font-size:calc(12.5px * var(--fs,1));font-weight:400;color:rgba(250,250,250,.55);margin-top:3px}
+  .set-row .ic{flex:none;display:flex;color:rgba(250,250,250,.82)}
+  .set-row .ic svg{width:22px;height:22px}
+  .set-row .c{flex:none;display:flex;color:rgba(250,250,250,.5)}
+  .set-row.danger .t,.set-row.danger .ic{color:#ff9d88}
+  .set-in{width:100%;font-family:inherit;font-size:calc(15px * var(--fs,1));font-weight:500;color:#FAFAFA;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);border-radius:12px;padding:13px 14px;-webkit-appearance:none;appearance:none}
+  .set-in::placeholder{color:rgba(250,250,250,.42)}
+  textarea.set-in{resize:none;line-height:1.5;min-height:56px}
+  .set-note{display:block;font-size:calc(13px * var(--fs,1));color:rgba(250,250,250,.62);line-height:1.45;margin:-2px 0 12px}
+  .set-note.in{margin:2px 0 12px}
+  .setchips{margin-top:0}
+  .setchip{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;font-size:calc(14px * var(--fs,1));font-weight:500;font-family:inherit;color:#FAFAFA;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .setchip svg{width:17px;height:17px;opacity:.85}
+  .setchip.on{background:#FAFAFA;color:var(--purple);border-color:#FAFAFA;font-weight:600}
+  .setchip.on svg{opacity:1;color:var(--purple)}
+  .setchip.dashed{border-style:dashed;background:none;color:rgba(250,250,250,.72)}
+  .set-plans{margin-top:4px}
+  .set-plans .planitem{margin-bottom:16px}
+  .setpage .planlabel{color:#FAFAFA}
+  .setpage .planlabel b{color:#cabfe8}
+  .setpage .planinput{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);border-bottom:1px solid rgba(255,255,255,.20);color:#FAFAFA}
+  .setpage .planinput::placeholder{color:rgba(250,250,250,.42)}
+  .setpage input[type=text].set-in,.setpage input[type=number].set-in,.setpage select.set-in,.setpage textarea.set-in{color:#FAFAFA;caret-color:#fff;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);border-radius:12px}
+  .setpage input[type=text]::placeholder,.setpage input[type=number]::placeholder,.setpage textarea::placeholder{color:rgba(250,250,250,.42)}
+  .setpage input[type=text].set-in:focus,.setpage input[type=number].set-in:focus,.setpage textarea.set-in:focus{outline:none;border-color:rgba(255,255,255,.45)}
+  .setpage input[type=text].planinput{color:#FAFAFA;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);border-radius:12px}
+  .setpage input[type=text].planinput:focus{border-color:rgba(255,255,255,.5)}
+  .setpage .sugchip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);color:#FAFAFA}
+  .setpage .sugchip svg{color:#cabfe8}
+  .setpage .sugchip:active{background:#FAFAFA;color:var(--purple)}
+  .setpage .sugchip:active svg{color:var(--purple)}
+  .set-money .moneyrow{display:flex;gap:10px;align-items:center;margin-bottom:12px}
+  .set-money .cursel{position:relative;width:88px;flex:none}
+  .set-money .cursel .set-in{padding-right:30px}
+  .set-money .cursel .chev{position:absolute;right:9px;top:50%;transform:translateY(-50%);pointer-events:none;color:rgba(250,250,250,.6);display:flex}
+  .set-money .cursel .chev svg{width:18px;height:18px}
+  .set-money .moneyrow>.set-in{flex:1}
+  .setpage .sw{background:rgba(255,255,255,.22)}
+  .setpage .sw.on{background:#FAFAFA}
+  .setpage .sw.on::after{background:var(--purple)}
+  .setpage .fsrow{display:flex;align-items:center;gap:12px}
+  .setpage .fsrow .a{color:rgba(250,250,250,.7)}
+  .setpage .range{background:rgba(255,255,255,.22)}
+  .setpage .range::-webkit-slider-thumb{background:#fff;border-color:#fff}
+  .setpage .range::-moz-range-thumb{background:#fff;border-color:#fff}
+  .set-wipe{background:rgba(192,57,43,.18);border:1px solid rgba(192,57,43,.34);border-radius:14px;padding:14px;margin-top:8px}
+  .set-wipe p{font-size:calc(14px * var(--fs,1));color:#FAFAFA;margin-bottom:12px;line-height:1.4}
+  .set-foot{font-size:calc(12px * var(--fs,1));color:rgba(250,250,250,.5);line-height:1.55;margin-top:26px;text-align:center}
   .pair>.btn{flex:1;gap:8px}
   .wheelwrap{position:relative;margin-top:12px}
   .wsel{position:absolute;left:0;right:0;top:33.3333%;height:33.3333%;pointer-events:none;border-top:1px solid var(--faint2);border-bottom:1px solid var(--faint2);background:var(--accent-lt);border-radius:10px}
@@ -773,15 +837,16 @@
 /* ============ config ============ */
 const APP = { name:"Pause", by:"Pákó", lockup:"Pause by Pákó", brand:"Pákó Habit Lab" };
 const TYPES_SEED = [
-  { id:'smoke',  label:'Cigarettes', icon:'smoking_rooms' },
-  { id:'drink',  label:'Alcohol',    icon:'sports_bar' },
-  { id:'sugar',  label:'Sugar',      icon:'cake' },
-  { id:'phone',  label:'The phone',  icon:'devices' },
-  { id:'bet',    label:'Betting',    icon:'casino' },
-  { id:'porn',   label:'Porn',       icon:'18_up_rating' },
-  { id:'junk',   label:'Junk food',  icon:'fastfood' },
-  { id:'caf',    label:'Caffeine',   icon:'local_cafe' },
-  { id:'spend',  label:'Spending',   icon:'shopping_bag' },
+  { id:'smoke',  label:'Smoking',      icon:'smoking_rooms' },
+  { id:'drink',  label:'Alcohol',      icon:'sports_bar' },
+  { id:'sugar',  label:'Sugar',        icon:'cake' },
+  { id:'phone',  label:'Social media', icon:'chat_bubble' },
+  { id:'game',   label:'Gaming',       icon:'sports_esports' },
+  { id:'bet',    label:'Gambling',     icon:'casino' },
+  { id:'porn',   label:'Porn',         icon:'18_up_rating' },
+  { id:'junk',   label:'Junk food',    icon:'fastfood' },
+  { id:'caf',    label:'Caffeine',     icon:'local_cafe' },
+  { id:'spend',  label:'Spending',     icon:'shopping_bag' },
 ];
 const CAUSES = ['Stress','Boredom','Tired','Hungry','After a meal','Around people','Low mood','Just habit'];
 
@@ -842,7 +907,7 @@ function planItem(t){ const has=(t.plan||'').trim();
  return `<div class="planitem">
   <div class="planlabel">If I crave <b>${esc(t.label)}</b>, I'll…</div>
   <input class="planinput" type="text" data-plan="${t.id}" value="${esc(t.plan||'')}" maxlength="120" placeholder="e.g. drink water and step outside" autocomplete="off">
-  ${has?'':`<div class="sugrow">${sugChips(t.id)}</div>`}
+  <div class="sugrow">${sugChips(t.id)}</div>
 </div>`; }
 const PICK_ICONS = ['bolt','eco','menu_book','sports_esports','headphones','local_drink','cookie','laptop_mac','directions_run','bedtime','chat_bubble','shopping_cart','fitness_center','local_pizza','savings','mood','favorite'];
 
@@ -999,7 +1064,7 @@ function focusType(){
 }
 function jThing(){ const ft=focusType(); if(!ft) return 'it'; return THING_WORD_OVERRIDE[ft.id] || (ft.label||'').trim().toLowerCase() || 'it'; }
 // the "steady days" tile names what they're free from, e.g. "Drink-free days"
-const FREE_WORD = { drink:'Drink', smoke:'Smoke', sugar:'Sugar', phone:'Phone', bet:'Betting', porn:'Porn', junk:'Junk food', caf:'Caffeine', spend:'Spending' };
+const FREE_WORD = { drink:'Drink', smoke:'Smoke', sugar:'Sugar', phone:'Social media', game:'Gaming', bet:'Gambling', porn:'Porn', junk:'Junk food', caf:'Caffeine', spend:'Spending' };
 function freeLabel(){ const ft=focusType(); if(!ft) return 'Steady days'; const w=FREE_WORD[ft.id]||(ft.label||'').trim()||'Steady'; return `${w}-free days`; }
 function jWhyClause(){
   const w=(S.why||'').trim().replace(/[.!?]+$/,'');
@@ -1964,62 +2029,72 @@ function patNote(id){ const q=(id==='ground')?GROUND:patOf(id); return (q&&q.not
 function wheelHTML(id, items, cur){ const body=items.map(it=>`<div class="wi ${it.id===cur?'on':''}" data-id="${it.id}"><span class="wl">${esc(it.name)}</span>${it.sub?`<span class="ws">${esc(it.sub)}</span>`:''}</div>`).join(''); return `<div class="wheelwrap"><div class="wsel"></div><div class="wheel" id="${id}"><div class="wpad"></div>${body}<div class="wpad"></div></div></div>`; }
 function initWheel(id, list, cur, onPick){ const w=document.getElementById(id); if(!w) return; const items=w.querySelectorAll('.wi'); if(!items.length) return; const ih=items[0].offsetHeight; if(!ih) return; let idx=0; for(let i=0;i<list.length;i++) if(list[i].id===cur) idx=i; const mark=k=>{ for(let j=0;j<items.length;j++) items[j].classList.toggle('on', j===k); }; w.scrollTop=idx*ih; mark(idx); let last=idx, raf=null; w.addEventListener('scroll', ()=>{ if(raf) return; raf=requestAnimationFrame(()=>{ raf=null; let k=Math.round(w.scrollTop/ih); if(k<0)k=0; if(k>list.length-1)k=list.length-1; if(k!==last){ last=k; mark(k); onPick(list[k]); } }); }); items.forEach((it,i)=>it.addEventListener('click',()=>{ w.scrollTo({top:i*ih, behavior:'smooth'}); })); }
 function fillRange(el){ const mn=+el.min,mx=+el.max,v=+el.value,pct=(v-mn)/(mx-mn)*100; el.style.background=`linear-gradient(to right,var(--purple) ${pct}%,var(--faint2) ${pct}%)`; }
+function fillRangeLight(el){ const mn=+el.min,mx=+el.max,v=+el.value,pct=(v-mn)/(mx-mn)*100; el.style.background='linear-gradient(to right,rgba(255,255,255,.9) '+pct+'%,rgba(255,255,255,.22) '+pct+'%)'; }
 function Me(){
-  const tiles=S.types.map(t=>`<button class="tile on" data-a="me-untrack" data-id="${t.id}"><span class="ic">${msvg(t.icon)}</span><span class="tile-l">${esc(t.label)}</span><span style="color:rgba(255,255,255,.6);font-size:calc(18px * var(--fs,1))">×</span></button>`).join('');
-  const practices=PATTERNS.concat([GROUND]);
-  return `<div class="home">
-    ${navHero('Settings')}
-    <div class="hsheet">
-    <span class="label ink" style="display:block">You</span>
-    <div class="grp">
-      <div class="grow"><span class="sl">Your name</span>
-        <input type="text" id="meName" value="${esc(S.name)}" maxlength="24" placeholder="Your name" autocomplete="off" style="margin-top:8px"></div>
-      <div class="grow"><span class="sl">Your reason</span>
-        <span class="ss">Why you're doing this. We bring it back when a wave hits.</span>
-        <textarea id="meWhy" class="notebox" maxlength="240" placeholder="I want to be present for my kids. I'm tired of the fog." style="margin-top:10px;min-height:46px;height:46px">${esc(S.why||'')}</textarea></div>
-    </div>
-    <span class="label ink" style="display:block;margin-top:26px">What you're working on</span>
-    <div class="tiles" style="margin-top:10px">${tiles}
-      <button class="tile dashed" data-a="add-type"><span class="ic">${msvg('add')}</span><span class="tile-l">Add your own</span></button></div>
-    <span class="label ink" style="display:block;margin-top:26px">Your plan</span>
-    <p class="body grey" style="font-size:calc(13px * var(--fs,1));margin:6px 0 14px">Deciding in advance makes it easier to follow through.</p>
-    ${S.types.map(t=>planItem(t)).join('')}
-    ${tracksAlcohol()?`<span class="label ink" style="display:block;margin-top:26px">Money you're saving</span>
-    <div class="grp"><div class="grow"><span class="ss">Set what one drink costs, and you'll see the money you keep with every wave you let pass.</span>
-      <div class="costrow" style="margin-top:12px">
-        <div class="selectwrap" style="margin-top:0;width:96px;flex:none"><select class="select" id="meCurrency">${['₦','$','£','€','R'].map(c=>`<option value="${c}" ${(S.currency||'₦')===c?'selected':''}>${c}</option>`).join('')}</select><span class="chev">${msvg('expand_more')}</span></div>
-        <input type="number" inputmode="numeric" id="meCost" class="select" style="flex:1" min="0" step="1" placeholder="e.g. 2500" value="${S.costPerDrink!=null?S.costPerDrink:''}"></div>
-    </div></div>`:''}
-    <span class="label ink" style="display:block;margin-top:26px">Preferences</span>
-    <div class="grp">
-      ${swRow('Dark mode','', S.theme==='dark', 'theme-toggle')}
-      <div class="grow"><span class="sl">Text size</span><span class="ss" id="tsname">${TSNAMES[tsIndex()]}</span>
-        <div class="fsrow"><span class="a" style="font-size:calc(13px * var(--fs,1))">A</span>
-          <input type="range" class="range" id="tsslider" min="0" max="${TSVALS.length-1}" step="1" value="${tsIndex()}">
-          <span class="a" style="font-size:calc(22px * var(--fs,1))">A</span></div></div>
-      <div class="grow"><span class="sl">Breathwork and grounding</span>
-        <span class="ss">What the wave opens with. You can switch mid-wave too.</span>
-        <div class="selectwrap"><select class="select" id="mePractice" aria-label="Default practice">${practices.map(p=>`<option value="${p.id}" ${p.id===(S.pattern||'exhale')?'selected':''}>${esc(p.name)}</option>`).join('')}</select><span class="chev">${msvg('expand_more')}</span></div></div>
-    </div>
-    <span class="label ink" style="display:block;margin-top:26px">Your data</span>
-    <div class="grp"><div class="grow">
-      <div class="pair"><button class="btn btn-ghost btn-sm" data-a="share-sum">${msvg('share','ic16')}Share</button>
-        <button class="btn btn-ghost btn-sm" data-a="export-csv">${msvg('download','ic16')}Download</button></div>
-      <span class="ss" style="margin-top:10px;display:block">The copy is made on your device and only leaves it if you send it.</span></div></div>
-    <div class="card" style="margin-top:26px;background:var(--grey);border:none">
-      <span class="label ink" style="margin-bottom:6px;display:inline-flex;align-items:center;gap:6px">${msvg('lock','ic16')} Private by design</span>
-      <p class="body grey" style="font-size:calc(13px * var(--fs,1))"><em>Pause</em> runs entirely in your browser, with no account and no server. Everything you log stays on your device.</p>
-      <button class="btn-text" data-a="go-privacy" style="margin-top:12px;font-size:calc(11px * var(--fs,1));letter-spacing:.08em">Read the full privacy notice</button></div>
-    <div class="card" style="margin-top:14px;background:var(--grey);border:none">
-      <span class="label ink" style="margin-bottom:6px;display:inline-flex;align-items:center;gap:6px">${msvg('favorite','ic16')} If you need more than a pause</span>
-      <p class="body grey" style="font-size:calc(13px * var(--fs,1))"><em>Pause</em> is a wellness and self-help tool. It does not provide medical advice, diagnosis, or treatment, and it is not a substitute for professional care. If you are worried about your health or safety, please speak to a qualified health professional.</p></div>
-    <button class="erasebtn" data-a="wipe-ask" style="margin-top:18px">${msvg('delete','ic16')} Erase everything</button>
-    <div id="wipebox" class="hidden card" style="margin-top:2px;background:var(--redtint);border:none">
-      <p class="body" style="font-size:calc(14px * var(--fs,1));margin-bottom:12px">This erases your whole history and settings on this device. It can't be undone.</p>
-      <div style="display:flex;gap:10px"><button class="btn btn-ghost btn-sm" style="flex:1" data-a="wipe-no">Keep it</button>
-        <button class="btn btn-red btn-sm" style="flex:1" data-a="wipe-yes">Erase</button></div></div>
-    <div style="flex:1;min-height:16px"></div>
-    <p class="grey" style="text-align:center;font-size:calc(11px * var(--fs,1));padding-bottom:6px"><span class="wordmark">Pause</span> by Pákó</p>
+  const catalog = TYPES_SEED.concat(S.types.filter(t=>!TYPES_SEED.some(s=>s.id===t.id)));
+  const chips = catalog.map(t=>{
+    const on=S.types.some(x=>x.id===t.id);
+    const cat=TYPES_SEED.find(s=>s.id===t.id)||t;
+    return `<button class="setchip${on?' on':''}" data-a="me-toggle-type" data-id="${t.id}" aria-pressed="${on?'true':'false'}">${msvg(cat.icon||'bolt','ic16')}<span>${esc(cat.label||t.label)}</span></button>`;
+  }).join('') + `<button class="setchip dashed" data-a="add-type">${msvg('add','ic16')}<span>Add your own</span></button>`;
+  const money = tracksAlcohol() ? `
+      <span class="prof-sec">Money you're saving</span>
+      <div class="set-group set-money">
+        <span class="set-note in">Set what one drink costs, and you'll see the money you keep with every wave you let pass.</span>
+        <div class="moneyrow">
+          <span class="cursel"><select class="set-in" id="meCurrency" aria-label="Currency">${['₦','$','£','€','R'].map(c=>`<option value="${c}" ${(S.currency||'₦')===c?'selected':''}>${c}</option>`).join('')}</select><span class="chev">${msvg('expand_more')}</span></span>
+          <input class="set-in" type="number" inputmode="numeric" id="meCost" min="0" step="1" placeholder="e.g. 2500" value="${S.costPerDrink!=null?S.costPerDrink:''}">
+        </div>
+        <span class="set-note">Leave it blank and Pause won't mention money.</span>
+      </div>` : '';
+  return `<div class="home setwrap fade">
+    <div class="setpage">
+      <div class="set-top"><span class="set-h">Settings</span></div>
+
+      <span class="prof-sec">You</span>
+      <div class="set-group">
+        <div class="set-row open"><span class="t">Your name</span>
+          <input class="set-in" type="text" id="meName" value="${esc(S.name)}" maxlength="24" placeholder="Your name" autocomplete="off"></div>
+        <div class="set-row open"><span class="t">Your why</span>
+          <textarea class="set-in" id="meWhy" maxlength="240" placeholder="Why you're doing this. We bring it back when a wave hits.">${esc(S.why||'')}</textarea></div>
+      </div>
+
+      <span class="prof-sec">What you're working on</span>
+      <div class="chiprow setchips">${chips}</div>
+
+      ${S.types.length?`<span class="prof-sec">Your plan</span>
+      <span class="set-note">Deciding in advance makes it easier to follow through.</span>
+      <div class="set-plans">${S.types.map(t=>planItem(t)).join('')}</div>`:''}
+      ${money}
+
+      <span class="prof-sec">Preferences</span>
+      <div class="set-group">
+        <div class="set-row"><span class="ic">${msvg(S.theme==='dark'?'dark_mode':'light_mode')}</span><span class="tx"><span class="t">Dark mode</span></span>
+          <button class="sw ${S.theme==='dark'?'on':''}" data-a="theme-toggle" role="switch" aria-checked="${S.theme==='dark'?'true':'false'}" aria-label="Dark mode"></button></div>
+        <div class="set-row open"><span class="t">Text size <span class="s" id="tsname">${TSNAMES[tsIndex()]}</span></span>
+          <div class="fsrow"><span class="a" style="font-size:calc(13px * var(--fs,1))">A</span>
+            <input type="range" class="range" id="tsslider" min="0" max="${TSVALS.length-1}" step="1" value="${tsIndex()}">
+            <span class="a" style="font-size:calc(22px * var(--fs,1))">A</span></div></div>
+      </div>
+
+      <span class="prof-sec">Your data</span>
+      <div class="set-group">
+        <button class="set-row" data-a="export-csv"><span class="ic">${msvg('download')}</span><span class="tx"><span class="t">Download your history</span><span class="s">A copy is made on your device.</span></span></button>
+        <button class="set-row" data-a="share-sum"><span class="ic">${msvg('share')}</span><span class="tx"><span class="t">Share a summary</span></span></button>
+        <button class="set-row danger" data-a="wipe-ask"><span class="ic">${msvg('delete')}</span><span class="tx"><span class="t">Erase everything</span></span></button>
+      </div>
+      <div id="wipebox" class="hidden set-wipe">
+        <p>This erases your whole history and settings on this device. It can't be undone.</p>
+        <div class="pair"><button class="btn btn-ghost btn-sm" data-a="wipe-no">Keep it</button><button class="btn btn-red btn-sm" data-a="wipe-yes">Erase</button></div>
+      </div>
+
+      <span class="prof-sec">About</span>
+      <div class="set-group">
+        <button class="set-row" data-a="go-privacy"><span class="ic">${msvg('lock')}</span><span class="tx"><span class="t">Privacy Policy</span></span><span class="c">${msvg('arrow_forward','nav24')}</span></button>
+      </div>
+
+      <p class="set-foot"><em>Pause</em> is a wellness and self-help tool. It does not provide medical advice, diagnosis or treatment, and it is not a substitute for professional care.</p>
+      <div style="flex:1;min-height:16px"></div>
     </div>
     ${Nav('me')}
   </div>`;
@@ -2509,7 +2584,7 @@ function initDial(){
 }
 function wire(){
   const _tss=document.getElementById('tsslider');
-  if(_tss){ fillRange(_tss); _tss.addEventListener('input',function(e){ var i=+e.target.value; S.textScale=TSVALS[i]; document.documentElement.style.setProperty('--fs',S.textScale); save(); fillRange(e.target); var l=document.getElementById('tsname'); if(l) l.textContent=TSNAMES[i]; }); }
+  if(_tss){ fillRangeLight(_tss); _tss.addEventListener('input',function(e){ var i=+e.target.value; S.textScale=TSVALS[i]; document.documentElement.style.setProperty('--fs',S.textScale); save(); fillRangeLight(e.target); var l=document.getElementById('tsname'); if(l) l.textContent=TSNAMES[i]; }); }
   var _mp=document.getElementById('mePractice'); if(_mp) _mp.addEventListener('change',function(e){ setPattern(e.target.value); save(); });
 
   const on=document.getElementById('obName');
@@ -2645,6 +2720,7 @@ app.addEventListener('click',e=>{
 
     /* me */
     case'me-untrack':{ if(S.types.length>1){ S.types=S.types.filter(t=>t.id!==id); save(); render(); } break; }
+    case'me-toggle-type':{ const on=S.types.some(t=>t.id===id); if(on){ if(S.types.length>1) S.types=S.types.filter(t=>t.id!==id); } else { const seed=TYPES_SEED.find(t=>t.id===id); if(seed) S.types=S.types.concat([Object.assign({},seed)]); } save(); render(); break; }
     case'theme': S.theme=el.dataset.v; save(); applyTheme(); render(); break;
     case'theme-toggle': S.theme = S.theme==='dark'?'light':'dark'; save(); applyTheme(); render(); break;
     case'text-size': S.textScale=parseFloat(el.dataset.v)||1; save(); applyTheme(); render(); break;
