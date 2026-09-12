@@ -334,7 +334,9 @@
   .fsrow .range{margin:0}
   .pair{display:flex;gap:10px}
   /* ---- settings on the gradient (ported from the react client) ---- */
-  .setwrap{background:transparent}
+  .setwrap{background:linear-gradient(to bottom,#3c3158 0%,#4a3e70 55%,#5a4d84 100%)}
+  .dark .setwrap{background:linear-gradient(to bottom,#3c3158 0%,#241d33 60%,#171310 100%)}
+  .setwrap .navspace{background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
   .setpage{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;padding:0 22px}
   .set-top{padding:calc(env(safe-area-inset-top,0) + 30px) 0 4px}
   .set-h{font-size:calc(32px * var(--fs,1));font-weight:600;letter-spacing:-.01em;color:#FAFAFA}
@@ -369,7 +371,7 @@
   .setpage .planlabel b{color:#cabfe8}
   .setpage .planinput{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);border-bottom:1px solid rgba(255,255,255,.20);color:#FAFAFA}
   .setpage .planinput::placeholder{color:rgba(250,250,250,.42)}
-  .setpage input[type=text].set-in,.setpage input[type=number].set-in,.setpage select.set-in,.setpage textarea.set-in{color:#FAFAFA;caret-color:#fff;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);border-radius:12px}
+  .setpage input[type=text].set-in,.setpage input[type=number].set-in,.setpage select.set-in,.setpage textarea.set-in{color:#FAFAFA;caret-color:#fff;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);border-radius:12px;padding:13px 15px;font-size:calc(16px * var(--fs,1))}
   .setpage input[type=text]::placeholder,.setpage input[type=number]::placeholder,.setpage textarea::placeholder{color:rgba(250,250,250,.42)}
   .setpage input[type=text].set-in:focus,.setpage input[type=number].set-in:focus,.setpage textarea.set-in:focus{outline:none;border-color:rgba(255,255,255,.45)}
   .setpage input[type=text].planinput{color:#FAFAFA;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);border-radius:12px}
@@ -394,7 +396,7 @@
   .setpage .range::-moz-range-thumb{background:#fff;border-color:#fff}
   .set-wipe{background:rgba(192,57,43,.18);border:1px solid rgba(192,57,43,.34);border-radius:14px;padding:14px;margin-top:8px}
   .set-wipe p{font-size:calc(14px * var(--fs,1));color:#FAFAFA;margin-bottom:12px;line-height:1.4}
-  .set-foot{font-size:calc(12px * var(--fs,1));color:rgba(250,250,250,.5);line-height:1.55;margin-top:26px;text-align:center}
+  .set-foot{font-size:calc(12px * var(--fs,1));color:rgba(250,250,250,.66);line-height:1.55;margin-top:26px;text-align:center}
   .pair>.btn{flex:1;gap:8px}
   .wheelwrap{position:relative;margin-top:12px}
   .wsel{position:absolute;left:0;right:0;top:33.3333%;height:33.3333%;pointer-events:none;border-top:1px solid var(--faint2);border-bottom:1px solid var(--faint2);background:var(--accent-lt);border-radius:10px}
